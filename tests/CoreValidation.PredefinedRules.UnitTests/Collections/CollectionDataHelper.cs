@@ -1,0 +1,98 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace CoreValidation.PredefinedRules.UnitTests.Collections
+{
+    public class CollectionDataHelper
+    {
+        public static IEnumerable<object[]> ExactSize_Should_CollectError_Data<T>(Func<int[], T> convert)
+        {
+            yield return new object[] {convert(new int[] { }), 0, true};
+            yield return new object[] {convert(new[] {1}), 1, true};
+            yield return new object[] {convert(new[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 0}), 10, true};
+
+            yield return new object[] {convert(new int[] { }), 5, false};
+            yield return new object[] {convert(new[] {1}), 0, false};
+            yield return new object[] {convert(new[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 0}), 5, false};
+        }
+
+        public static IEnumerable<object[]> NotEmpty_Should_CollectError_Data<T>(Func<int[], T> convert)
+        {
+            yield return new object[] {convert(Array.Empty<int>()), false};
+
+            yield return new object[] {convert(new[] {1}), true};
+            yield return new object[] {convert(new[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 0}), true};
+        }
+
+        public static IEnumerable<object[]> Empty_Should_CollectError_Data<T>(Func<int[], T> convert)
+        {
+            yield return new object[] {convert(Array.Empty<int>()), true};
+
+            yield return new object[] {convert(new[] {1}), false};
+            yield return new object[] {convert(new[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 0}), false};
+        }
+
+        public static IEnumerable<object[]> MaxSize_Should_CollectError_Data<T>(Func<int[], T> convert)
+        {
+            yield return new object[] {convert(new int[] { }), 0, true};
+            yield return new object[] {convert(new[] {1, 2, 3}), 4, true};
+            yield return new object[] {convert(new[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 0}), 10, true};
+            yield return new object[] {convert(new[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 0}), int.MaxValue, true};
+
+            yield return new object[] {convert(new[] {1}), 0, false};
+            yield return new object[] {convert(new[] {1, 2, 3, 4}), 3, false};
+            yield return new object[] {convert(new[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 0}), 5, false};
+        }
+
+        public static IEnumerable<object[]> MinSize_Should_CollectError_Data<T>(Func<int[], T> convert)
+        {
+            yield return new object[] {convert(new int[] { }), 0, true};
+            yield return new object[] {convert(new[] {1, 2, 3}), 1, true};
+            yield return new object[] {convert(new[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 0}), 5, true};
+            yield return new object[] {convert(new[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 0}), 0, true};
+
+            yield return new object[] {convert(new int[] { }), 1, false};
+            yield return new object[] {convert(new[] {1, 2, 3, 4}), 5, false};
+            yield return new object[] {convert(new[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 0}), int.MaxValue, false};
+        }
+
+        public static IEnumerable<object[]> SizeBetween_Should_CollectError_Data<T>(Func<int[], T> convert)
+        {
+            yield return new object[] {convert(new int[] { }), 0, 1, true};
+
+            yield return new object[] {convert(new[] {1, 2, 3}), 0, 3, true};
+            yield return new object[] {convert(new[] {1, 2, 3}), 1, 3, true};
+            yield return new object[] {convert(new[] {1, 2, 3}), 2, 3, true};
+            yield return new object[] {convert(new[] {1, 2, 3}), 3, 3, true};
+            yield return new object[] {convert(new[] {1, 2, 3}), 3, 4, true};
+            yield return new object[] {convert(new[] {1, 2, 3}), 3, int.MaxValue, true};
+
+            yield return new object[] {convert(new int[] { }), 1, 2, false};
+
+            yield return new object[] {convert(new[] {1, 2, 3}), 4, 10, false};
+            yield return new object[] {convert(new[] {1, 2, 3}), 4, int.MaxValue, false};
+
+            yield return new object[] {convert(new[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 0}), 1, 9, false};
+            yield return new object[] {convert(new[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 0}), 5, 5, false};
+            yield return new object[] {convert(new[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 0}), 11, int.MaxValue, false};
+        }
+
+
+        public static IEnumerable<object[]> SizeBetween_Should_CollectError_When_LongSize_Data<T>(Func<int[], T> convert)
+        {
+            yield return new object[] {convert(new[] {1, 2, 3}), 3, long.MaxValue, true};
+            yield return new object[] {convert(new[] {1, 2, 3}), 4, long.MaxValue, false};
+            yield return new object[] {convert(new[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 0}), 11, long.MaxValue, false};
+        }
+
+        public static IEnumerable<object[]> MaxSize_Should_CollectError_When_LongSize_Data<T>(Func<int[], T> convert)
+        {
+            yield return new object[] {convert(new[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 0}), long.MaxValue, true};
+        }
+
+        public static IEnumerable<object[]> MinSize_Should_CollectError_When_LongSize_Data<T>(Func<int[], T> convert)
+        {
+            yield return new object[] {convert(new[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 0}), long.MaxValue, false};
+        }
+    }
+}
