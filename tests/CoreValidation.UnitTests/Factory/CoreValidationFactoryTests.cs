@@ -189,7 +189,7 @@ namespace CoreValidation.UnitTests.Factory
                 Assert.NotNull(coreValidator);
                 Assert.NotEmpty(coreValidator.Translations);
 
-                Assert.Equal(null, coreValidator.ValidationOptions.TranslationName);
+                Assert.Null(coreValidator.ValidationOptions.TranslationName);
             }
 
             public static IEnumerable<object[]> Create_Should_AddTranslation_Data()
@@ -322,7 +322,7 @@ namespace CoreValidation.UnitTests.Factory
                 Assert.NotNull(coreValidator);
                 Assert.NotEmpty(coreValidator.Translations);
 
-                Assert.Equal(null, coreValidator.ValidationOptions.TranslationName);
+                Assert.Null(coreValidator.ValidationOptions.TranslationName);
 
                 Assert.Equal(2, coreValidator.Translations.Keys.Count());
 
@@ -782,7 +782,7 @@ namespace CoreValidation.UnitTests.Factory
             Assert.Empty(coreValidator.Types);
 
             Assert.Equal(NullRootStrategy.RequiredError, coreValidator.ValidationOptions.NullRootStrategy);
-            Assert.Equal(null, coreValidator.ValidationOptions.TranslationName);
+            Assert.Null(coreValidator.ValidationOptions.TranslationName);
             Assert.Equal(ValidationStrategy.Complete, coreValidator.ValidationOptions.ValidationStrategy);
             Assert.Equal("*", coreValidator.ValidationOptions.CollectionForceKey);
             Assert.Equal(10, coreValidator.ValidationOptions.MaxDepth);

@@ -54,7 +54,7 @@ namespace CoreValidation.UnitTests.Errors.Args
             var arg = new TextArg("name", "value");
 
             Assert.Equal("name", arg.Name);
-            Assert.Equal(arg.AllowedParameters.Count, 1);
+            Assert.Equal(1, arg.AllowedParameters.Count);
             Assert.Contains("case", arg.AllowedParameters);
         }
 

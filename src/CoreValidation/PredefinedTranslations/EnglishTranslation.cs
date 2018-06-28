@@ -85,7 +85,6 @@ namespace CoreValidation.PredefinedTranslations
             FromNow = "Date should be during the time frow now: {timeSpan} (now = {now})"
         };
 
-
         public string Required { get; } = "Required";
     }
 }

@@ -53,7 +53,7 @@ namespace CoreValidation.PredefinedRules.UnitTests
         {
             var errorsCollection = CompileSingleError(member, rulesCollection);
 
-            Assert.Equal(false, errorsCollection.IsEmpty);
+            Assert.False(errorsCollection.IsEmpty);
 
             var singleError = errorsCollection.Errors.Single();
             Assert.Equal(expectedErrorMessage, singleError.Message);

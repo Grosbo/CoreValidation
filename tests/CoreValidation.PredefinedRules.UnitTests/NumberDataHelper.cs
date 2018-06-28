@@ -7,7 +7,7 @@ namespace CoreValidation.PredefinedRules.UnitTests
     {
         public static IEnumerable<object[]> EqualTo_Unsigned<T>(Func<int, T> convert)
         {
-            yield return new object[] {convert(0), convert(1), false};
+            yield return new object[] {convert(0), convert(3), false};
             yield return new object[] {convert(2), convert(5), false};
             yield return new object[] {convert(1), convert(1), true};
         }
@@ -31,7 +31,7 @@ namespace CoreValidation.PredefinedRules.UnitTests
 
         public static IEnumerable<object[]> NotEqualTo_Unsigned<T>(Func<int, T> convert)
         {
-            yield return new object[] {convert(0), convert(1), true};
+            yield return new object[] {convert(0), convert(3), true};
             yield return new object[] {convert(2), convert(5), true};
             yield return new object[] {convert(1), convert(1), false};
         }
@@ -55,7 +55,7 @@ namespace CoreValidation.PredefinedRules.UnitTests
 
         public static IEnumerable<object[]> GreaterThan_Unsigned<T>(Func<int, T> convert)
         {
-            yield return new object[] {convert(0), convert(1), false};
+            yield return new object[] {convert(0), convert(3), false};
             yield return new object[] {convert(2), convert(1), true};
             yield return new object[] {convert(1), convert(1), false};
             yield return new object[] {convert(1), convert(0), true};
@@ -81,7 +81,7 @@ namespace CoreValidation.PredefinedRules.UnitTests
 
         public static IEnumerable<object[]> GreaterOrEqualTo_Unsigned<T>(Func<int, T> convert)
         {
-            yield return new object[] {convert(0), convert(1), false};
+            yield return new object[] {convert(0), convert(3), false};
             yield return new object[] {convert(2), convert(1), true};
             yield return new object[] {convert(1), convert(1), true};
             yield return new object[] {convert(1), convert(0), true};
@@ -107,7 +107,7 @@ namespace CoreValidation.PredefinedRules.UnitTests
 
         public static IEnumerable<object[]> LessThan_Unsigned<T>(Func<int, T> convert)
         {
-            yield return new object[] {convert(0), convert(1), true};
+            yield return new object[] {convert(0), convert(3), true};
             yield return new object[] {convert(2), convert(1), false};
             yield return new object[] {convert(1), convert(1), false};
             yield return new object[] {convert(1), convert(0), false};
@@ -133,7 +133,7 @@ namespace CoreValidation.PredefinedRules.UnitTests
 
         public static IEnumerable<object[]> LessOrEqualTo_Unsigned<T>(Func<int, T> convert)
         {
-            yield return new object[] {convert(0), convert(1), true};
+            yield return new object[] {convert(0), convert(3), true};
             yield return new object[] {convert(2), convert(1), false};
             yield return new object[] {convert(1), convert(1), true};
             yield return new object[] {convert(1), convert(0), false};

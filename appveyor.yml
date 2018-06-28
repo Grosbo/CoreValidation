@@ -1,0 +1,28 @@
+version: '{build}'
+
+init:
+  - cmd: git config --global core.autocrlf true
+
+image:
+  - Visual Studio 2017
+  - Ubuntu
+
+branches:
+  only:
+  - master
+
+skip_commits:
+  message: /(\(non-code\))/
+
+environment:
+  NUGET_API_KEY:
+    secure: DQ4NJmF5QnY0xXgRcVGO/Z7Wc7j0JhA7CaMK+yFP48TGOaijhvshKhWP9SekLqkj
+
+build_script:
+- pwsh: .\Build.ps1
+
+test: off
+
+artifacts:
+- path: .\artifacts\*.nupkg
+  name: NuGet

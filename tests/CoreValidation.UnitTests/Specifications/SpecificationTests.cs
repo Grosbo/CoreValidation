@@ -48,7 +48,7 @@ namespace CoreValidation.UnitTests.Specifications
 
                 foreach (var argName in argsNames)
                 {
-                    Assert.True(error.Arguments.Any(m => m.Name == argName));
+                    Assert.Contains(error.Arguments, m => m.Name == argName);
                 }
             }
         }
@@ -146,7 +146,7 @@ namespace CoreValidation.UnitTests.Specifications
                         return false;
                     }, "error");
 
-                Assert.Same(null, specification.Model);
+                Assert.Null(specification.Model);
 
                 Assert.Null(specification.SummaryError);
                 Assert.Equal(1, specification.CompilableRules.Count);
@@ -189,12 +189,12 @@ namespace CoreValidation.UnitTests.Specifications
                 Assert.Equal("Email", rule.MemberPropertyInfo.Name);
                 Assert.Equal(typeof(string), rule.MemberPropertyInfo.PropertyType);
 
-                Assert.Equal(null, rule.RulesCollection.Name);
-                Assert.Equal(null, rule.RulesCollection.SummaryError);
-                Assert.Equal(null, rule.RulesCollection.RequiredError);
+                Assert.Null(rule.RulesCollection.Name);
+                Assert.Null(rule.RulesCollection.SummaryError);
+                Assert.Null(rule.RulesCollection.RequiredError);
                 Assert.Equal(1, rule.RulesCollection.Rules.Count);
                 Assert.Equal("error", ((ValidRule<string>)rule.RulesCollection.Rules.Single()).Message);
-                Assert.Equal(null, ((ValidRule<string>)rule.RulesCollection.Rules.Single()).Arguments);
+                Assert.Null(((ValidRule<string>)rule.RulesCollection.Rules.Single()).Arguments);
 
                 Assert.Equal(0, validCounter);
 
@@ -233,14 +233,14 @@ namespace CoreValidation.UnitTests.Specifications
                 Assert.Equal("Email", rule.MemberPropertyInfo.Name);
                 Assert.Equal(typeof(string), rule.MemberPropertyInfo.PropertyType);
 
-                Assert.Equal(null, rule.RulesCollection.Name);
-                Assert.Equal(null, rule.RulesCollection.SummaryError);
+                Assert.Null(rule.RulesCollection.Name);
+                Assert.Null(rule.RulesCollection.SummaryError);
 
                 AssertError(rule.RulesCollection.RequiredError, "required_custom{arg}", "required_custom!", new[] {"arg"});
 
                 Assert.Equal(1, rule.RulesCollection.Rules.Count);
                 Assert.Equal("error", ((ValidRule<string>)rule.RulesCollection.Rules.Single()).Message);
-                Assert.Equal(null, ((ValidRule<string>)rule.RulesCollection.Rules.Single()).Arguments);
+                Assert.Null(((ValidRule<string>)rule.RulesCollection.Rules.Single()).Arguments);
 
                 Assert.Equal(0, validCounter);
 
@@ -280,14 +280,14 @@ namespace CoreValidation.UnitTests.Specifications
                 Assert.Equal("Email", rule.MemberPropertyInfo.Name);
                 Assert.Equal(typeof(string), rule.MemberPropertyInfo.PropertyType);
 
-                Assert.Equal(null, rule.RulesCollection.Name);
+                Assert.Null(rule.RulesCollection.Name);
 
                 AssertError(rule.RulesCollection.SummaryError, "summary{arg}", "summary!", new[] {"arg"});
                 AssertError(rule.RulesCollection.RequiredError, "required_custom{arg}", "required_custom!", new[] {"arg"});
 
                 Assert.Equal(1, rule.RulesCollection.Rules.Count);
                 Assert.Equal("error", ((ValidRule<string>)rule.RulesCollection.Rules.Single()).Message);
-                Assert.Equal(null, ((ValidRule<string>)rule.RulesCollection.Rules.Single()).Arguments);
+                Assert.Null(((ValidRule<string>)rule.RulesCollection.Rules.Single()).Arguments);
 
                 Assert.Equal(0, validCounter);
 
@@ -327,12 +327,12 @@ namespace CoreValidation.UnitTests.Specifications
                 Assert.Equal("Email", rule.MemberPropertyInfo.Name);
                 Assert.Equal(typeof(string), rule.MemberPropertyInfo.PropertyType);
 
-                Assert.Equal(null, rule.RulesCollection.Name);
+                Assert.Null(rule.RulesCollection.Name);
                 AssertError(rule.RulesCollection.SummaryError, "summary{arg}", "summary!", new[] {"arg"});
                 AssertError(rule.RulesCollection.RequiredError, "required_custom{arg}", "required_custom!", new[] {"arg"});
                 Assert.Equal(1, rule.RulesCollection.Rules.Count);
                 Assert.Equal("error", ((ValidRule<string>)rule.RulesCollection.Rules.Single()).Message);
-                Assert.Equal(null, ((ValidRule<string>)rule.RulesCollection.Rules.Single()).Arguments);
+                Assert.Null(((ValidRule<string>)rule.RulesCollection.Rules.Single()).Arguments);
 
                 Assert.Equal(0, validCounter);
 
@@ -366,7 +366,7 @@ namespace CoreValidation.UnitTests.Specifications
                         return true;
                     }, "error2");
 
-                Assert.Same(null, specification.Model);
+                Assert.Null(specification.Model);
 
                 Assert.Null(specification.SummaryError);
                 Assert.Equal(2, specification.CompilableRules.Count);
@@ -414,9 +414,9 @@ namespace CoreValidation.UnitTests.Specifications
                 var rule = specification.CompilableRules.Single();
 
                 AssertCompilableRule(rule, "Email", typeof(string));
-                Assert.Equal(null, rule.RulesCollection.Name);
-                Assert.Equal(null, rule.RulesCollection.SummaryError);
-                Assert.Equal(null, rule.RulesCollection.RequiredError);
+                Assert.Null(rule.RulesCollection.Name);
+                Assert.Null(rule.RulesCollection.SummaryError);
+                Assert.Null(rule.RulesCollection.RequiredError);
                 Assert.Equal(1, rule.RulesCollection.Rules.Count);
                 Assert.IsType<ValidRule<string>>(rule.RulesCollection.Rules.Single());
 
@@ -460,9 +460,9 @@ namespace CoreValidation.UnitTests.Specifications
                 var rule = specification.CompilableRules.Single();
 
                 AssertCompilableRule(rule, "IsAdmin", typeof(bool));
-                Assert.Equal(null, rule.RulesCollection.Name);
-                Assert.Equal(null, rule.RulesCollection.SummaryError);
-                Assert.Equal(null, rule.RulesCollection.RequiredError);
+                Assert.Null(rule.RulesCollection.Name);
+                Assert.Null(rule.RulesCollection.SummaryError);
+                Assert.Null(rule.RulesCollection.RequiredError);
                 Assert.Equal(1, rule.RulesCollection.Rules.Count);
                 Assert.IsType<ValidRule<bool>>(rule.RulesCollection.Rules.Single());
 
@@ -506,9 +506,9 @@ namespace CoreValidation.UnitTests.Specifications
                 var rule = specification.CompilableRules.Single();
 
                 AssertCompilableRule(rule, "Email", typeof(string));
-                Assert.Equal(null, rule.RulesCollection.Name);
-                Assert.Equal(null, rule.RulesCollection.SummaryError);
-                Assert.Equal(null, rule.RulesCollection.RequiredError);
+                Assert.Null(rule.RulesCollection.Name);
+                Assert.Null(rule.RulesCollection.SummaryError);
+                Assert.Null(rule.RulesCollection.RequiredError);
                 Assert.Equal(1, rule.RulesCollection.Rules.Count);
                 Assert.IsType<ValidRelativeRule<User>>(rule.RulesCollection.Rules.Single());
 
@@ -556,9 +556,9 @@ namespace CoreValidation.UnitTests.Specifications
                 var rule = specification.CompilableRules.Single();
 
                 AssertCompilableRule(rule, "FirstLogin", typeof(DateTime?));
-                Assert.Equal(null, rule.RulesCollection.Name);
-                Assert.Equal(null, rule.RulesCollection.SummaryError);
-                Assert.Equal(null, rule.RulesCollection.RequiredError);
+                Assert.Null(rule.RulesCollection.Name);
+                Assert.Null(rule.RulesCollection.SummaryError);
+                Assert.Null(rule.RulesCollection.RequiredError);
                 Assert.Equal(1, rule.RulesCollection.Rules.Count);
                 Assert.IsType<ValidNullableRule<User, DateTime>>(rule.RulesCollection.Rules.Single());
 
@@ -598,9 +598,9 @@ namespace CoreValidation.UnitTests.Specifications
                 var rule = specification.CompilableRules.Single();
 
                 AssertCompilableRule(rule, "FirstLogin", typeof(DateTime?));
-                Assert.Equal(null, rule.RulesCollection.Name);
-                Assert.Equal(null, rule.RulesCollection.SummaryError);
-                Assert.Equal(null, rule.RulesCollection.RequiredError);
+                Assert.Null(rule.RulesCollection.Name);
+                Assert.Null(rule.RulesCollection.SummaryError);
+                Assert.Null(rule.RulesCollection.RequiredError);
                 Assert.Equal(1, rule.RulesCollection.Rules.Count);
                 Assert.IsType<ValidNullableRule<User, DateTime>>(rule.RulesCollection.Rules.Single());
 
@@ -638,9 +638,9 @@ namespace CoreValidation.UnitTests.Specifications
                 var rule = specification.CompilableRules.Single();
 
                 AssertCompilableRule(rule, "FirstLogin", typeof(DateTime?));
-                Assert.Equal(null, rule.RulesCollection.Name);
-                Assert.Equal(null, rule.RulesCollection.SummaryError);
-                Assert.Equal(null, rule.RulesCollection.RequiredError);
+                Assert.Null(rule.RulesCollection.Name);
+                Assert.Null(rule.RulesCollection.SummaryError);
+                Assert.Null(rule.RulesCollection.RequiredError);
                 Assert.Equal(1, rule.RulesCollection.Rules.Count);
                 Assert.IsType<ValidNullableRule<User, DateTime>>(rule.RulesCollection.Rules.Single());
 
@@ -689,9 +689,9 @@ namespace CoreValidation.UnitTests.Specifications
                 var rule = specification.CompilableRules.Single();
 
                 AssertCompilableRule(rule, "FirstLogin", typeof(DateTime?));
-                Assert.Equal(null, rule.RulesCollection.Name);
-                Assert.Equal(null, rule.RulesCollection.SummaryError);
-                Assert.Equal(null, rule.RulesCollection.RequiredError);
+                Assert.Null(rule.RulesCollection.Name);
+                Assert.Null(rule.RulesCollection.SummaryError);
+                Assert.Null(rule.RulesCollection.RequiredError);
                 Assert.Equal(1, rule.RulesCollection.Rules.Count);
                 Assert.IsType<ValidNullableRule<User, DateTime>>(rule.RulesCollection.Rules.Single());
 
@@ -742,9 +742,9 @@ namespace CoreValidation.UnitTests.Specifications
                 var rule = specification.CompilableRules.Single();
 
                 AssertCompilableRule(rule, "FirstLogin", typeof(DateTime?));
-                Assert.Equal(null, rule.RulesCollection.Name);
-                Assert.Equal(null, rule.RulesCollection.SummaryError);
-                Assert.Equal(null, rule.RulesCollection.RequiredError);
+                Assert.Null(rule.RulesCollection.Name);
+                Assert.Null(rule.RulesCollection.SummaryError);
+                Assert.Null(rule.RulesCollection.RequiredError);
                 Assert.Equal(1, rule.RulesCollection.Rules.Count);
                 Assert.IsType<ValidNullableRule<User, DateTime>>(rule.RulesCollection.Rules.Single());
 
@@ -795,9 +795,9 @@ namespace CoreValidation.UnitTests.Specifications
                 var rule = specification.CompilableRules.Single();
 
                 AssertCompilableRule(rule, "FirstLogin", typeof(DateTime?));
-                Assert.Equal(null, rule.RulesCollection.Name);
-                Assert.Equal(null, rule.RulesCollection.SummaryError);
-                Assert.Equal(null, rule.RulesCollection.RequiredError);
+                Assert.Null(rule.RulesCollection.Name);
+                Assert.Null(rule.RulesCollection.SummaryError);
+                Assert.Null(rule.RulesCollection.RequiredError);
                 Assert.Equal(1, rule.RulesCollection.Rules.Count);
                 Assert.IsType<ValidNullableRule<User, DateTime>>(rule.RulesCollection.Rules.Single());
 
@@ -850,9 +850,9 @@ namespace CoreValidation.UnitTests.Specifications
                 var rule = specification.CompilableRules.Single();
 
                 AssertCompilableRule(rule, "Address", typeof(Address));
-                Assert.Equal(null, rule.RulesCollection.Name);
-                Assert.Equal(null, rule.RulesCollection.SummaryError);
-                Assert.Equal(null, rule.RulesCollection.RequiredError);
+                Assert.Null(rule.RulesCollection.Name);
+                Assert.Null(rule.RulesCollection.SummaryError);
+                Assert.Null(rule.RulesCollection.RequiredError);
                 Assert.Equal(1, rule.RulesCollection.Rules.Count);
                 Assert.IsType<ValidModelRule<Address>>(rule.RulesCollection.Rules.Single());
 
@@ -901,9 +901,9 @@ namespace CoreValidation.UnitTests.Specifications
                 var rule = specification.CompilableRules.Single();
 
                 AssertCompilableRule(rule, "Address", typeof(Address));
-                Assert.Equal(null, rule.RulesCollection.Name);
-                Assert.Equal(null, rule.RulesCollection.SummaryError);
-                Assert.Equal(null, rule.RulesCollection.RequiredError);
+                Assert.Null(rule.RulesCollection.Name);
+                Assert.Null(rule.RulesCollection.SummaryError);
+                Assert.Null(rule.RulesCollection.RequiredError);
                 Assert.Equal(1, rule.RulesCollection.Rules.Count);
                 Assert.IsType<ValidModelRule<Address>>(rule.RulesCollection.Rules.Single());
 
@@ -959,9 +959,9 @@ namespace CoreValidation.UnitTests.Specifications
                 var rule = specification.CompilableRules.Single();
 
                 AssertCompilableRule(rule, "Address", typeof(Address));
-                Assert.Equal(null, rule.RulesCollection.Name);
-                Assert.Equal(null, rule.RulesCollection.SummaryError);
-                Assert.Equal(null, rule.RulesCollection.RequiredError);
+                Assert.Null(rule.RulesCollection.Name);
+                Assert.Null(rule.RulesCollection.SummaryError);
+                Assert.Null(rule.RulesCollection.RequiredError);
                 Assert.Equal(1, rule.RulesCollection.Rules.Count);
                 Assert.IsType<ValidModelRule<Address>>(rule.RulesCollection.Rules.Single());
 
@@ -1016,9 +1016,9 @@ namespace CoreValidation.UnitTests.Specifications
                 var rule = specification.CompilableRules.Single();
 
                 AssertCompilableRule(rule, "Address", typeof(Address));
-                Assert.Equal(null, rule.RulesCollection.Name);
-                Assert.Equal(null, rule.RulesCollection.SummaryError);
-                Assert.Equal(null, rule.RulesCollection.RequiredError);
+                Assert.Null(rule.RulesCollection.Name);
+                Assert.Null(rule.RulesCollection.SummaryError);
+                Assert.Null(rule.RulesCollection.RequiredError);
                 Assert.Equal(1, rule.RulesCollection.Rules.Count);
                 Assert.IsType<ValidModelRule<Address>>(rule.RulesCollection.Rules.Single());
 
@@ -1073,9 +1073,9 @@ namespace CoreValidation.UnitTests.Specifications
                 var rule = specification.CompilableRules.Single();
 
                 AssertCompilableRule(rule, "Address", typeof(Address));
-                Assert.Equal(null, rule.RulesCollection.Name);
-                Assert.Equal(null, rule.RulesCollection.SummaryError);
-                Assert.Equal(null, rule.RulesCollection.RequiredError);
+                Assert.Null(rule.RulesCollection.Name);
+                Assert.Null(rule.RulesCollection.SummaryError);
+                Assert.Null(rule.RulesCollection.RequiredError);
                 Assert.Equal(1, rule.RulesCollection.Rules.Count);
                 Assert.IsType<ValidModelRule<Address>>(rule.RulesCollection.Rules.Single());
 
@@ -1123,9 +1123,9 @@ namespace CoreValidation.UnitTests.Specifications
                 var rule = specification.CompilableRules.Single();
 
                 AssertCompilableRule(rule, "Address", typeof(Address));
-                Assert.Equal(null, rule.RulesCollection.Name);
-                Assert.Equal(null, rule.RulesCollection.SummaryError);
-                Assert.Equal(null, rule.RulesCollection.RequiredError);
+                Assert.Null(rule.RulesCollection.Name);
+                Assert.Null(rule.RulesCollection.SummaryError);
+                Assert.Null(rule.RulesCollection.RequiredError);
                 Assert.Equal(1, rule.RulesCollection.Rules.Count);
                 Assert.IsType<ValidModelRule<Address>>(rule.RulesCollection.Rules.Single());
 
@@ -1178,9 +1178,9 @@ namespace CoreValidation.UnitTests.Specifications
                 var rule = specification.CompilableRules.Single();
 
                 AssertCompilableRule(rule, "Address", typeof(Address));
-                Assert.Equal(null, rule.RulesCollection.Name);
-                Assert.Equal(null, rule.RulesCollection.SummaryError);
-                Assert.Equal(null, rule.RulesCollection.RequiredError);
+                Assert.Null(rule.RulesCollection.Name);
+                Assert.Null(rule.RulesCollection.SummaryError);
+                Assert.Null(rule.RulesCollection.RequiredError);
                 Assert.Equal(1, rule.RulesCollection.Rules.Count);
                 Assert.IsType<ValidModelRule<Address>>(rule.RulesCollection.Rules.Single());
 
@@ -1231,9 +1231,9 @@ namespace CoreValidation.UnitTests.Specifications
                 var rule = specification.CompilableRules.Single();
 
                 AssertCompilableRule(rule, "Address", typeof(Address));
-                Assert.Equal(null, rule.RulesCollection.Name);
-                Assert.Equal(null, rule.RulesCollection.SummaryError);
-                Assert.Equal(null, rule.RulesCollection.RequiredError);
+                Assert.Null(rule.RulesCollection.Name);
+                Assert.Null(rule.RulesCollection.SummaryError);
+                Assert.Null(rule.RulesCollection.RequiredError);
                 Assert.Equal(1, rule.RulesCollection.Rules.Count);
                 Assert.IsType<ValidModelRule<Address>>(rule.RulesCollection.Rules.Single());
 
@@ -1320,9 +1320,9 @@ namespace CoreValidation.UnitTests.Specifications
                 var rule = specification.CompilableRules.Single();
 
                 AssertCompilableRule(rule, "PastAddresses", typeof(IEnumerable<Address>));
-                Assert.Equal(null, rule.RulesCollection.Name);
-                Assert.Equal(null, rule.RulesCollection.SummaryError);
-                Assert.Equal(null, rule.RulesCollection.RequiredError);
+                Assert.Null(rule.RulesCollection.Name);
+                Assert.Null(rule.RulesCollection.SummaryError);
+                Assert.Null(rule.RulesCollection.RequiredError);
                 Assert.Equal(1, rule.RulesCollection.Rules.Count);
                 Assert.IsType<ValidCollectionRule<User, Address>>(rule.RulesCollection.Rules.Single());
 
@@ -1394,9 +1394,9 @@ namespace CoreValidation.UnitTests.Specifications
                 var rule = specification.CompilableRules.Single();
 
                 AssertCompilableRule(rule, "PastAddresses", typeof(IEnumerable<Address>));
-                Assert.Equal(null, rule.RulesCollection.Name);
-                Assert.Equal(null, rule.RulesCollection.SummaryError);
-                Assert.Equal(null, rule.RulesCollection.RequiredError);
+                Assert.Null(rule.RulesCollection.Name);
+                Assert.Null(rule.RulesCollection.SummaryError);
+                Assert.Null(rule.RulesCollection.RequiredError);
                 Assert.Equal(1, rule.RulesCollection.Rules.Count);
                 Assert.IsType<ValidCollectionRule<User, Address>>(rule.RulesCollection.Rules.Single());
 
@@ -1437,9 +1437,9 @@ namespace CoreValidation.UnitTests.Specifications
                 var rule = specification.CompilableRules.Single();
 
                 AssertCompilableRule(rule, "PastAddresses", typeof(IEnumerable<Address>));
-                Assert.Equal(null, rule.RulesCollection.Name);
-                Assert.Equal(null, rule.RulesCollection.SummaryError);
-                Assert.Equal(null, rule.RulesCollection.RequiredError);
+                Assert.Null(rule.RulesCollection.Name);
+                Assert.Null(rule.RulesCollection.SummaryError);
+                Assert.Null(rule.RulesCollection.RequiredError);
                 Assert.Equal(1, rule.RulesCollection.Rules.Count);
                 Assert.IsType<ValidCollectionRule<User, Address>>(rule.RulesCollection.Rules.Single());
 
@@ -1482,9 +1482,9 @@ namespace CoreValidation.UnitTests.Specifications
                 var rule = specification.CompilableRules.Single();
 
                 AssertCompilableRule(rule, "PastAddresses", typeof(IEnumerable<Address>));
-                Assert.Equal(null, rule.RulesCollection.Name);
-                Assert.Equal(null, rule.RulesCollection.SummaryError);
-                Assert.Equal(null, rule.RulesCollection.RequiredError);
+                Assert.Null(rule.RulesCollection.Name);
+                Assert.Null(rule.RulesCollection.SummaryError);
+                Assert.Null(rule.RulesCollection.RequiredError);
                 Assert.Equal(1, rule.RulesCollection.Rules.Count);
                 Assert.IsType<ValidCollectionRule<User, Address>>(rule.RulesCollection.Rules.Single());
 
@@ -1563,9 +1563,9 @@ namespace CoreValidation.UnitTests.Specifications
                 var rule = specification.CompilableRules.Single();
 
                 AssertCompilableRule(rule, "PastAddresses", typeof(IEnumerable<Address>));
-                Assert.Equal(null, rule.RulesCollection.Name);
-                Assert.Equal(null, rule.RulesCollection.SummaryError);
-                Assert.Equal(null, rule.RulesCollection.RequiredError);
+                Assert.Null(rule.RulesCollection.Name);
+                Assert.Null(rule.RulesCollection.SummaryError);
+                Assert.Null(rule.RulesCollection.RequiredError);
                 Assert.Equal(1, rule.RulesCollection.Rules.Count);
                 Assert.IsType<ValidCollectionRule<User, Address>>(rule.RulesCollection.Rules.Single());
 
@@ -1647,9 +1647,9 @@ namespace CoreValidation.UnitTests.Specifications
                 var rule = specification.CompilableRules.Single();
 
                 AssertCompilableRule(rule, "PastAddresses", typeof(IEnumerable<Address>));
-                Assert.Equal(null, rule.RulesCollection.Name);
-                Assert.Equal(null, rule.RulesCollection.SummaryError);
-                Assert.Equal(null, rule.RulesCollection.RequiredError);
+                Assert.Null(rule.RulesCollection.Name);
+                Assert.Null(rule.RulesCollection.SummaryError);
+                Assert.Null(rule.RulesCollection.RequiredError);
                 Assert.Equal(1, rule.RulesCollection.Rules.Count);
                 Assert.IsType<ValidCollectionRule<User, Address>>(rule.RulesCollection.Rules.Single());
 
@@ -1725,11 +1725,11 @@ namespace CoreValidation.UnitTests.Specifications
                 Assert.Equal(typeof(string), rule.MemberPropertyInfo.PropertyType);
 
                 Assert.Equal("customName", rule.RulesCollection.Name);
-                Assert.Equal(null, rule.RulesCollection.SummaryError);
-                Assert.Equal(null, rule.RulesCollection.RequiredError);
+                Assert.Null(rule.RulesCollection.SummaryError);
+                Assert.Null(rule.RulesCollection.RequiredError);
                 Assert.Equal(1, rule.RulesCollection.Rules.Count);
                 Assert.Equal("error", ((ValidRule<string>)rule.RulesCollection.Rules.Single()).Message);
-                Assert.Equal(null, ((ValidRule<string>)rule.RulesCollection.Rules.Single()).Arguments);
+                Assert.Null(((ValidRule<string>)rule.RulesCollection.Rules.Single()).Arguments);
 
                 Assert.Equal(0, validCounter);
 
@@ -1764,9 +1764,9 @@ namespace CoreValidation.UnitTests.Specifications
                 var rule = specification.CompilableRules.Single();
 
                 AssertCompilableRule(rule, "Email", typeof(string));
-                Assert.Equal(null, rule.RulesCollection.Name);
-                Assert.Equal(null, rule.RulesCollection.SummaryError);
-                Assert.Equal(null, rule.RulesCollection.RequiredError);
+                Assert.Null(rule.RulesCollection.Name);
+                Assert.Null(rule.RulesCollection.SummaryError);
+                Assert.Null(rule.RulesCollection.RequiredError);
                 Assert.Equal(1, rule.RulesCollection.Rules.Count);
                 Assert.IsType<ValidRule<string>>(rule.RulesCollection.Rules.Single());
 
@@ -1846,18 +1846,18 @@ namespace CoreValidation.UnitTests.Specifications
                 var rule = specification.CompilableRules.ElementAt(0);
 
                 AssertCompilableRule(rule, "Email", typeof(string));
-                Assert.Equal(null, rule.RulesCollection.Name);
-                Assert.Equal(null, rule.RulesCollection.SummaryError);
-                Assert.Equal(null, rule.RulesCollection.RequiredError);
+                Assert.Null(rule.RulesCollection.Name);
+                Assert.Null(rule.RulesCollection.SummaryError);
+                Assert.Null(rule.RulesCollection.RequiredError);
                 Assert.Equal(1, rule.RulesCollection.Rules.Count);
                 Assert.IsType<ValidRule<string>>(rule.RulesCollection.Rules.Single());
 
                 var rule2 = specification.CompilableRules.ElementAt(1);
 
                 AssertCompilableRule(rule2, "FirstLogin", typeof(DateTime?));
-                Assert.Equal(null, rule2.RulesCollection.Name);
-                Assert.Equal(null, rule2.RulesCollection.SummaryError);
-                Assert.Equal(null, rule2.RulesCollection.RequiredError);
+                Assert.Null(rule2.RulesCollection.Name);
+                Assert.Null(rule2.RulesCollection.SummaryError);
+                Assert.Null(rule2.RulesCollection.RequiredError);
                 Assert.Equal(1, rule2.RulesCollection.Rules.Count);
                 Assert.IsType<ValidRule<DateTime?>>(rule2.RulesCollection.Rules.Single());
 
@@ -1903,9 +1903,9 @@ namespace CoreValidation.UnitTests.Specifications
                 var rule = specification.CompilableRules.ElementAt(0);
 
                 AssertCompilableRule(rule, "Email", typeof(string));
-                Assert.Equal(null, rule.RulesCollection.Name);
-                Assert.Equal(null, rule.RulesCollection.SummaryError);
-                Assert.Equal(null, rule.RulesCollection.RequiredError);
+                Assert.Null(rule.RulesCollection.Name);
+                Assert.Null(rule.RulesCollection.SummaryError);
+                Assert.Null(rule.RulesCollection.RequiredError);
                 Assert.Equal(1, rule.RulesCollection.Rules.Count);
                 Assert.IsType<ValidRule<string>>(rule.RulesCollection.Rules.Single());
 
@@ -1913,8 +1913,8 @@ namespace CoreValidation.UnitTests.Specifications
 
                 AssertCompilableRule(rule2, "FirstLogin", typeof(DateTime?));
                 Assert.Equal("Email", rule2.RulesCollection.Name);
-                Assert.Equal(null, rule2.RulesCollection.SummaryError);
-                Assert.Equal(null, rule2.RulesCollection.RequiredError);
+                Assert.Null(rule2.RulesCollection.SummaryError);
+                Assert.Null(rule2.RulesCollection.RequiredError);
                 Assert.Equal(1, rule2.RulesCollection.Rules.Count);
                 Assert.IsType<ValidRule<DateTime?>>(rule2.RulesCollection.Rules.Single());
 
@@ -1958,9 +1958,9 @@ namespace CoreValidation.UnitTests.Specifications
                 var rule = specification.CompilableRules.ElementAt(0);
 
                 AssertCompilableRule(rule, "Email", typeof(string));
-                Assert.Equal(null, rule.RulesCollection.Name);
-                Assert.Equal(null, rule.RulesCollection.SummaryError);
-                Assert.Equal(null, rule.RulesCollection.RequiredError);
+                Assert.Null(rule.RulesCollection.Name);
+                Assert.Null(rule.RulesCollection.SummaryError);
+                Assert.Null(rule.RulesCollection.RequiredError);
                 Assert.Equal(1, rule.RulesCollection.Rules.Count);
                 Assert.IsType<ValidRule<string>>(rule.RulesCollection.Rules.Single());
 
@@ -2009,18 +2009,18 @@ namespace CoreValidation.UnitTests.Specifications
                 var rule = specification.CompilableRules.ElementAt(0);
 
                 AssertCompilableRule(rule, "Email", typeof(string));
-                Assert.Equal(null, rule.RulesCollection.Name);
-                Assert.Equal(null, rule.RulesCollection.SummaryError);
-                Assert.Equal(null, rule.RulesCollection.RequiredError);
+                Assert.Null(rule.RulesCollection.Name);
+                Assert.Null(rule.RulesCollection.SummaryError);
+                Assert.Null(rule.RulesCollection.RequiredError);
                 Assert.Equal(1, rule.RulesCollection.Rules.Count);
                 Assert.IsType<ValidRule<string>>(rule.RulesCollection.Rules.Single());
 
                 var rule2 = specification.CompilableRules.ElementAt(1);
 
                 AssertCompilableRule(rule2, "Email", typeof(string));
-                Assert.Equal(null, rule2.RulesCollection.Name);
-                Assert.Equal(null, rule2.RulesCollection.SummaryError);
-                Assert.Equal(null, rule2.RulesCollection.RequiredError);
+                Assert.Null(rule2.RulesCollection.Name);
+                Assert.Null(rule2.RulesCollection.SummaryError);
+                Assert.Null(rule2.RulesCollection.RequiredError);
                 Assert.Equal(1, rule2.RulesCollection.Rules.Count);
                 Assert.IsType<ValidRule<string>>(rule2.RulesCollection.Rules.Single());
 
@@ -2115,7 +2115,7 @@ namespace CoreValidation.UnitTests.Specifications
 
                 Assert.Equal(1, validCounter);
 
-                Assert.Equal(true, errorsCollection.IsEmpty);
+                Assert.True(errorsCollection.IsEmpty);
                 ErrorsCollectionTestsHelpers.ExpectMembers(errorsCollection, new string[] { });
                 ErrorsCollectionTestsHelpers.ExpectErrors(specification.GetErrors(), new string[] { });
             }

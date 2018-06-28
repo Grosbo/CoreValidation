@@ -117,7 +117,7 @@ namespace CoreValidation.UnitTests
                 Assert.NotNull(result);
                 Assert.Equal(validationContext.Id, result.CoreValidatorId);
                 Assert.Equal(validationContext.Options.ValidationOptions, result.RulesOptions);
-                Assert.Equal(false, result.ContainsMergedErrors);
+                Assert.False(result.ContainsMergedErrors);
                 Assert.NotNull(result.ErrorsCollection);
                 Assert.Equal("error {arg|case=upper}", result.ErrorsCollection.Errors.Single().Message);
                 Assert.Equal("error TEST", result.ErrorsCollection.Errors.Single().StringifiedMessage);
@@ -162,7 +162,7 @@ namespace CoreValidation.UnitTests
                 Assert.NotNull(result);
                 Assert.Equal(validationContext.Id, result.CoreValidatorId);
                 Assert.Equal(validationContext.Options.ValidationOptions, result.RulesOptions);
-                Assert.Equal(false, result.ContainsMergedErrors);
+                Assert.False(result.ContainsMergedErrors);
                 Assert.NotNull(result.ErrorsCollection);
                 Assert.Equal("error {arg|case=upper}", result.ErrorsCollection.Errors.Single().Message);
                 Assert.Equal("error TEST", result.ErrorsCollection.Errors.Single().StringifiedMessage);
@@ -207,7 +207,7 @@ namespace CoreValidation.UnitTests
                 Assert.NotNull(result);
                 Assert.Equal(validationContext.Id, result.CoreValidatorId);
                 Assert.Equal(validationContext.Options.ValidationOptions, result.RulesOptions);
-                Assert.Equal(false, result.ContainsMergedErrors);
+                Assert.False(result.ContainsMergedErrors);
                 Assert.NotNull(result.ErrorsCollection);
                 Assert.Equal("error {arg|case=upper}", result.ErrorsCollection.Errors.Single().Message);
                 Assert.Equal("error TEST", result.ErrorsCollection.Errors.Single().StringifiedMessage);
@@ -248,7 +248,7 @@ namespace CoreValidation.UnitTests
                 Assert.NotNull(result);
                 Assert.Equal(validationContext.Id, result.CoreValidatorId);
                 Assert.Equal(validationContext.Options.ValidationOptions, result.RulesOptions);
-                Assert.Equal(false, result.ContainsMergedErrors);
+                Assert.False(result.ContainsMergedErrors);
                 Assert.NotNull(result.ErrorsCollection);
                 Assert.Equal("error {arg|case=upper}", result.ErrorsCollection.Errors.Single().Message);
                 Assert.Equal("error TEST", result.ErrorsCollection.Errors.Single().StringifiedMessage);
@@ -398,7 +398,7 @@ namespace CoreValidation.UnitTests
                 Assert.NotNull(result);
                 Assert.Equal(validationContext.Id, result.CoreValidatorId);
                 Assert.Equal(validationContext.Options.ValidationOptions, result.RulesOptions);
-                Assert.Equal(false, result.ContainsMergedErrors);
+                Assert.False(result.ContainsMergedErrors);
                 Assert.Equal(validationContext.TranslatorsRepository, result.TranslationProxy.TranslatorsRepository);
                 Assert.Equal(validationContext.TranslatorsRepository.GetOriginal(), result.TranslationProxy.DefaultTranslator);
                 Assert.NotNull(result.ErrorsCollection);
@@ -429,7 +429,7 @@ namespace CoreValidation.UnitTests
                 Assert.NotNull(result);
                 Assert.Equal(validationContext.Id, result.CoreValidatorId);
                 Assert.Equal(validationContext.Options.ValidationOptions, result.RulesOptions);
-                Assert.Equal(false, result.ContainsMergedErrors);
+                Assert.False(result.ContainsMergedErrors);
                 Assert.Equal(validationContext.TranslatorsRepository, result.TranslationProxy.TranslatorsRepository);
                 Assert.Equal(validationContext.TranslatorsRepository.GetOriginal(), result.TranslationProxy.DefaultTranslator);
                 Assert.NotNull(result.ErrorsCollection);
@@ -461,7 +461,7 @@ namespace CoreValidation.UnitTests
                 Assert.NotNull(result);
                 Assert.Equal(validationContext.Id, result.CoreValidatorId);
                 Assert.Equal(validationContext.Options.ValidationOptions, result.RulesOptions);
-                Assert.Equal(false, result.ContainsMergedErrors);
+                Assert.False(result.ContainsMergedErrors);
                 Assert.Equal(validationContext.TranslatorsRepository, result.TranslationProxy.TranslatorsRepository);
                 Assert.Equal(validationContext.TranslatorsRepository.GetOriginal(), result.TranslationProxy.DefaultTranslator);
                 Assert.NotNull(result.ErrorsCollection);
@@ -485,7 +485,7 @@ namespace CoreValidation.UnitTests
                 Assert.Empty(validationContext.Options.Validators);
                 Assert.Equal(NullRootStrategy.RequiredError, validationContext.Options.ValidationOptions.NullRootStrategy);
                 Assert.Equal(ValidationStrategy.Complete, validationContext.Options.ValidationOptions.ValidationStrategy);
-                Assert.Equal(null, validationContext.Options.ValidationOptions.TranslationName);
+                Assert.Null(validationContext.Options.ValidationOptions.TranslationName);
                 Assert.Equal("*", validationContext.Options.ValidationOptions.CollectionForceKey);
                 Assert.Equal(10, validationContext.Options.ValidationOptions.MaxDepth);
                 Assert.Equal("Required", validationContext.Options.ValidationOptions.RequiredError.Message);
@@ -1012,7 +1012,7 @@ namespace CoreValidation.UnitTests
                 Assert.NotSame(original.Translations["t2"], clone.Translations["t2"]);
 
                 Assert.Equal(NullRootStrategy.ArgumentNullException, clone.ValidationOptions.NullRootStrategy);
-                Assert.Equal(null, clone.ValidationOptions.TranslationName);
+                Assert.Null(clone.ValidationOptions.TranslationName);
                 Assert.Equal(ValidationStrategy.Force, clone.ValidationOptions.ValidationStrategy);
                 Assert.Equal("[*]", clone.ValidationOptions.CollectionForceKey);
                 Assert.Equal(20, clone.ValidationOptions.MaxDepth);

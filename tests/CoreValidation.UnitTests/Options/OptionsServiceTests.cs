@@ -74,7 +74,7 @@ namespace CoreValidation.UnitTests.Options
             {
                 var result = new OptionsService().VerifyTranslationName(new[] {new Translation("name", new Dictionary<string, string> {{"a", "b"}})}, "name");
 
-                Assert.Equal(result, "name");
+                Assert.Equal("name", result);
             }
         }
 

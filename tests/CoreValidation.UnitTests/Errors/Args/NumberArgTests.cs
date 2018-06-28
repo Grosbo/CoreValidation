@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using CoreValidation.Errors.Args;
 using Xunit;
 
@@ -58,8 +59,8 @@ namespace CoreValidation.UnitTests.Errors.Args
 
             yield return new object[] {new NumberArg("name", Guid.Empty), "pl-PL", "00000000-0000-0000-0000-000000000000"};
 
-            yield return new object[] {new NumberArg("name", new DateTime(2000, 01, 15, 16, 04, 05, 06)), "en-US", "1/15/2000 4:04:05 PM"};
-            yield return new object[] {new NumberArg("name", new DateTimeOffset(2000, 01, 15, 16, 04, 05, 06, TimeSpan.Zero)), "en-US", "1/15/2000 4:04:05 PM +00:00"};
+            yield return new object[] {new NumberArg("name", new DateTime(2000, 01, 15, 16, 04, 05, 06)), "en-US", new DateTime(2000, 01, 15, 16, 04, 05, 06).ToString(CultureInfo.GetCultureInfo("en-US"))};
+            yield return new object[] {new NumberArg("name", new DateTimeOffset(2000, 01, 15, 16, 04, 05, 06, TimeSpan.Zero)), "en-US", new DateTimeOffset(2000, 01, 15, 16, 04, 05, 06, TimeSpan.Zero).ToString(CultureInfo.GetCultureInfo("en-US"))};
 
             yield return new object[] {new NumberArg("name", new TimeSpan(1, 2, 3)), "en-US", "01:02:03"};
         }
@@ -141,7 +142,7 @@ namespace CoreValidation.UnitTests.Errors.Args
             var arg = new NumberArg("name", 1);
 
             Assert.Equal("name", arg.Name);
-            Assert.Equal(arg.AllowedParameters.Count, 2);
+            Assert.Equal(2, arg.AllowedParameters.Count);
             Assert.Contains("format", arg.AllowedParameters);
             Assert.Contains("culture", arg.AllowedParameters);
         }

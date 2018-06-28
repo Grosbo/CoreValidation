@@ -74,7 +74,7 @@ namespace CoreValidation.UnitTests.Errors
 
             Assert.Equal("{first}", variables.ElementAt(2).Key);
             Assert.Equal("first", variables.ElementAt(2).Value.Name);
-            Assert.Equal(null, variables.ElementAt(2).Value.Parameters);
+            Assert.Null(variables.ElementAt(2).Value.Parameters);
         }
 
         [Fact]
@@ -86,15 +86,15 @@ namespace CoreValidation.UnitTests.Errors
 
             Assert.Equal("{first}", variables.ElementAt(0).Key);
             Assert.Equal("first", variables.ElementAt(0).Value.Name);
-            Assert.Equal(null, variables.ElementAt(0).Value.Parameters);
+            Assert.Null(variables.ElementAt(0).Value.Parameters);
 
             Assert.Equal("{second}", variables.ElementAt(1).Key);
             Assert.Equal("second", variables.ElementAt(1).Value.Name);
-            Assert.Equal(null, variables.ElementAt(1).Value.Parameters);
+            Assert.Null(variables.ElementAt(1).Value.Parameters);
 
             Assert.Equal("{third}", variables.ElementAt(2).Key);
             Assert.Equal("third", variables.ElementAt(2).Value.Name);
-            Assert.Equal(null, variables.ElementAt(2).Value.Parameters);
+            Assert.Null(variables.ElementAt(2).Value.Parameters);
         }
 
         [Fact]
@@ -133,7 +133,7 @@ namespace CoreValidation.UnitTests.Errors
 
             Assert.Equal("{single}", variables.Single().Key);
             Assert.Equal("single", variables.Single().Value.Name);
-            Assert.Equal(null, variables.Single().Value.Parameters);
+            Assert.Null(variables.Single().Value.Parameters);
         }
 
         [Fact]
@@ -173,7 +173,7 @@ namespace CoreValidation.UnitTests.Errors
 
             Assert.Equal("{valid}", variables.ElementAt(0).Key);
             Assert.Equal("valid", variables.ElementAt(0).Value.Name);
-            Assert.Equal(null, variables.ElementAt(0).Value.Parameters);
+            Assert.Null(variables.ElementAt(0).Value.Parameters);
 
             Assert.Equal(1, variables.ElementAt(1).Value.Parameters.Count);
             Assert.Equal("{valid2|param=value}", variables.ElementAt(1).Key);

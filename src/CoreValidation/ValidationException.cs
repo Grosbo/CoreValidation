@@ -6,7 +6,7 @@ namespace CoreValidation
     public sealed class ValidationException : CoreValidationException
     {
         public ValidationException(Type type, object model, Exception innerException)
-            : base($"Exception occured while validating {type.FullName}!", innerException)
+            : base($"Exception occured while validating {type.FullName}", innerException)
         {
             Type = type;
             Model = model;
