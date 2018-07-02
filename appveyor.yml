@@ -16,7 +16,7 @@ skip_commits:
 
 environment:
   NUGET_API_KEY:
-    secure: DQ4NJmF5QnY0xXgRcVGO/Z7Wc7j0JhA7CaMK+yFP48TGOaijhvshKhWP9SekLqkj
+    secure: UHweOfsSUq1apwinPBbBuxw/yW+Q6DhikKofkACtOTt2kDESEbL9jtpEkfn7fxOM
 
 build_script:
 - pwsh: .\Build.ps1
