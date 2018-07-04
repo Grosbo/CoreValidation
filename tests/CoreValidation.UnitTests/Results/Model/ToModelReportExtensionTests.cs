@@ -6,7 +6,7 @@ using CoreValidation.Results.Model;
 using CoreValidation.Translations;
 using Xunit;
 
-namespace CoreValidation.UnitTests.Results.Reports.Model
+namespace CoreValidation.UnitTests.Results.Model
 {
     public class ToModelReportExtensionTests
     {

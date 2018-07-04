@@ -7,7 +7,7 @@ using CoreValidation.Results.List;
 using CoreValidation.Translations;
 using Xunit;
 
-namespace CoreValidation.UnitTests.Results.Reports.Messages
+namespace CoreValidation.UnitTests.Results.List
 {
     public class ToListReportExtensionTests
     {
