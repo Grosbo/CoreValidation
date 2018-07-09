@@ -80,8 +80,8 @@ namespace CoreValidation.PredefinedTranslations
             BeforeOrEqualTo = "Date should be before (or equal to) {max}",
             Between = "Date should be between {min} and {max}",
             BetweenOrEqualTo = "Date should be between (or equal to) {min} and {max}",
-            AfterNow = "Date should be after now ({now})",
-            BeforeNow = "Date should be before now ({now})",
+            AfterNow = "Date should be in the future (now = {now})",
+            BeforeNow = "Date should be in the past (now = {now})",
             FromNow = "Date should be during the time frow now: {timeSpan} (now = {now})"
         };
 

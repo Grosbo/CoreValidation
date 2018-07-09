@@ -10,6 +10,6 @@ namespace CoreValidation.Translations
 
         public static ITranslationTemplate Keys { get; } = _translationTemplateService.CreateKeysTemplate();
 
-        public static IReadOnlyDictionary<string, string> English { get; } = _translationTemplateService.CreateDictionary(new EnglishTranslation());
+        public static IDictionary<string, string> English { get; } = _translationTemplateService.CreateDictionary(new EnglishTranslation());
     }
 }

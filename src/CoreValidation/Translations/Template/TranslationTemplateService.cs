@@ -4,7 +4,7 @@ namespace CoreValidation.Translations.Template
 {
     internal class TranslationTemplateService
     {
-        public IReadOnlyDictionary<string, string> CreateDictionary(ITranslationTemplate source)
+        public IDictionary<string, string> CreateDictionary(ITranslationTemplate source)
         {
             var dictionary = new Dictionary<string, string>();
 
