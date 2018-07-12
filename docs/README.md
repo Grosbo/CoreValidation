@@ -14,14 +14,78 @@
 * Designed to work well with DDD\CQRS approaches
 * Supports variety of report types and translations out of the box
 * Extensibility points at every level for advanced behavior customization
+* Published under MIT licence - the most permissive one that exist
+
+A code is worth a thousand words - so keep scrolling this document down and you will find two examples under the rather self-descriptive names:
+
+* [Quickstart](#Quickstart) - for those who want to see only the basic usage
+* [End-to-end](#End-to-end) - for those looking for the advanced scenario presenting variety of available features and the elegant way of integrating them within the project
+
+For more, read the [documentation](DOCUMENTATION.md).
+
+Moreover, all the code snippets are being maintained as the [functional tests](../tests/CoreValidation.FunctionalTests), so you can debug them and examine the behavior in no time.
+
+## Release notes
+
+### 1.0.0-beta - July 2nd, 2018
+
+* First public version, the starting point
+
+Read the full [release notes document](RELEASE_NOTES.md).
 
 ## Quickstart
 
-The code is worth a thousand words - so below you will find complete end-to-end, very detailed example presenting most of the main features
+For a start, let's quickly cover the entry point of many web apps; logging the user.
 
-### Know your model
+``` csharp
+// Setting the rules for the model:
+Validator<LoginModel> loginValidator = login => login
+    .For(m => m.Email, be => be
+        .Email()
+        .MaxLength(50)
+        .Valid(email => email.EndsWith("gmail.com"), "Only gmails are accepted"))
+    .For(m => m.Password, be => be.NotEmpty());
 
-Let's have a `UserModel` class for creating a new user in the app. and we're going to validate
+// Creating the validation context and instantly triggering the validation to get the result:
+var result = ValidationContext.Factory
+    .Create(options => options.AddValidator(loginValidator))
+    .Validate(loginModel);
+
+// Creating json-ready ModelReport from the result:
+var modelReport = result.ToModelReport();
+```
+
+So, when the incoming JSON is:
+
+``` json
+{
+    "Email": "sample_very_long_email@deep.domain.level.tempuri.org",
+    "Password": ""
+}
+```
+
+The output of `JsonConvert.SerializeObject(modelReport)` would be:
+
+``` json
+{
+    "Email": [
+        "Text value should have maximum 50 characters",
+        "Only gmails are accepted"
+    ],
+    "Password": [
+        "Text value cannot be empty"
+    ]
+}
+```
+
+Functional test: [Quickstart.cs](../tests/CoreValidation.FunctionalTests/Readme/Quickstart.cs).
+
+
+## End-to-end
+
+For a detailed example, let's handle something more juicy. If the logging the user scenario is covered, how about signing up?
+
+Let's have a `UserModel` class for creating a new user in the app. Within it we're going to validate:
 
 * Members (`Email`, `Password`, etc.)
 * Optional members (`Name`)
@@ -52,21 +116,13 @@ class AddressModel
 }
 ```
 
-### Install it
+### Install
 
 The package is hosted on [nuget.org](https://www.nuget.org/packages/CoreValidation), so to add it to your project, by default this is good enough:
 
 ``` bash
 dotnet add package CoreValidation --version 1.0.0-beta
 ```
-
-The second option is adding reference to the sources and it's not as painfull as you might think. Only .NET Standard 2.0, no additional dependencies, single project. Here:
-
-``` bash
-git clone --branch 1.0.0-beta git@github.com:bartoszlenar/CoreValidation.git
-```
-
-And you're interested in the content of `/src/CoreValidation` directory (and `CoreValidation.csproj` within it).
 
 ### Define your validators
 
@@ -184,7 +240,7 @@ When the time comes, use `IValidationContext` instance to validate incoming mode
 var result = validationContext.Validate(userModel);
 ```
 
-### Process the result
+### Create JSON-friendly report (ModelReport)
 
 Once the result is produced, you can process it in many different ways, e.g. convert it to `ModelReport`
 
@@ -244,6 +300,8 @@ The outcome of `JsonConvert.SerializeObject(modelReport)` would be
 }
 ```
 
+### Create logs-friendly report (ListReport)
+
 Variety of other actions are available, like `ListReport`, which is a collection of strings
 
 ``` csharp
@@ -269,6 +327,8 @@ Tags.5: Required
 DateOfBirth: Date of birth is required
 ```
 
+### Override default validation options
+
 You can perform a validation with a different set of options
 
 ``` csharp
@@ -290,7 +350,9 @@ This time, `JsonConvert.SerializeObject(failFastModelReport)` gives us
 }
 ```
 
-Having the result, you can e.g. generate report in different language (don't forget to include the translation when constructing `IValidationContext`)
+### Translate the report
+
+Having the result, you can e.g. generate report in different language (don't forget to include the translation when constructing the instance of `IValidationContext`)
 
 ``` csharp
 // All report creators provide `translationName` optional argument
@@ -302,6 +364,8 @@ Unsurprisingly, `listReportInPolish.ToString()` results with
 ```
 Email: Wartość tekstowa powinna zawierać prawidłowy adres email
 ```
+
+### Act basing on the result
 
 Generating a report is, of course, not required at all
 
@@ -318,15 +382,16 @@ if (result.IsValid())
 result.ThrowIfInvalid();
 ```
 
-Want to see this example in action and debug it for yourself? Go ahead, it exists as a [functional test](tests/CoreValidation.FunctionalTests/Quickstart/QuickstartTests.cs).
+Functional test with this scenario: [EndToEnd.cs](../tests/CoreValidation.FunctionalTests/Readme/EndToEnd.cs).
+
 
 ## What's more
 
-Briefly, with CoreValidation you can also:
+Although the two scenarios above are presenting most of the features, CoreValidation allows a lot more, including:
 
-* Clone `IValidationContext` and modify its options on the fly (e.g. add validators, translations, set different default values)
-* Merge two (or more) results, so it's perfectly possible to distribute the work to multiple `IValidationContext` (e.g. each in different thread validating its part simultaneously)
-* Select `ValidationStrategy.Force` to gather all possible errors for the model (e.g. to have a full specification of a valid model, ready to be copy-pasted to some documentation or swagger)
-* Easily extend it as you want; custom rules, additional translations, new report types (any contribution to this repository is more than welcomed!)
+* Cloning the instance of `IValidationContext` and modifying its options on the fly - to add new validators, translations or changing the defaults
+* Merging multiple results into one, so it's perfectly possible to distribute the work across multiple validation contexts (e.g. to simultaneously handle different parts of the model) and combine one final report from all of the results
+* Using `ValidationStrategy.Force` to gather all possible errors for the model - handy if you want to have a full specification of a valid model, ready to be copy-pasted into some documentation page or swagger
+* Extending it at every point; custom sophisticated rules, additional translations or error codes, new report formats - everything is as easy as writing an extension method
 
-All this (and more) is ~~documented on the wiki page~~ (wiki is under construction)
+Take a look at the [documentation](DOCUMENTATION.md). It's all covered there.

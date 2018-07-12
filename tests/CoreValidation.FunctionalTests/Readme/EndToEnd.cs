@@ -12,9 +12,9 @@ using Xunit;
 // ReSharper disable RedundantArgumentDefaultValue
 // ReSharper disable ArgumentsStyleLiteral
 
-namespace CoreValidation.FunctionalTests.Quickstart
+namespace CoreValidation.FunctionalTests.Readme
 {
-    public class QuickstartTests
+    public class EndToEnd
     {
         private class UserModel
         {
@@ -35,7 +35,7 @@ namespace CoreValidation.FunctionalTests.Quickstart
         }
 
         [Fact]
-        public void Should_Pass_Quickstart_Examples()
+        public void Should_Pass_EndToEnd()
         {
             Validator<AddressModel> addressValidator = specs => specs
                 // Validate members in their scope (error attached to the selected member):
@@ -50,56 +50,56 @@ namespace CoreValidation.FunctionalTests.Quickstart
                     "Both street and postcode are required and need to put separate");
 
             Validator<UserModel> userValidator = specs => specs
-    // Validate members with the predefined rules:
-    .For(m => m.Email, be => be.Email())
+                // Validate members with the predefined rules:
+                .For(m => m.Email, be => be.Email())
 
-    // Apply many rules along with custom predicates:
-    .For(m => m.Name, be => be
-            // By default, everything specified is required, so marking the selected member as optional:
-            .Optional()
-            // If present, proceed with validation:
-            .LengthBetween(6, 15)
-            // The value is always guaranteed to be non-null inside the predicate:
-            .Valid(v => char.IsLetter(v.FirstOrDefault()), "Must start with a letter")
-            .Valid(v => v.All(char.IsLetterOrDigit), "Must contains only letters and digits"))
+                // Apply many rules along with custom predicates:
+                .For(m => m.Name, be => be
+                    // By default, everything specified is required, so marking the selected member as optional:
+                    .Optional()
+                    // If present, proceed with validation:
+                    .LengthBetween(6, 15)
+                    // The value is always guaranteed to be non-null inside the predicate:
+                    .Valid(v => char.IsLetter(v.FirstOrDefault()), "Must start with a letter")
+                    .Valid(v => v.All(char.IsLetterOrDigit), "Must contains only letters and digits"))
 
-    // Replace all errors with a single one:
-    .For(m => m.Password, be => be
-        .MinLength(6)
-        .NotWhiteSpace()
-        .Valid(v => v.Any(char.IsUpper) && v.Any(char.IsDigit), string.Empty)
-        // If any rule in the chain fails, only the SummaryError is recorded:
-        .WithSummaryError("Minimum 6 characters, at least one upper case and one digit"))
+                // Replace all errors with a single one:
+                .For(m => m.Password, be => be
+                    .MinLength(6)
+                    .NotWhiteSpace()
+                    .Valid(v => v.Any(char.IsUpper) && v.Any(char.IsDigit), string.Empty)
+                    // If any rule in the chain fails, only the SummaryError is recorded:
+                    .WithSummaryError("Minimum 6 characters, at least one upper case and one digit"))
 
-    // Validate relations with other members:
-    .For(m => m.PasswordConfirmation, be => be
-        // Override the name of the selected member:
-        .WithName("Confirmation")
-        // Argument in predicate is the parent model, but error will be attached in the selected member scope:
-        .ValidRelative(m => m.Password == m.PasswordConfirmation,
-            "Confirmation doesn't match password"))
+                // Validate relations with other members:
+                .For(m => m.PasswordConfirmation, be => be
+                    // Override the name of the selected member:
+                    .WithName("Confirmation")
+                    // Argument in predicate is the parent model, but error will be attached in the selected member scope:
+                    .ValidRelative(m => m.Password == m.PasswordConfirmation,
+                        "Confirmation doesn't match password"))
 
-    // Validate nested model:
-    .For(m => m.Address, be => be.ValidModel(addressValidator))
+                // Validate nested model:
+                .For(m => m.Address, be => be.ValidModel(addressValidator))
 
-    // Validate collection:
-    .For(m => m.Tags, be => be
-        // Override default message for predefine rule:
-        .NotEmpty(message: "At least one tag is required")
-        // All rule arguments can be inserted in the message using {argumentName} pattern:
-        .MaxSize(max: 5, message: "Max {max} tags allowed")
-        // Validate every item inside of the collection:
-        .ValidCollection(i => i
-            .NotWhiteSpace()
-            .MaxLength(10)
-            .Valid(v => v.All(char.IsLetter), "Tag can contains only letters")))
+                // Validate collection:
+                .For(m => m.Tags, be => be
+                    // Override default message for predefine rule:
+                    .NotEmpty(message: "At least one tag is required")
+                    // All rule arguments can be inserted in the message using {argumentName} pattern:
+                    .MaxSize(max: 5, message: "Max {max} tags allowed")
+                    // Validate every item inside of the collection:
+                    .ValidCollection(i => i
+                        .NotWhiteSpace()
+                        .MaxLength(10)
+                        .Valid(v => v.All(char.IsLetter), "Tag can contains only letters")))
 
-    // Validate nullables:
-    .For(m => m.DateOfBirth, be => be
-        // Override default RequiredError for selected member:
-        .WithRequiredError("Date of birth is required")
-        // Arguments could be parametrized:
-        .After(value: new DateTime(1900, 1, 1), message: "Earliest allowed date is {value|format=yyyy-MM-dd}" ));
+                // Validate nullables:
+                .For(m => m.DateOfBirth, be => be
+                    // Override default RequiredError for selected member:
+                    .WithRequiredError("Date of birth is required")
+                    // Arguments could be parametrized:
+                    .After(value: new DateTime(1900, 1, 1), message: "Earliest allowed date is {value|format=yyyy-MM-dd}"));
 
             var validationContext = ValidationContext.Factory.Create(options => options
                 // Add validators for all models to validate (including nested ones)

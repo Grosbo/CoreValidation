@@ -1,21 +1,21 @@
-## Have a question?
-Go ahead and don't worry about this template.
+## Question or request?
+(if not bug, please ignore/delete the "BUG" section and fill the "ENVIRONMENT" section if needed)
 
-## Bug
-
-#### Steps to reproduce:
-
-  1. _____
-  2. _____
-  3. _____
+## Bug?
 
 ### Current behavior
 (what's going on? logs? examples?)
 
+#### Steps to reproduce:
+
+  1.
+  2.
+  3.
+
 ### Expected behavior
 (how it should be?)
 
-### Environment
+## Environment
 
   * CoreValidation:
   * Operating system:
