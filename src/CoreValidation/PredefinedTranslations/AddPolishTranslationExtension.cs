@@ -14,9 +14,14 @@ namespace CoreValidation
 
         private static readonly string PolishTranslationName = "Polish";
 
-        public static IValidationContextOptions AddPolishTranslation(this IValidationContextOptions @this, bool asDefault = false)
+        public static IValidationContextOptions AddPolishTranslation(this IValidationContextOptions @this, bool asDefault = false, IDictionary<string, string> include = null)
         {
             @this.AddTranslation(PolishTranslationName, _polishTranslation, asDefault);
+
+            if (include != null)
+            {
+                @this.AddTranslation(PolishTranslationName, include);
+            }
 
             return @this;
         }

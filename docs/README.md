@@ -124,7 +124,7 @@ The package is hosted on [nuget.org](https://www.nuget.org/packages/CoreValidati
 dotnet add package CoreValidation --version 1.0.0-beta
 ```
 
-### Define your validators
+### Define validators
 
 You can create them inline or in separate classes - it's up to you how you would like to structure your code
 
@@ -193,7 +193,7 @@ Validator<UserModel> userValidator = specs => specs
         // Override default RequiredError for selected member:
         .WithRequiredError("Date of birth is required")
         // Arguments could be parametrized:
-        .After(value: new DateTime(1900, 1, 1), message: "Earliest allowed date is {value|format=yyyy-MM-dd}" ));
+        .After(min: new DateTime(1900, 1, 1), message: "Earliest allowed date is {min|format=yyyy-MM-dd}" ));
 ```
 
 ### Create validation context
@@ -207,22 +207,20 @@ var validationContext = ValidationContext.Factory.Create(options => options
     .AddValidator(addressValidator)
 
     // Add translations (to have possibility to serve results in different language), e.g. Polish
-    .AddPolishTranslation(asDefault: false)
-
-    // Add phrases to Polish translation - e.g. for the custom messages used in userValidator
-    // Translation is a standard dictionary, so you can easily deserialize it from JSON, or create inline like:
-    .AddTranslation("Polish", new Dictionary<string, string>
+    .AddPolishTranslation(asDefault: false, include: new Dictionary<string, string>
     {
-        // Translation for a phrase is a simple KeyValuePair
+        // Add more phrases to Polish translation - e.g. for the custom messages used in userValidator
+        // Translation is a standard dictionary, so you can easily deserialize it from JSON, or create inline like:
         {"Date of birth is required", "Data urodzenia jest wymagana"},
 
-        // ...
+        // Override the default entry (static Phrases.Keys holds all default keys for the phrases)
+        {Phrases.Keys.Texts.Email, "Email jest wymagany"},
 
         // You can use arguments in translations...
         {"Max {max} tags allowed", "Maksymalnie dozwolonych jest {max} tagów"},
 
         // ... and parametrize them differently (e.g. change the format, culture, etc.)
-        {"Earliest allowed date is {value|format=yyyy-MM-dd}", "Najwcześniejsza dozwolona data to {value|format=dd.MM.yyyy}"}
+        {"Earliest allowed date is {min|format=yyyy-MM-dd}", "Najwcześniejsza dozwolona data to {min|format=dd.MM.yyy}"}
     })
 
     // Set additional options (lot of them available...)
@@ -240,7 +238,7 @@ When the time comes, use `IValidationContext` instance to validate incoming mode
 var result = validationContext.Validate(userModel);
 ```
 
-### Create JSON-friendly report (ModelReport)
+### Create the JSON-friendly report (ModelReport)
 
 Once the result is produced, you can process it in many different ways, e.g. convert it to `ModelReport`
 
@@ -300,7 +298,7 @@ The outcome of `JsonConvert.SerializeObject(modelReport)` would be
 }
 ```
 
-### Create logs-friendly report (ListReport)
+### Create the logs-friendly report (ListReport)
 
 Variety of other actions are available, like `ListReport`, which is a collection of strings
 
@@ -362,7 +360,7 @@ var listReportInPolish = failFastResult.ToListReport(translationName: "Polish")
 Unsurprisingly, `listReportInPolish.ToString()` results with
 
 ```
-Email: Wartość tekstowa powinna zawierać prawidłowy adres email
+Email: Email jest wymagany
 ```
 
 ### Act basing on the result

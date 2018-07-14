@@ -4,7 +4,7 @@ using CoreValidation.Translations.Template;
 
 namespace CoreValidation.Translations
 {
-    internal static class Phrases
+    public static class Phrases
     {
         private static readonly TranslationTemplateService _translationTemplateService = new TranslationTemplateService();
 

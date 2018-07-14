@@ -1,6 +1,6 @@
 ﻿namespace CoreValidation.Translations.Template
 {
-    internal interface ITranslationTemplate
+    public interface ITranslationTemplate
     {
         ICollectionsMessages Collections { get; }
         IBoolMessages Bool { get; }

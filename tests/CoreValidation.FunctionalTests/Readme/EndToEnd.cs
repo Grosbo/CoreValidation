@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using CoreValidation.Results;
+using CoreValidation.Translations;
 using CoreValidation.Validators;
 using Newtonsoft.Json.Linq;
 using Xunit;
@@ -99,7 +100,7 @@ namespace CoreValidation.FunctionalTests.Readme
                     // Override default RequiredError for selected member:
                     .WithRequiredError("Date of birth is required")
                     // Arguments could be parametrized:
-                    .After(value: new DateTime(1900, 1, 1), message: "Earliest allowed date is {value|format=yyyy-MM-dd}"));
+                    .After(min: new DateTime(1900, 1, 1), message: "Earliest allowed date is {min|format=yyyy-MM-dd}"));
 
             var validationContext = ValidationContext.Factory.Create(options => options
                 // Add validators for all models to validate (including nested ones)
@@ -107,12 +108,10 @@ namespace CoreValidation.FunctionalTests.Readme
                 .AddValidator(addressValidator)
 
                 // Add translations (to have possibility to serve results in different language), e.g. Polish
-                .AddPolishTranslation(asDefault: false)
-
-                // Add phrases to Polish translation - e.g. for the custom messages used in userValidator
-                // Translation is a standard dictionary, so you can easily deserialize it from JSON, or create inline like:
-                .AddTranslation("Polish", new Dictionary<string, string>
+                .AddPolishTranslation(asDefault: false, include: new Dictionary<string, string>
                 {
+                    // Add more phrases to Polish translation - e.g. for the custom messages used in userValidator
+                    // Translation is a standard dictionary, so you can easily deserialize it from JSON, or create inline like:
                     {
                         "Both street and postcode are required and need to put separate",
                         "Ulica i kod pocztowy są wymagane i muszą być umieszczone osobno"
@@ -127,14 +126,16 @@ namespace CoreValidation.FunctionalTests.Readme
                     {"At least one tag is required", "Przynamniej jeden tag jest wymagany"},
                     {"Tag can contains only letters", "Tag może zawierać tylko litery"},
 
-                    // Translation for a phrase is a simple KeyValuePair
                     {"Date of birth is required", "Data urodzenia jest wymagana"},
+
+                    // Override the default entry (static Phrases.Keys holds all default keys for the phrases)
+                    {Phrases.Keys.Texts.Email, "Email jest wymagany"},
 
                     // You can use arguments in translations...
                     {"Max {max} tags allowed", "Maksymalnie dozwolonych jest {max} tagów"},
 
                     // ... and parametrize them differently (e.g. change the format, culture, etc.)
-                    {"Earliest allowed date is {value|format=yyyy-MM-dd}", "Najwcześniejsza dozwolona data to {value|format=dd.MM.yyy}"}
+                    {"Earliest allowed date is {min|format=yyyy-MM-dd}", "Najwcześniejsza dozwolona data to {min|format=dd.MM.yyy}"}
                 })
 
                 // Set additional options (lot of them available...)
@@ -238,7 +239,7 @@ DateOfBirth: Date of birth is required
             Assert.True(JToken.DeepEquals(JToken.FromObject(failFastModelReport), JToken.Parse(expectedfailFastReportJson)));
 
             var expectedPolishFailFastListReport =
-                @"Email: Wartość tekstowa powinna zawierać prawidłowy adres email
+                @"Email: Email jest wymagany
 ";
 
             Assert.Equal(expectedPolishFailFastListReport, listReportInPolish.ToString());

@@ -18,40 +18,40 @@ namespace CoreValidation
             return @this.ValidNullable(m => m.NotEqualTo(value, timeComparison, message));
         }
 
-        public static IMemberSpecification<TModel, DateTimeOffset?> AfterOrEqualTo<TModel>(this IMemberSpecification<TModel, DateTimeOffset?> @this, DateTimeOffset value, TimeComparison timeComparison = TimeComparison.All, string message = null)
+        public static IMemberSpecification<TModel, DateTimeOffset?> AfterOrEqualTo<TModel>(this IMemberSpecification<TModel, DateTimeOffset?> @this, DateTimeOffset min, TimeComparison timeComparison = TimeComparison.All, string message = null)
             where TModel : class
         {
-            return @this.ValidNullable(m => m.AfterOrEqualTo(value, timeComparison, message));
+            return @this.ValidNullable(m => m.AfterOrEqualTo(min, timeComparison, message));
         }
 
-        public static IMemberSpecification<TModel, DateTimeOffset?> After<TModel>(this IMemberSpecification<TModel, DateTimeOffset?> @this, DateTimeOffset value, TimeComparison timeComparison = TimeComparison.All, string message = null)
+        public static IMemberSpecification<TModel, DateTimeOffset?> After<TModel>(this IMemberSpecification<TModel, DateTimeOffset?> @this, DateTimeOffset min, TimeComparison timeComparison = TimeComparison.All, string message = null)
             where TModel : class
         {
-            return @this.ValidNullable(m => m.After(value, timeComparison, message));
+            return @this.ValidNullable(m => m.After(min, timeComparison, message));
         }
 
-        public static IMemberSpecification<TModel, DateTimeOffset?> BeforeOrEqualTo<TModel>(this IMemberSpecification<TModel, DateTimeOffset?> @this, DateTimeOffset value, TimeComparison timeComparison = TimeComparison.All, string message = null)
+        public static IMemberSpecification<TModel, DateTimeOffset?> BeforeOrEqualTo<TModel>(this IMemberSpecification<TModel, DateTimeOffset?> @this, DateTimeOffset max, TimeComparison timeComparison = TimeComparison.All, string message = null)
             where TModel : class
         {
-            return @this.ValidNullable(m => m.BeforeOrEqualTo(value, timeComparison, message));
+            return @this.ValidNullable(m => m.BeforeOrEqualTo(max, timeComparison, message));
         }
 
-        public static IMemberSpecification<TModel, DateTimeOffset?> Before<TModel>(this IMemberSpecification<TModel, DateTimeOffset?> @this, DateTimeOffset value, TimeComparison timeComparison = TimeComparison.All, string message = null)
+        public static IMemberSpecification<TModel, DateTimeOffset?> Before<TModel>(this IMemberSpecification<TModel, DateTimeOffset?> @this, DateTimeOffset max, TimeComparison timeComparison = TimeComparison.All, string message = null)
             where TModel : class
         {
-            return @this.ValidNullable(m => m.Before(value, timeComparison, message));
+            return @this.ValidNullable(m => m.Before(max, timeComparison, message));
         }
 
-        public static IMemberSpecification<TModel, DateTimeOffset?> Between<TModel>(this IMemberSpecification<TModel, DateTimeOffset?> @this, DateTimeOffset minimum, DateTimeOffset maximum, TimeComparison timeComparison = TimeComparison.All, string message = null)
+        public static IMemberSpecification<TModel, DateTimeOffset?> Between<TModel>(this IMemberSpecification<TModel, DateTimeOffset?> @this, DateTimeOffset min, DateTimeOffset max, TimeComparison timeComparison = TimeComparison.All, string message = null)
             where TModel : class
         {
-            return @this.ValidNullable(m => m.Between(minimum, maximum, timeComparison, message));
+            return @this.ValidNullable(m => m.Between(min, max, timeComparison, message));
         }
 
-        public static IMemberSpecification<TModel, DateTimeOffset?> BetweenOrEqualTo<TModel>(this IMemberSpecification<TModel, DateTimeOffset?> @this, DateTimeOffset minimum, DateTimeOffset maximum, TimeComparison timeComparison = TimeComparison.All, string message = null)
+        public static IMemberSpecification<TModel, DateTimeOffset?> BetweenOrEqualTo<TModel>(this IMemberSpecification<TModel, DateTimeOffset?> @this, DateTimeOffset min, DateTimeOffset max, TimeComparison timeComparison = TimeComparison.All, string message = null)
             where TModel : class
         {
-            return @this.ValidNullable(m => m.BetweenOrEqualTo(minimum, maximum, timeComparison, message));
+            return @this.ValidNullable(m => m.BetweenOrEqualTo(min, max, timeComparison, message));
         }
 
         public static IMemberSpecification<TModel, DateTimeOffset?> AfterNow<TModel>(this IMemberSpecification<TModel, DateTimeOffset?> @this, TimeNowMode nowMode = TimeNowMode.Now, TimeComparison timeComparison = TimeComparison.All, string message = null)

@@ -1,6 +1,6 @@
 ﻿namespace CoreValidation.Translations.Template
 {
-    internal interface ICollectionsMessages
+    public interface ICollectionsMessages
     {
         string Empty { get; }
         string NotEmpty { get; }

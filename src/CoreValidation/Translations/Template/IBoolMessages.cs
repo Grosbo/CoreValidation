@@ -1,6 +1,6 @@
 ﻿namespace CoreValidation.Translations.Template
 {
-    internal interface IBoolMessages
+    public interface IBoolMessages
     {
         string True { get; }
         string False { get; }
