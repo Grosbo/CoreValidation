@@ -18,8 +18,8 @@
 
 A code is worth a thousand words - so keep scrolling this document down and you will find two examples under the rather self-descriptive names:
 
-* [Quickstart](#Quickstart) - for those who want to see only the basic usage
-* [End-to-end](#End-to-end) - for those looking for the advanced scenario presenting variety of available features and the elegant way of integrating them within the project
+* [Quickstart](#quickstart) - for those who want to see only the basic usage
+* [End-to-end](#end-to-end) - for those looking for the advanced scenario presenting variety of available features and the elegant way of integrating them within the project
 
 For more, read the [documentation](DOCUMENTATION.md).
 
