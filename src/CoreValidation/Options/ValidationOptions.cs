@@ -14,6 +14,8 @@ namespace CoreValidation.Options
 
         public Error RequiredError { get; set; }
 
+        public Error DefaultError { get; set; }
+
         public int MaxDepth { get; set; }
     }
 }

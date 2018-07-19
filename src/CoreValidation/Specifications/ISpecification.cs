@@ -11,7 +11,7 @@ namespace CoreValidation.Specifications
     {
         ISpecification<TModel> For<TMember>(Expression<Func<TModel, TMember>> memberSelector, MemberValidator<TModel, TMember> memberValidator = null);
 
-        ISpecification<TModel> Valid(Predicate<TModel> isValid, string message, IReadOnlyCollection<IMessageArg> args = null);
+        ISpecification<TModel> Valid(Predicate<TModel> isValid, string message = null, IReadOnlyCollection<IMessageArg> args = null);
 
         ISpecification<TModel> WithSummaryError(string message, IReadOnlyCollection<IMessageArg> args = null);
     }

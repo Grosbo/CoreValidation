@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using CoreValidation.Errors;
+using CoreValidation.Options;
 using CoreValidation.Specifications;
 using Xunit;
 
@@ -8,7 +9,9 @@ namespace CoreValidation.PredefinedRules.UnitTests
 {
     internal static class RulesHelper
     {
-        public static ErrorsCollection CompileSingleError<TMember>(TMember member, IReadOnlyCollection<IRule> rulesCollection)
+        private static readonly IRulesOptions _rulesOptions = new RulesOptionsStub();
+
+        public static ErrorsCollection CompileSingleError<TMember>(TMember member, IReadOnlyCollection<IRule> rulesCollection, Error defaultError)
         {
             var errorsCollection = new ErrorsCollection();
 
@@ -16,7 +19,7 @@ namespace CoreValidation.PredefinedRules.UnitTests
 
             if (rule is ValidRule<TMember> validateRule)
             {
-                var error = validateRule.CompileError(member, ValidationStrategy.Complete);
+                var error = validateRule.CompileError(member, ValidationStrategy.Complete, defaultError);
 
                 if (error != null)
                 {
@@ -29,7 +32,8 @@ namespace CoreValidation.PredefinedRules.UnitTests
                 {
                     new object(),
                     member,
-                    ValidationStrategy.Complete
+                    ValidationStrategy.Complete,
+                    _rulesOptions.DefaultError
                 });
             }
 
@@ -38,7 +42,7 @@ namespace CoreValidation.PredefinedRules.UnitTests
 
         public static void AssertErrorCompilation<TMember>(TMember member, IReadOnlyCollection<IRule> rulesCollection, bool expectedIsValid, string expectedErrorMessage = null)
         {
-            var errorsCollection = CompileSingleError(member, rulesCollection);
+            var errorsCollection = CompileSingleError(member, rulesCollection, _rulesOptions.DefaultError);
 
             Assert.Equal(expectedIsValid, errorsCollection.IsEmpty);
 
@@ -51,7 +55,7 @@ namespace CoreValidation.PredefinedRules.UnitTests
 
         public static void AssertErrorMessage<TMember>(TMember member, IReadOnlyCollection<IRule> rulesCollection, string expectedErrorMessage, string expectedStringifiedErrorMessage)
         {
-            var errorsCollection = CompileSingleError(member, rulesCollection);
+            var errorsCollection = CompileSingleError(member, rulesCollection, _rulesOptions.DefaultError);
 
             Assert.False(errorsCollection.IsEmpty);
 

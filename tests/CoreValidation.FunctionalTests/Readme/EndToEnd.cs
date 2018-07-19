@@ -68,7 +68,7 @@ namespace CoreValidation.FunctionalTests.Readme
                 .For(m => m.Password, be => be
                     .MinLength(6)
                     .NotWhiteSpace()
-                    .Valid(v => v.Any(char.IsUpper) && v.Any(char.IsDigit), string.Empty)
+                    .Valid(v => v.Any(char.IsUpper) && v.Any(char.IsDigit))
                     // If any rule in the chain fails, only the SummaryError is recorded:
                     .WithSummaryError("Minimum 6 characters, at least one upper case and one digit"))
 

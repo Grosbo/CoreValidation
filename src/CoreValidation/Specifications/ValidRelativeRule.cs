@@ -11,10 +11,13 @@ namespace CoreValidation.Specifications
     public sealed class ValidRelativeRule<TModel> : ValidRelativeRule, IRule, IErrorMessageHolder
         where TModel : class
     {
-        public ValidRelativeRule(Predicate<TModel> isValid, string message, IReadOnlyCollection<IMessageArg> args = null)
+        public ValidRelativeRule(Predicate<TModel> isValid, string message = null, IReadOnlyCollection<IMessageArg> args = null)
         {
             IsValid = isValid ?? throw new ArgumentNullException(nameof(isValid));
-            Message = message ?? throw new ArgumentNullException(nameof(message));
+
+            Error.AssertValidMessageAndArgs(message, args);
+
+            Message = message;
             Arguments = args;
         }
 
@@ -30,21 +33,22 @@ namespace CoreValidation.Specifications
                 IsValid,
                 Message,
                 Arguments,
-                (TModel) args[0],
-                (ValidationStrategy) args[1]
+                (TModel)args[0],
+                (ValidationStrategy)args[1],
+                (Error)args[2]
             );
         }
 
-        public Error CompileError(TModel model, ValidationStrategy validationStrategy)
+        public Error CompileError(TModel model, ValidationStrategy validationStrategy, Error defaultError)
         {
-            return CompileError(IsValid, Message, Arguments, model, validationStrategy);
+            return CompileError(IsValid, Message, Arguments, model, validationStrategy, defaultError);
         }
 
-        public static ErrorsCollection Compile(Predicate<TModel> isValid, string message, IReadOnlyCollection<IMessageArg> args, TModel model, ValidationStrategy validationStrategy)
+        public static ErrorsCollection Compile(Predicate<TModel> isValid, string message, IReadOnlyCollection<IMessageArg> args, TModel model, ValidationStrategy validationStrategy, Error defaultError)
         {
             var errorsCollection = new ErrorsCollection();
 
-            var error = CompileError(isValid, message, args, model, validationStrategy);
+            var error = CompileError(isValid, message, args, model, validationStrategy, defaultError);
 
             if (error != null)
             {
@@ -54,12 +58,12 @@ namespace CoreValidation.Specifications
             return errorsCollection;
         }
 
-        public static Error CompileError(Predicate<TModel> isValid, string message, IReadOnlyCollection<IMessageArg> args, TModel model, ValidationStrategy validationStrategy)
+        public static Error CompileError(Predicate<TModel> isValid, string message, IReadOnlyCollection<IMessageArg> args, TModel model, ValidationStrategy validationStrategy, Error defaultError)
         {
             if ((validationStrategy == ValidationStrategy.Force) ||
                 ((model != null) && !isValid(model)))
             {
-                return new Error(message, args);
+                return Error.CreateOrDefault(message, args, defaultError);
             }
 
             return null;

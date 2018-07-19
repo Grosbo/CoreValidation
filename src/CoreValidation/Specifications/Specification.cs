@@ -88,23 +88,23 @@ namespace CoreValidation.Specifications
             return this;
         }
 
-        public ISpecification<TModel> Valid(Predicate<TModel> isValid, string message, IReadOnlyCollection<IMessageArg> args = null)
+        public ISpecification<TModel> Valid(Predicate<TModel> isValid, string message = null, IReadOnlyCollection<IMessageArg> args = null)
         {
             if (isValid == null)
             {
                 throw new ArgumentNullException(nameof(isValid));
             }
 
-            if (message == null)
+            if ((message == null) && (args != null))
             {
-                throw new ArgumentNullException(nameof(message));
+                throw new InvalidOperationException($"Passing {nameof(args)} is allowed only if {nameof(message)} is present");
             }
 
             var selfCompilableRule = CompilableRule<TModel>.CreateForSelf((memberPropertyInfo, rulesCollection, model, validationStrategy, validatorsRepository, depth, rulesOptions) =>
                 {
                     var errorsCollection = new ErrorsCollection();
 
-                    var error = ValidRelativeRule<TModel>.CompileError(isValid, message, args, model, validationStrategy);
+                    var error = ValidRelativeRule<TModel>.CompileError(isValid, message, args, model, validationStrategy, rulesOptions.DefaultError);
 
                     if (error != null)
                     {

@@ -26,12 +26,13 @@ namespace CoreValidation.Specifications
                 MemberValidator,
                 (TModel) args[0],
                 (TMember?) args[1],
-                (ValidationStrategy) args[2]
+                (ValidationStrategy) args[2],
+                (Error)args[3]
             );
         }
 
 
-        public static ErrorsCollection Compile(MemberValidator<TModel, TMember> memberValidator, TModel model, TMember? memberValue, ValidationStrategy validationStrategy)
+        public static ErrorsCollection Compile(MemberValidator<TModel, TMember> memberValidator, TModel model, TMember? memberValue, ValidationStrategy validationStrategy, Error defaultError)
         {
             var errorsCollection = new ErrorsCollection();
 
@@ -56,7 +57,7 @@ namespace CoreValidation.Specifications
                     if ((validationStrategy == ValidationStrategy.Force) ||
                         (memberValue.HasValue && !validateRule.IsValid(memberValue.Value)))
                     {
-                        error = new Error(validateRule.Message, validateRule.Arguments);
+                        error = Error.CreateOrDefault(validateRule.Message, validateRule.Arguments, defaultError);
                     }
                 }
                 else if (innerRule is ValidRelativeRule<TModel> relationRule)
@@ -64,7 +65,7 @@ namespace CoreValidation.Specifications
                     if ((validationStrategy == ValidationStrategy.Force) ||
                         (memberValue.HasValue && !relationRule.IsValid(model)))
                     {
-                        error = new Error(relationRule.Message, relationRule.Arguments);
+                        error = Error.CreateOrDefault(relationRule.Message, relationRule.Arguments, defaultError);
                     }
                 }
                 else

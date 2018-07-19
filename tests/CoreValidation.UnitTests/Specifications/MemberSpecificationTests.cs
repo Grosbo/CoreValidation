@@ -322,6 +322,24 @@ namespace CoreValidation.UnitTests.Specifications
         }
 
         [Fact]
+        public void Should_AddValidateRule_When_Validate_And_NullMessage_And_NullArgs()
+        {
+            Predicate<object> isValid = c => true;
+
+            var memberSpecification = new MemberSpecification<object, object>();
+
+            memberSpecification.Valid(isValid);
+
+            Assert.IsType<ValidRule<object>>(memberSpecification.Rules.Single());
+
+            var memberRule = (ValidRule<object>)memberSpecification.Rules.Single();
+
+            Assert.Same(isValid, memberRule.IsValid);
+            Assert.Null(memberRule.Message);
+            Assert.Null(memberRule.Arguments);
+        }
+
+        [Fact]
         public void Should_HaveEmptyInitialValues()
         {
             var memberSpecification = new MemberSpecification<object, object>();
@@ -343,6 +361,8 @@ namespace CoreValidation.UnitTests.Specifications
             Assert.Null(memberSpecification.SummaryError);
             Assert.Empty(memberSpecification.Rules);
         }
+
+
 
         [Fact]
         public void Should_ThrowException_When_AddRule_And_NullArgument()
@@ -376,14 +396,6 @@ namespace CoreValidation.UnitTests.Specifications
             var memberSpecificationWithName = memberSpecification.WithName("test1");
 
             Assert.Throws<InvalidOperationException>(() => { memberSpecificationWithName.WithName("test2"); });
-        }
-
-        [Fact]
-        public void Should_ThrowException_When_Validate_And_NullMessage()
-        {
-            var memberSpecification = new MemberSpecification<object, int?>();
-
-            Assert.Throws<ArgumentNullException>(() => { memberSpecification.Valid(c => true, null); });
         }
 
         [Fact]

@@ -738,6 +738,66 @@ namespace CoreValidation.UnitTests.Factory
             }
         }
 
+        public class SetDefaultError
+        {
+            public static IEnumerable<object[]> Create_Should_SetDefaultError_Data()
+            {
+                yield return new object[]
+                {
+                    "SingleSet",
+                    "This is DEFAULT!",
+                    new Func<IValidationContextOptions, IValidationContextOptions>(o => o
+                        .SetRequiredError("This is DEFAULT!")
+                    )
+                };
+
+                yield return new object[]
+                {
+                    "Override",
+                    "This is DEFAULT!",
+                    new Func<IValidationContextOptions, IValidationContextOptions>(o => o
+                        .SetRequiredError("XX")
+                        .SetRequiredError("This is DEFAULT!")
+                    )
+                };
+
+                yield return new object[]
+                {
+                    "WithArgs",
+                    "This {arg1} DEFAULT{arg2}",
+                    new Func<IValidationContextOptions, IValidationContextOptions>(o => o
+                        .SetRequiredError("This {arg1} DEFAULT{arg2}", new IMessageArg[] {new MessageArg("arg1", "is"), new MessageArg("arg2", "!")})
+                    )
+                };
+            }
+
+            [Theory]
+            [MemberData(nameof(Create_Should_SetDefaultError_Data))]
+            public static void Create_Should_SetDefaultError(string debugName, string message, Func<IValidationContextOptions, IValidationContextOptions> options)
+            {
+                Assert.NotNull(debugName);
+
+                var coreValidator = new ValidationContextFactory().Create(options);
+
+                Assert.NotNull(coreValidator);
+
+                Assert.Equal(message, coreValidator.ValidationOptions.RequiredError.Message);
+                Assert.Equal("This is DEFAULT!", coreValidator.ValidationOptions.RequiredError.StringifiedMessage);
+            }
+
+            [Fact]
+            public static void Create_Should_ThrowException_When_NullInDefaultErrorMessageArgs()
+            {
+                Assert.Throws<ArgumentNullException>(() => { new ValidationContextFactory().Create(options => options.SetDefaultError("test", new IMessageArg[] {null})); });
+            }
+
+            [Fact]
+            public static void Create_Should_ThrowException_When_NullDefaultErrorMessage()
+            {
+                Assert.Throws<ArgumentNullException>(() => { new ValidationContextFactory().Create(options => options.SetDefaultError(null)); });
+            }
+        }
+
         [Fact]
         public void Create_Should_ProcessOptions()
         {

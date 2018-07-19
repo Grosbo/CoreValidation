@@ -8,6 +8,8 @@ namespace CoreValidation.Options
 
         Error RequiredError { get; }
 
+        Error DefaultError { get; }
+
         int MaxDepth { get; }
     }
 }

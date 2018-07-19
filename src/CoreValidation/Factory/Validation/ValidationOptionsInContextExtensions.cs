@@ -41,6 +41,13 @@ namespace CoreValidation
             return options;
         }
 
+        public static IValidationContextOptions SetDefaultError(this IValidationContextOptions options, string errorMessage, IMessageArg[] args = null)
+        {
+            options.ValidationOptions.SetDefaultError(errorMessage, args);
+
+            return options;
+        }
+
         public static IValidationContextOptions SetMaxDepth(this IValidationContextOptions options, int maxDepth)
         {
             options.ValidationOptions.SetMaxDepth(maxDepth);

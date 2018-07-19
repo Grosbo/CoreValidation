@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using CoreValidation.Errors;
 using CoreValidation.Errors.Args;
 using CoreValidation.Specifications;
 using Xunit;
@@ -24,7 +25,8 @@ namespace CoreValidation.UnitTests.Specifications
                 var error = rule.Compile(new[]
                     {
                         new object(),
-                        validationStrategy
+                        validationStrategy,
+                        ErrorHelpers.DefaultErrorStub
                     })
                     .Errors
                     .Single();
@@ -46,7 +48,8 @@ namespace CoreValidation.UnitTests.Specifications
                 var error = rule.Compile(new[]
                     {
                         new object(),
-                        validationStrategy
+                        validationStrategy,
+                        ErrorHelpers.DefaultErrorStub
                     })
                     .Errors
                     .Single();
@@ -67,12 +70,39 @@ namespace CoreValidation.UnitTests.Specifications
                 var error = rule.Compile(new[]
                     {
                         new object(),
-                        validationStrategy
+                        validationStrategy,
+                        ErrorHelpers.DefaultErrorStub
                     })
                     .Errors
                     .SingleOrDefault();
 
                 Assert.Null(error);
+            }
+
+            [Theory]
+            [InlineData(ValidationStrategy.Complete)]
+            [InlineData(ValidationStrategy.FailFast)]
+            [InlineData(ValidationStrategy.Force)]
+            public void Should_AddDefaultError_When_Invalid_And_NoMessage_And_NoArgs(ValidationStrategy validationStrategy)
+            {
+                Predicate<object> isValid = m => false;
+
+                var args = new[] {new MessageArg("key", "value")};
+                var message = "default error {arg}";
+
+                var rule = new ValidRelativeRule<object>(isValid);
+
+                var error = rule.Compile(new[]
+                    {
+                        new object(),
+                        validationStrategy,
+                        new Error(message, args)
+                    })
+                    .Errors
+                    .Single();
+
+                Assert.Equal(message, error.Message);
+                Assert.Same(args, error.Arguments);
             }
 
             [Fact]
@@ -85,7 +115,8 @@ namespace CoreValidation.UnitTests.Specifications
                 var error = rule.Compile(new[]
                     {
                         new object(),
-                        ValidationStrategy.Force
+                        ValidationStrategy.Force,
+                        ErrorHelpers.DefaultErrorStub
                     })
                     .Errors
                     .Single();
@@ -116,7 +147,8 @@ namespace CoreValidation.UnitTests.Specifications
                 rule.Compile(new[]
                 {
                     new object(),
-                    validationStrategy
+                    validationStrategy,
+                    ErrorHelpers.DefaultErrorStub
                 });
 
                 Assert.Equal(1, executed);
@@ -142,7 +174,8 @@ namespace CoreValidation.UnitTests.Specifications
                 rule.Compile(new object[]
                 {
                     null,
-                    validationStrategy
+                    validationStrategy,
+                    ErrorHelpers.DefaultErrorStub
                 });
 
                 Assert.Equal(0, executed);
@@ -165,7 +198,8 @@ namespace CoreValidation.UnitTests.Specifications
                 rule.Compile(new[]
                 {
                     new object(),
-                    ValidationStrategy.Force
+                    ValidationStrategy.Force,
+                    ErrorHelpers.DefaultErrorStub
                 });
 
                 Assert.Equal(0, executed);
@@ -195,7 +229,8 @@ namespace CoreValidation.UnitTests.Specifications
                 rule.Compile(new[]
                 {
                     member,
-                    validationStrategy
+                    validationStrategy,
+                    ErrorHelpers.DefaultErrorStub
                 });
 
                 Assert.True(executed);
@@ -205,10 +240,10 @@ namespace CoreValidation.UnitTests.Specifications
         public class InvalidArguments
         {
             [Fact]
-            public void Should_ThrowException_When_Constructing_And_NullMessage()
+            public void Should_ThrowException_When_Constructing_And_NullMessage_And_Arguments()
             {
                 // ReSharper disable once ObjectCreationAsStatement
-                Assert.Throws<ArgumentNullException>(() => { new ValidRelativeRule<object>(c => true, null); });
+                Assert.Throws<ArgumentException>(() => { new ValidRelativeRule<object>(c => true, null, new IMessageArg[] { }); });
             }
 
             [Fact]

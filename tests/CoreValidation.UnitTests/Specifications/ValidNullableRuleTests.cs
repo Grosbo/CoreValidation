@@ -29,7 +29,7 @@ namespace CoreValidation.UnitTests.Specifications
             }
         }
 
-        public static MemberValidator<object, int> GetSingleRuleMemberValidator(ValidateType validateType, bool isValid, string message, IReadOnlyCollection<IMessageArg> args = null)
+        public static MemberValidator<object, int> GetSingleRuleMemberValidator(ValidateType validateType, bool isValid, string message = null, IReadOnlyCollection<IMessageArg> args = null)
         {
             if (validateType == ValidateType.Validate)
             {
@@ -54,7 +54,8 @@ namespace CoreValidation.UnitTests.Specifications
                 {
                     new object(),
                     default(int),
-                    validationStrategy
+                    validationStrategy,
+                    ErrorHelpers.DefaultErrorStub
                 });
 
                 Assert.Equal("message", errorsCollection.Errors.Single().Message);
@@ -73,7 +74,8 @@ namespace CoreValidation.UnitTests.Specifications
                 {
                     new object(),
                     default(int),
-                    validationStrategy
+                    validationStrategy,
+                    ErrorHelpers.DefaultErrorStub
                 });
 
                 Assert.Equal("message", errorsCollection.Errors.Single().Message);
@@ -92,7 +94,8 @@ namespace CoreValidation.UnitTests.Specifications
                 {
                     new object(),
                     default(int),
-                    validationStrategy
+                    validationStrategy,
+                    ErrorHelpers.DefaultErrorStub
                 });
 
                 Assert.True(errorsCollection.IsEmpty);
@@ -111,7 +114,8 @@ namespace CoreValidation.UnitTests.Specifications
                 {
                     new object(),
                     null,
-                    validationStrategy
+                    validationStrategy,
+                    ErrorHelpers.DefaultErrorStub
                 });
 
                 Assert.True(errorsCollection.IsEmpty);
@@ -130,7 +134,8 @@ namespace CoreValidation.UnitTests.Specifications
                 {
                     new object(),
                     null,
-                    validationStrategy
+                    validationStrategy,
+                    ErrorHelpers.DefaultErrorStub
                 });
 
                 Assert.Equal("message", errorsCollection.Errors.Single().Message);
@@ -149,7 +154,8 @@ namespace CoreValidation.UnitTests.Specifications
                 {
                     new object(),
                     default(int),
-                    validationStrategy
+                    validationStrategy,
+                    ErrorHelpers.DefaultErrorStub
                 });
 
                 Assert.Equal("message", errorsCollection.Errors.Single().Message);
@@ -182,7 +188,8 @@ namespace CoreValidation.UnitTests.Specifications
                 {
                     new object(),
                     default(int),
-                    ValidationStrategy.Complete
+                    ValidationStrategy.Complete,
+                    ErrorHelpers.DefaultErrorStub
                 });
 
                 Assert.Equal(4, errorsCollection.Errors.Count);
@@ -220,7 +227,8 @@ namespace CoreValidation.UnitTests.Specifications
                 {
                     new object(),
                     default(int),
-                    ValidationStrategy.FailFast
+                    ValidationStrategy.FailFast,
+                    ErrorHelpers.DefaultErrorStub
                 });
 
                 Assert.Equal(1, errorsCollection.Errors.Count);
@@ -256,7 +264,8 @@ namespace CoreValidation.UnitTests.Specifications
                 {
                     new object(),
                     default(int),
-                    ValidationStrategy.Force
+                    ValidationStrategy.Force,
+                    ErrorHelpers.DefaultErrorStub
                 });
 
                 Assert.Equal(8, errorsCollection.Errors.Count);
@@ -285,6 +294,27 @@ namespace CoreValidation.UnitTests.Specifications
                 Assert.Equal("message8", errorsCollection.Errors.ElementAt(7).Message);
                 Assert.Same(args8, errorsCollection.Errors.ElementAt(7).Arguments);
             }
+            [Theory]
+            [MemberData(nameof(OptionsData), new[] {ValidationStrategy.Complete, ValidationStrategy.FailFast, ValidationStrategy.Force}, new[] {ValidateType.Validate, ValidateType.ValidateRelation}, MemberType = typeof(ValidNullableRuleTests))]
+            public void Should_AddDefaultError_When_Invalid_And_NoMessage_And_NoArgs(ValidationStrategy validationStrategy, ValidateType validateType)
+            {
+                var args = new[] {new MessageArg("key", "value")};
+                var message = "default error {arg}";
+                var memberValidator = GetSingleRuleMemberValidator(validateType, false);
+
+                var rule = new ValidNullableRule<object, int>(memberValidator);
+
+                var errorsCollection = rule.Compile(new[]
+                {
+                    new object(),
+                    default(int),
+                    validationStrategy,
+                    new Error(message, args)
+                });
+
+                Assert.Equal(message, errorsCollection.Errors.Single().Message);
+                Assert.Same(args, errorsCollection.Errors.Single().Arguments);
+            }
         }
 
         public class OverridingErrorMessage
@@ -303,7 +333,8 @@ namespace CoreValidation.UnitTests.Specifications
                 {
                     new object(),
                     default(int),
-                    validationStrategy
+                    validationStrategy,
+                    ErrorHelpers.DefaultErrorStub
                 });
 
                 Assert.Equal("message_overriden", errorsCollection.Errors.Single().Message);
@@ -322,7 +353,8 @@ namespace CoreValidation.UnitTests.Specifications
                 {
                     new object(),
                     default(int),
-                    validationStrategy
+                    validationStrategy,
+                    ErrorHelpers.DefaultErrorStub
                 });
 
                 Assert.True(errorsCollection.IsEmpty);
@@ -342,7 +374,8 @@ namespace CoreValidation.UnitTests.Specifications
                 {
                     new object(),
                     default(int),
-                    validationStrategy
+                    validationStrategy,
+                    ErrorHelpers.DefaultErrorStub
                 });
 
                 Assert.Equal("message_overriden", errorsCollection.Errors.Single().Message);
@@ -373,7 +406,8 @@ namespace CoreValidation.UnitTests.Specifications
                 {
                     new object(),
                     default(int),
-                    validationStrategy
+                    validationStrategy,
+                    ErrorHelpers.DefaultErrorStub
                 });
 
                 Assert.Equal(1, errorsCollection.Errors.Count);
@@ -445,7 +479,8 @@ namespace CoreValidation.UnitTests.Specifications
                 {
                     new object(),
                     default(int),
-                    validationStrategy
+                    validationStrategy,
+                    ErrorHelpers.DefaultErrorStub
                 });
 
                 Assert.Equal(3, executionCounter);
@@ -477,7 +512,8 @@ namespace CoreValidation.UnitTests.Specifications
                 {
                     new object(),
                     member,
-                    validationStrategy
+                    validationStrategy,
+                    ErrorHelpers.DefaultErrorStub
                 });
 
                 Assert.True(executed);
@@ -506,7 +542,8 @@ namespace CoreValidation.UnitTests.Specifications
                 {
                     model,
                     123,
-                    validationStrategy
+                    validationStrategy,
+                    ErrorHelpers.DefaultErrorStub
                 });
 
                 Assert.True(executed);
@@ -545,7 +582,8 @@ namespace CoreValidation.UnitTests.Specifications
                 {
                     model,
                     member,
-                    validationStrategy
+                    validationStrategy,
+                    ErrorHelpers.DefaultErrorStub
                 });
 
                 Assert.True(validateExecuted);
@@ -575,7 +613,8 @@ namespace CoreValidation.UnitTests.Specifications
                 {
                     new object(),
                     default(int),
-                    validationStrategy
+                    validationStrategy,
+                    ErrorHelpers.DefaultErrorStub
                 });
 
                 Assert.True(executed);
@@ -601,7 +640,8 @@ namespace CoreValidation.UnitTests.Specifications
                 {
                     new object(),
                     default(int),
-                    validationStrategy
+                    validationStrategy,
+                    ErrorHelpers.DefaultErrorStub
                 });
 
                 Assert.True(executed);
@@ -627,7 +667,8 @@ namespace CoreValidation.UnitTests.Specifications
                 {
                     new object(),
                     null,
-                    validationStrategy
+                    validationStrategy,
+                    ErrorHelpers.DefaultErrorStub
                 });
 
                 Assert.False(executed);
@@ -653,7 +694,8 @@ namespace CoreValidation.UnitTests.Specifications
                 {
                     new object(),
                     null,
-                    validationStrategy
+                    validationStrategy,
+                    ErrorHelpers.DefaultErrorStub
                 });
 
                 Assert.False(executed);
@@ -677,7 +719,8 @@ namespace CoreValidation.UnitTests.Specifications
                 {
                     new object(),
                     default(int),
-                    ValidationStrategy.Force
+                    ValidationStrategy.Force,
+                    ErrorHelpers.DefaultErrorStub
                 });
 
                 Assert.False(executed);
@@ -701,7 +744,8 @@ namespace CoreValidation.UnitTests.Specifications
                 {
                     new object(),
                     default(int),
-                    ValidationStrategy.Force
+                    ValidationStrategy.Force,
+                    ErrorHelpers.DefaultErrorStub
                 });
 
                 Assert.False(executed);
@@ -721,7 +765,8 @@ namespace CoreValidation.UnitTests.Specifications
                 {
                     new object(),
                     default(int),
-                    ValidationStrategy.Complete
+                    ValidationStrategy.Complete,
+                    ErrorHelpers.DefaultErrorStub
                 });
             });
         }

@@ -36,6 +36,13 @@ namespace CoreValidation
             return _optionsUnwrapper.UnwrapValidationOptions(options, validationOptions => { validationOptions.RequiredError = requiredError; });
         }
 
+        public static IValidationOptions SetDefaultError(this IValidationOptions options, string errorMessage, IMessageArg[] args = null)
+        {
+            var requiredError = new Error(errorMessage, args);
+
+            return _optionsUnwrapper.UnwrapValidationOptions(options, validationOptions => { validationOptions.DefaultError = requiredError; });
+        }
+
         public static IValidationOptions SetMaxDepth(this IValidationOptions options, int maxDepth)
         {
             return _optionsUnwrapper.UnwrapValidationOptions(options, validationOptions => { validationOptions.MaxDepth = maxDepth; });

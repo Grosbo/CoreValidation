@@ -36,7 +36,7 @@ namespace CoreValidation.Specifications
             {
                 foreach (var rule in rulesCollection.Rules)
                 {
-                    if (TryCompileSingleErrorRules(model, memberValue, rule, validationStrategy, out var error))
+                    if (TryCompileSingleErrorRules(model, memberValue, rule, validationStrategy, rulesOptions, out var error))
                     {
                         if (error == null)
                         {
@@ -98,16 +98,16 @@ namespace CoreValidation.Specifications
             return singleErrorCollection;
         }
 
-        private bool TryCompileSingleErrorRules<TModel, TMember>(TModel model, TMember memberValue, IRule rule, ValidationStrategy validationStrategy, out Error error)
+        private bool TryCompileSingleErrorRules<TModel, TMember>(TModel model, TMember memberValue, IRule rule, ValidationStrategy validationStrategy, IRulesOptions rulesOptions, out Error error)
             where TModel : class
         {
             if (rule is ValidRule<TMember> validateRule)
             {
-                error = validateRule.CompileError(memberValue, validationStrategy);
+                error = validateRule.CompileError(memberValue, validationStrategy, rulesOptions.DefaultError);
             }
             else if (rule is ValidRelativeRule<TModel> validateRelationRule)
             {
-                error = validateRelationRule.CompileError(model, validationStrategy);
+                error = validateRelationRule.CompileError(model, validationStrategy, rulesOptions.DefaultError);
             }
             else
             {
@@ -150,7 +150,8 @@ namespace CoreValidation.Specifications
                 {
                     model,
                     memberValue,
-                    validationStrategy
+                    validationStrategy,
+                    rulesOptions.DefaultError
                 });
             }
             else

@@ -439,6 +439,52 @@ namespace CoreValidation.UnitTests.Specifications
             [InlineData(ValidationStrategy.Complete)]
             [InlineData(ValidationStrategy.FailFast)]
             [InlineData(ValidationStrategy.Force)]
+            public void Should_Add_ValidRule_When_WithoutMessage(ValidationStrategy validationStrategy)
+            {
+                var model = new User {Email = ""};
+                var specification = new Specification<User>(model, new VoidValidatorsRepository(), validationStrategy, 0, new RulesOptionsStub());
+
+                var validCounter = 0;
+
+                specification.For(c => c.Email, r => r.Valid(m =>
+                {
+                    Assert.Same(model.Email, m);
+                    validCounter++;
+
+                    return false;
+                }));
+
+                Assert.Null(specification.SummaryError);
+                Assert.Single(specification.CompilableRules);
+
+                var rule = specification.CompilableRules.Single();
+
+                AssertCompilableRule(rule, "Email", typeof(string));
+                Assert.Null(rule.RulesCollection.Name);
+                Assert.Null(rule.RulesCollection.SummaryError);
+                Assert.Null(rule.RulesCollection.RequiredError);
+                Assert.Equal(1, rule.RulesCollection.Rules.Count);
+                Assert.IsType<ValidRule<string>>(rule.RulesCollection.Rules.Single());
+
+                var validRule = (ValidRule<string>)rule.RulesCollection.Rules.Single();
+                Assert.Null(validRule.Message);
+                Assert.Null(validRule.Arguments);
+                Assert.NotNull(validRule.IsValid);
+
+                Assert.Equal(0, validCounter);
+
+                var errorsCollection = specification.GetErrors();
+
+                Assert.Equal(validationStrategy == ValidationStrategy.Force ? 0 : 1, validCounter);
+
+                ErrorsCollectionTestsHelpers.ExpectMembers(errorsCollection, new[] {"Email"});
+                ErrorsCollectionTestsHelpers.ExpectErrors(specification.GetErrors().Members["Email"], validationStrategy == ValidationStrategy.Force ? new[] {"Required", "Invalid"} : new[] {"Invalid"});
+            }
+
+            [Theory]
+            [InlineData(ValidationStrategy.Complete)]
+            [InlineData(ValidationStrategy.FailFast)]
+            [InlineData(ValidationStrategy.Force)]
             public void Should_Add_ValidRule_And_PassEqualValueType(ValidationStrategy validationStrategy)
             {
                 var model = new User {Email = "", IsAdmin = true};
@@ -526,6 +572,53 @@ namespace CoreValidation.UnitTests.Specifications
                 ErrorsCollectionTestsHelpers.ExpectMembers(errorsCollection, new[] {"Email"});
                 ErrorsCollectionTestsHelpers.ExpectErrors(specification.GetErrors().Members["Email"], validationStrategy == ValidationStrategy.Force ? new[] {"Required", "error"} : new[] {"error"});
             }
+
+
+            [Theory]
+            [InlineData(ValidationStrategy.Complete)]
+            [InlineData(ValidationStrategy.FailFast)]
+            [InlineData(ValidationStrategy.Force)]
+            public void Should_Add_ValidRelativeRule_When_WithoutMessage(ValidationStrategy validationStrategy)
+            {
+                var model = new User {Email = ""};
+                var specification = new Specification<User>(model, new VoidValidatorsRepository(), validationStrategy, 0, new RulesOptionsStub());
+
+                var validCounter = 0;
+
+                specification.For(c => c.Email, r => r.ValidRelative(m =>
+                {
+                    Assert.Same(model, m);
+                    validCounter++;
+
+                    return false;
+                }));
+
+                Assert.Null(specification.SummaryError);
+                Assert.Single(specification.CompilableRules);
+
+                var rule = specification.CompilableRules.Single();
+
+                AssertCompilableRule(rule, "Email", typeof(string));
+                Assert.Null(rule.RulesCollection.Name);
+                Assert.Null(rule.RulesCollection.SummaryError);
+                Assert.Null(rule.RulesCollection.RequiredError);
+                Assert.Equal(1, rule.RulesCollection.Rules.Count);
+                Assert.IsType<ValidRelativeRule<User>>(rule.RulesCollection.Rules.Single());
+
+                var validRelativeRule = (ValidRelativeRule<User>)rule.RulesCollection.Rules.Single();
+                Assert.Null(validRelativeRule.Message);
+                Assert.Null(validRelativeRule.Arguments);
+                Assert.NotNull(validRelativeRule.IsValid);
+
+                Assert.Equal(0, validCounter);
+
+                var errorsCollection = specification.GetErrors();
+
+                Assert.Equal(validationStrategy == ValidationStrategy.Force ? 0 : 1, validCounter);
+
+                ErrorsCollectionTestsHelpers.ExpectMembers(errorsCollection, new[] {"Email"});
+                ErrorsCollectionTestsHelpers.ExpectErrors(specification.GetErrors().Members["Email"], validationStrategy == ValidationStrategy.Force ? new[] {"Required", "Invalid"} : new[] {"Invalid"});
+            }
         }
 
         public class AddingValidNullableRule
@@ -573,6 +666,51 @@ namespace CoreValidation.UnitTests.Specifications
 
                 ErrorsCollectionTestsHelpers.ExpectMembers(errorsCollection, new[] {"FirstLogin"});
                 ErrorsCollectionTestsHelpers.ExpectErrors(specification.GetErrors().Members["FirstLogin"], validationStrategy == ValidationStrategy.Force ? new[] {"Required", "error"} : new[] {"error"});
+            }
+
+            [Theory]
+            [InlineData(ValidationStrategy.Complete)]
+            [InlineData(ValidationStrategy.FailFast)]
+            [InlineData(ValidationStrategy.Force)]
+            public void Should_Add_ValidNullableRule_When_WithoutMessage(ValidationStrategy validationStrategy)
+            {
+                var model = new User {FirstLogin = DateTime.MaxValue};
+                var specification = new Specification<User>(model, new VoidValidatorsRepository(), validationStrategy, 0, new RulesOptionsStub());
+
+                var validCounter = 0;
+
+                specification.For(c => c.FirstLogin, r => r.ValidNullable(n => n.Valid(m =>
+                {
+                    Assert.True(model.FirstLogin.HasValue);
+                    Assert.Equal(model.FirstLogin.Value, m);
+                    validCounter++;
+
+                    return false;
+                })));
+
+                Assert.Null(specification.SummaryError);
+                Assert.Single(specification.CompilableRules);
+
+                var rule = specification.CompilableRules.Single();
+
+                AssertCompilableRule(rule, "FirstLogin", typeof(DateTime?));
+                Assert.Null(rule.RulesCollection.Name);
+                Assert.Null(rule.RulesCollection.SummaryError);
+                Assert.Null(rule.RulesCollection.RequiredError);
+                Assert.Equal(1, rule.RulesCollection.Rules.Count);
+                Assert.IsType<ValidNullableRule<User, DateTime>>(rule.RulesCollection.Rules.Single());
+
+                var validNullableRule = (ValidNullableRule<User, DateTime>)rule.RulesCollection.Rules.Single();
+                Assert.NotNull(validNullableRule.MemberValidator);
+
+                Assert.Equal(0, validCounter);
+
+                var errorsCollection = specification.GetErrors();
+
+                Assert.Equal(validationStrategy == ValidationStrategy.Force ? 0 : 1, validCounter);
+
+                ErrorsCollectionTestsHelpers.ExpectMembers(errorsCollection, new[] {"FirstLogin"});
+                ErrorsCollectionTestsHelpers.ExpectErrors(specification.GetErrors().Members["FirstLogin"], validationStrategy == ValidationStrategy.Force ? new[] {"Required", "Invalid"} : new[] {"Invalid"});
             }
 
             [Theory]

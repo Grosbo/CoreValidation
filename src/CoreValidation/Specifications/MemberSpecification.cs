@@ -9,7 +9,7 @@ namespace CoreValidation.Specifications
     {
         private readonly List<IRule> _rules = new List<IRule>();
 
-        public IMemberSpecification<TModel, TMember> ValidRelative(Predicate<TModel> isValid, string message, IReadOnlyCollection<IMessageArg> args = null)
+        public IMemberSpecification<TModel, TMember> ValidRelative(Predicate<TModel> isValid, string message = null, IReadOnlyCollection<IMessageArg> args = null)
         {
             if (isValid == null)
             {
@@ -21,7 +21,7 @@ namespace CoreValidation.Specifications
             return this;
         }
 
-        public IMemberSpecification<TModel, TMember> Valid(Predicate<TMember> isValid, string message, IReadOnlyCollection<IMessageArg> args = null)
+        public IMemberSpecification<TModel, TMember> Valid(Predicate<TMember> isValid, string message = null, IReadOnlyCollection<IMessageArg> args = null)
         {
             if (isValid == null)
             {
