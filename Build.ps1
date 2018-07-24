@@ -2,26 +2,27 @@ Param (
     [string]$v = "",
     [string]$k = ""
 )
-
 function Exec {
-    [CmdletBinding()]
-    param(
-        [Parameter(Position = 0, Mandatory = 1)][scriptblock]$cmd,
-        [Parameter(Position = 1, Mandatory = 0)][string]$errorMessage = ($msgs.error_bad_command -f $cmd)
-    )
-    & $cmd
-    if ($lastexitcode -ne 0) {
-        throw ("ERROR: " + $errorMessage)
-    }
+  [CmdletBinding()]
+  param(
+      [Parameter(Position = 0, Mandatory = 1)][scriptblock]$cmd,
+      [Parameter(Position = 1, Mandatory = 0)][string]$errorMessage = ($msgs.error_bad_command -f $cmd)
+  )
+  & $cmd
+  if ($lastexitcode -ne 0) {
+      throw ("ERROR: " + $errorMessage)
+  }
 }
+
 function Print {
-    if ($args) {
-        $storedColor = $host.UI.RawUI.ForegroundColor
-        $host.UI.RawUI.ForegroundColor = "Blue"
-        Write-Output ">>> $($args)"
-        $host.UI.RawUI.ForegroundColor = $storedColor
-    }
+  if ($args) {
+      $storedColor = $host.UI.RawUI.ForegroundColor
+      $host.UI.RawUI.ForegroundColor = "Blue"
+      Write-Output ">>> $($args)"
+      $host.UI.RawUI.ForegroundColor = $storedColor
+  }
 }
+
 
 function Build {
     Param (

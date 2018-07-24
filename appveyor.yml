@@ -7,19 +7,19 @@ image:
   - Visual Studio 2017
   - Ubuntu
 
-branches:
-  only:
-  - master
-
 skip_commits:
-  message: /(\(non-code\))/
+  files:
+    - docs/*
+    - .github/*
+    - logo/*
+    - '**/*.md'
 
 environment:
   NUGET_API_KEY:
     secure: UHweOfsSUq1apwinPBbBuxw/yW+Q6DhikKofkACtOTt2kDESEbL9jtpEkfn7fxOM
 
 build_script:
-- pwsh: .\Build.ps1
+- pwsh: .\scripts\ServerBuild.ps1
 
 test: off
 
