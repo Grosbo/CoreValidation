@@ -18,7 +18,8 @@ namespace CoreValidation.Options
             TranslationName = null,
             CollectionForceKey = "*",
             MaxDepth = 10,
-            RequiredError = new Error("Required")
+            RequiredError = new Error(Phrases.English[Phrases.Keys.Required]),
+            DefaultError = new Error(Phrases.English[Phrases.Keys.Invalid])
         };
     }
 }

@@ -51,6 +51,7 @@ namespace CoreValidation.Translations.Template
                 TimeSpan = Assign(nameof(TimeSpan), new TimeSpanMessages());
                 Char = Assign(nameof(TimeSpan), new CharMessages());
                 Required = nameof(Required);
+                Invalid = nameof(Invalid);
             }
 
             public ICollectionsMessages Collections { get; }
@@ -61,6 +62,7 @@ namespace CoreValidation.Translations.Template
             public ITextsMessages Texts { get; }
             public ITimesMessages Times { get; }
             public string Required { get; }
+            public string Invalid { get; }
 
             private T Assign<T>(string prefix, T target)
             {

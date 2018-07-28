@@ -10,5 +10,6 @@
         ITextsMessages Texts { get; }
         ITimesMessages Times { get; }
         string Required { get; }
+        string Invalid { get; }
     }
 }

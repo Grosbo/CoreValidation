@@ -812,6 +812,7 @@ namespace CoreValidation.UnitTests.Factory
                 .SetCollectionForceKey("[]")
                 .SetMaxDepth(15)
                 .SetRequiredError("This is required{arg}", new IMessageArg[] {new MessageArg("arg", "!")})
+                .SetDefaultError("This is default{arg}", new IMessageArg[] {new MessageArg("arg", "!")})
             );
 
             Assert.NotNull(coreValidator);
@@ -830,6 +831,8 @@ namespace CoreValidation.UnitTests.Factory
             Assert.Equal(15, coreValidator.ValidationOptions.MaxDepth);
             Assert.Equal("This is required{arg}", coreValidator.ValidationOptions.RequiredError.Message);
             Assert.Equal("This is required!", coreValidator.ValidationOptions.RequiredError.StringifiedMessage);
+            Assert.Equal("This is default{arg}", coreValidator.ValidationOptions.DefaultError.Message);
+            Assert.Equal("This is default!", coreValidator.ValidationOptions.DefaultError.StringifiedMessage);
         }
 
         [Fact]
@@ -848,6 +851,8 @@ namespace CoreValidation.UnitTests.Factory
             Assert.Equal(10, coreValidator.ValidationOptions.MaxDepth);
             Assert.Equal("Required", coreValidator.ValidationOptions.RequiredError.Message);
             Assert.Equal("Required", coreValidator.ValidationOptions.RequiredError.StringifiedMessage);
+            Assert.Equal("Invalid", coreValidator.ValidationOptions.DefaultError.Message);
+            Assert.Equal("Invalid", coreValidator.ValidationOptions.DefaultError.StringifiedMessage);
         }
 
         [Fact]
@@ -875,6 +880,8 @@ namespace CoreValidation.UnitTests.Factory
                 .SetMaxDepth(20)
                 .SetRequiredError("This is required{arg}", new IMessageArg[] {new MessageArg("arg", "!")})
                 .SetRequiredError("This is required{arg}. True story.", new IMessageArg[] {new MessageArg("arg", "!")})
+                .SetDefaultError("This is default{arg}", new IMessageArg[] {new MessageArg("arg", "!")})
+                .SetDefaultError("This is default{arg}. Legit.", new IMessageArg[] {new MessageArg("arg", "!")})
             );
 
             Assert.NotNull(coreValidator);
@@ -900,6 +907,8 @@ namespace CoreValidation.UnitTests.Factory
             Assert.Equal(20, coreValidator.ValidationOptions.MaxDepth);
             Assert.Equal("This is required{arg}. True story.", coreValidator.ValidationOptions.RequiredError.Message);
             Assert.Equal("This is required!. True story.", coreValidator.ValidationOptions.RequiredError.StringifiedMessage);
+            Assert.Equal("This is default{arg}. Legit.", coreValidator.ValidationOptions.DefaultError.Message);
+            Assert.Equal("This is default!. Legit.", coreValidator.ValidationOptions.DefaultError.StringifiedMessage);
         }
 
         [Fact]

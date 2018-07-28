@@ -86,5 +86,6 @@ namespace CoreValidation.PredefinedTranslations
         };
 
         public string Required { get; } = "Wartość wymagana";
+        public string Invalid { get; } = "Nieprawidłowa wartość";
     }
 }

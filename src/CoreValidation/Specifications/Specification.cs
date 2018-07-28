@@ -95,10 +95,7 @@ namespace CoreValidation.Specifications
                 throw new ArgumentNullException(nameof(isValid));
             }
 
-            if ((message == null) && (args != null))
-            {
-                throw new InvalidOperationException($"Passing {nameof(args)} is allowed only if {nameof(message)} is present");
-            }
+            Error.AssertValidMessageAndArgs(message, args);
 
             var selfCompilableRule = CompilableRule<TModel>.CreateForSelf((memberPropertyInfo, rulesCollection, model, validationStrategy, validatorsRepository, depth, rulesOptions) =>
                 {

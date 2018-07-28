@@ -114,7 +114,8 @@ namespace CoreValidation.Options
                 ValidationStrategy = options.ValidationStrategy,
                 CollectionForceKey = options.CollectionForceKey,
                 MaxDepth = options.MaxDepth,
-                RequiredError = options.RequiredError
+                RequiredError = options.RequiredError,
+                DefaultError = options.DefaultError
             };
         }
 
