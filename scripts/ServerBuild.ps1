@@ -38,11 +38,15 @@ if ($environmentInfo.IsPullRequest) {
 if ($environmentInfo.IsTagged) {
     $version = $environmentInfo.TagVersion
 }
-elseif ($environmentInfo.IsCommit) {
-    $version = "0.0.0-commit-$($environmentInfo.CommitHash.Substring(0, 7))"
-}
 else {
-    $version = "0.0.0-time-$([DateTime]::UtcNow.ToString('yyyyMMddHHmmss'))"
+    $envPostfix = & {If ($environmentInfo.IsUbuntuServer) {"ubuntu"} Else {"windows"}}
+
+    if ($environmentInfo.IsCommit) {
+        $version = "0.0.0-commit-$($environmentInfo.CommitHash.Substring(0, 7))-$($envPostfix)"
+    }
+    else {
+        $version = "0.0.0-time-$([DateTime]::UtcNow.ToString('yyyyMMddHHmmss'))-$($envPostfix)"
+    }
 }
 
 & $scriptsPath\CreatePackage.ps1 -version $version -build $false
