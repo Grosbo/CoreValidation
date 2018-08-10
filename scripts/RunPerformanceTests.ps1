@@ -14,16 +14,9 @@ $artifactsDir = Convert-Path "$($rootDir)\artifacts"
 
 New-Item -ItemType Directory -Force -Path $artifactsDir
 
-$benchmarkArtifactsDir = "$($artifactsDir)\benchmark"
-
-Exec "Cleaning existing artifacts" {
-    if (Test-Path $benchmarkArtifactsDir) {
-        Remove-Item $benchmarkArtifactsDir -Recurse
-    }
-}
+$benchmarkArtifactsDir = "$($artifactsDir)\benchmark_$([DateTime]::UtcNow.ToString('yyyyMMddHHmmss'))"
 
 New-Item -ItemType Directory -Force -Path $benchmarkArtifactsDir
-
 
 $testNames = @(
     "Quickstart",

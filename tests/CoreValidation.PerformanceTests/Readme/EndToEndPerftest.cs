@@ -14,7 +14,7 @@ namespace CoreValidation.PerformanceTests.Readme
         private IValidationContext _validationContext;
 
 
-        [Params(1, 50, 100, 1000)]
+        [Params(1, 500, 10000)]
         public int N { get; set; }
 
         [GlobalSetup]

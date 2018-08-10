@@ -10,7 +10,7 @@ namespace CoreValidation.PerformanceTests.Readme
         private LoginModel[] _models;
         private IValidationContext _validationContext;
 
-        [Params(1, 50, 100, 1000, 10000)]
+        [Params(1, 500, 10000)]
         public int N { get; set; }
 
         [GlobalSetup]
