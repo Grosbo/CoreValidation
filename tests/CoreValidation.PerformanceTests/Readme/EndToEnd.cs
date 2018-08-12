@@ -8,13 +8,13 @@ using CoreValidation.Validators;
 namespace CoreValidation.PerformanceTests.Readme
 {
     [MemoryDiagnoser]
-    public class EndToEndPerftest
+    public class EndToEnd
     {
         private UserModel[] _models;
         private IValidationContext _validationContext;
 
 
-        [Params(1, 500, 10000)]
+        [Params(1, 500, 5000)]
         public int N { get; set; }
 
         [GlobalSetup]
@@ -115,7 +115,7 @@ namespace CoreValidation.PerformanceTests.Readme
         }
 
         [Benchmark]
-        public void EndToEnd()
+        public void Readme_EndToEnd()
         {
             for (var i = 0; i < N; ++i)
             {

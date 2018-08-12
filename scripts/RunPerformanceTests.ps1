@@ -19,8 +19,8 @@ $benchmarkArtifactsDir = "$($artifactsDir)\benchmark_$([DateTime]::UtcNow.ToStri
 New-Item -ItemType Directory -Force -Path $benchmarkArtifactsDir
 
 $testNames = @(
-    "Quickstart",
-    "EndToEnd"
+    "Messages.*"
+    "Readme.*"
 )
 
 for ($i = 0; $i -lt $testNames.length; $i++) {

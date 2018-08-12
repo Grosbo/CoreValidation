@@ -5,12 +5,12 @@ using CoreValidation.Validators;
 namespace CoreValidation.PerformanceTests.Readme
 {
     [MemoryDiagnoser]
-    public class QuickstartPerftest
+    public class Quickstart
     {
         private LoginModel[] _models;
         private IValidationContext _validationContext;
 
-        [Params(1, 500, 10000)]
+        [Params(1, 500, 5000)]
         public int N { get; set; }
 
         [GlobalSetup]
@@ -37,7 +37,7 @@ namespace CoreValidation.PerformanceTests.Readme
         }
 
         [Benchmark]
-        public void Quickstart()
+        public void Readme_Quickstart()
         {
             for (var i = 0; i < N; ++i)
             {
