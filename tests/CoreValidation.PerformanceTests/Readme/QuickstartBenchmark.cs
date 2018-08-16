@@ -5,7 +5,7 @@ using CoreValidation.Validators;
 namespace CoreValidation.PerformanceTests.Readme
 {
     [MemoryDiagnoser]
-    public class Quickstart
+    public class QuickstartBenchmark
     {
         private LoginModel[] _models;
         private IValidationContext _validationContext;
@@ -37,7 +37,7 @@ namespace CoreValidation.PerformanceTests.Readme
         }
 
         [Benchmark]
-        public void Readme_Quickstart()
+        public void Quickstart()
         {
             for (var i = 0; i < N; ++i)
             {

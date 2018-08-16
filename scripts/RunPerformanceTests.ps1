@@ -19,7 +19,7 @@ $benchmarkArtifactsDir = "$($artifactsDir)\benchmark_$([DateTime]::UtcNow.ToStri
 New-Item -ItemType Directory -Force -Path $benchmarkArtifactsDir
 
 $testNames = @(
-    "Messages.*"
+    "MessagesBenchmark*"
     "Readme.*"
 )
 
