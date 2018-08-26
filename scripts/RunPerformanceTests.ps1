@@ -3,10 +3,6 @@ $ErrorActionPreference = 'Stop'
 $scriptsPath = Convert-Path $PSScriptRoot
 . $scriptsPath\Helpers.ps1
 
-Exec "Building before testing" {
-    & $scriptsPath\Build.ps1
-}
-
 $rootDir = Convert-Path "$($scriptsPath)\..\"
 $testsDir = Convert-Path "$($rootDir)\tests"
 

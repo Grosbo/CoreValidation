@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using CoreValidation.Errors;
 
 namespace CoreValidation.Specifications
@@ -8,65 +7,46 @@ namespace CoreValidation.Specifications
     {
     }
 
-    public sealed class ValidRelativeRule<TModel> : ValidRelativeRule, IRule, IErrorMessageHolder
+    internal sealed class ValidRelativeRule<TModel> : ValidRelativeRule, IRule
         where TModel : class
     {
-        public ValidRelativeRule(Predicate<TModel> isValid, string message = null, IReadOnlyCollection<IMessageArg> args = null)
+        private readonly ErrorsCollection _errorInCollection;
+
+        public ValidRelativeRule(Predicate<TModel> isValid, Error error = null)
         {
             IsValid = isValid ?? throw new ArgumentNullException(nameof(isValid));
 
-            Error.AssertValidMessageAndArgs(message, args);
+            Error = error;
 
-            Message = message;
-            Arguments = args;
+            if (error != null)
+            {
+                _errorInCollection = new ErrorsCollection();
+                _errorInCollection.AddError(error);
+            }
         }
 
         public Predicate<TModel> IsValid { get; }
 
-        public IReadOnlyCollection<IMessageArg> Arguments { get; }
+        public Error Error { get; }
 
-        public string Message { get; }
-
-        public ErrorsCollection Compile(object[] args)
+        public bool TryGetErrors(TModel model, IRulesExecutionContext rulesExecutionContext, out IErrorsCollection errorsCollection)
         {
-            return Compile(
-                IsValid,
-                Message,
-                Arguments,
-                (TModel)args[0],
-                (ValidationStrategy)args[1],
-                (Error)args[2]
-            );
-        }
-
-        public Error CompileError(TModel model, ValidationStrategy validationStrategy, Error defaultError)
-        {
-            return CompileError(IsValid, Message, Arguments, model, validationStrategy, defaultError);
-        }
-
-        public static ErrorsCollection Compile(Predicate<TModel> isValid, string message, IReadOnlyCollection<IMessageArg> args, TModel model, ValidationStrategy validationStrategy, Error defaultError)
-        {
-            var errorsCollection = new ErrorsCollection();
-
-            var error = CompileError(isValid, message, args, model, validationStrategy, defaultError);
-
-            if (error != null)
+            if (rulesExecutionContext == null)
             {
-                errorsCollection.AddError(error);
+                throw new ArgumentNullException(nameof(rulesExecutionContext));
             }
 
-            return errorsCollection;
-        }
-
-        public static Error CompileError(Predicate<TModel> isValid, string message, IReadOnlyCollection<IMessageArg> args, TModel model, ValidationStrategy validationStrategy, Error defaultError)
-        {
-            if ((validationStrategy == ValidationStrategy.Force) ||
-                ((model != null) && !isValid(model)))
+            if ((rulesExecutionContext.ValidationStrategy == ValidationStrategy.Force) ||
+                ((model != null) && !IsValid(model)))
             {
-                return Error.CreateOrDefault(message, args, defaultError);
+                errorsCollection = _errorInCollection ?? rulesExecutionContext.DefaultErrorCollection;
+
+                return true;
             }
 
-            return null;
+            errorsCollection = ErrorsCollection.Empty;
+
+            return false;
         }
     }
 }

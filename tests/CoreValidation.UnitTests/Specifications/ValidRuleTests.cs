@@ -19,44 +19,20 @@ namespace CoreValidation.UnitTests.Specifications
             {
                 Predicate<object> isValid = m => false;
 
-                var args = new[] {new MessageArg("key", "value")};
+                var error = new Error("message");
 
-                var rule = new ValidRule<object>(isValid, "message", args) as IRule;
+                var rule = new ValidRule<object>(isValid, error);
 
-                var error = rule.Compile(new[]
+                var getErrorsResult = rule.TryGetErrors(new object(),
+                    new RulesExecutionContext
                     {
-                        new object(),
-                        validationStrategy,
-                        ErrorHelpers.DefaultErrorStub
-                    })
-                    .Errors
-                    .Single();
+                        ValidationStrategy = validationStrategy,
+                        RulesOptions = new RulesOptionsStub()
+                    },
+                    out var errorsCollection);
 
-                Assert.Equal("message", error.Message);
-                Assert.Same(args, error.Arguments);
-            }
-
-            [Theory]
-            [InlineData(ValidationStrategy.Complete)]
-            [InlineData(ValidationStrategy.FailFast)]
-            [InlineData(ValidationStrategy.Force)]
-            public void Should_AddError_When_Invalid_And_NullArgs(ValidationStrategy validationStrategy)
-            {
-                Predicate<object> isValid = m => false;
-
-                var rule = new ValidRule<object>(isValid, "message") as IRule;
-
-                var error = rule.Compile(new[]
-                    {
-                        new object(),
-                        validationStrategy,
-                        ErrorHelpers.DefaultErrorStub
-                    })
-                    .Errors
-                    .Single();
-
-                Assert.Equal("message", error.Message);
-                Assert.Null(error.Arguments);
+                Assert.True(getErrorsResult);
+                Assert.Same(error, errorsCollection.Errors.Single());
             }
 
             [Theory]
@@ -66,44 +42,49 @@ namespace CoreValidation.UnitTests.Specifications
             {
                 Predicate<object> isValid = m => true;
 
-                var rule = new ValidRule<object>(isValid, "message") as IRule;
+                var error = new Error("message");
 
-                var error = rule.Compile(new[]
+                var rule = new ValidRule<object>(isValid, error);
+
+                var getErrorsResult = rule.TryGetErrors(new object(),
+                    new RulesExecutionContext
                     {
-                        new object(),
-                        validationStrategy,
-                        ErrorHelpers.DefaultErrorStub
-                    })
-                    .Errors
-                    .SingleOrDefault();
+                        ValidationStrategy = validationStrategy,
+                        RulesOptions = new RulesOptionsStub()
+                    },
+                    out var errorsCollection);
 
-                Assert.Null(error);
+                Assert.False(getErrorsResult);
+                Assert.Same(ErrorsCollection.Empty, errorsCollection);
+                Assert.True(errorsCollection.IsEmpty);
             }
 
             [Theory]
             [InlineData(ValidationStrategy.Complete)]
             [InlineData(ValidationStrategy.FailFast)]
             [InlineData(ValidationStrategy.Force)]
-            public void Should_AddDefaultError_When_Invalid_And_NoMessage_And_NoArgs(ValidationStrategy validationStrategy)
+            public void Should_AddDefaultError_When_Invalid_And_NoError(ValidationStrategy validationStrategy)
             {
                 Predicate<object> isValid = m => false;
 
-                var args = new[] {new MessageArg("key", "value")};
-                var message = "default error {arg}";
+                var error = new Error("default error {arg}", new[] {new MessageArg("key", "value")});
 
                 var rule = new ValidRule<object>(isValid);
 
-                var error = rule.Compile(new[]
+                var getErrorsResult = rule.TryGetErrors(new object(),
+                    new RulesExecutionContext
                     {
-                        new object(),
-                        validationStrategy,
-                        new Error(message, args)
-                    })
-                    .Errors
-                    .Single();
+                        ValidationStrategy = validationStrategy,
+                        RulesOptions = new RulesOptionsStub
+                        {
+                            DefaultError = error
+                        }
+                    },
+                    out var errorsCollection);
 
-                Assert.Equal(message, error.Message);
-                Assert.Same(args, error.Arguments);
+                Assert.True(getErrorsResult);
+
+                Assert.Same(error, errorsCollection.Errors.Single());
             }
 
             [Fact]
@@ -111,19 +92,20 @@ namespace CoreValidation.UnitTests.Specifications
             {
                 Predicate<object> isValid = m => true;
 
-                var rule = new ValidRule<object>(isValid, "message") as IRule;
+                var error = new Error("message");
 
-                var error = rule.Compile(new[]
+                var rule = new ValidRule<object>(isValid, error);
+
+                var getErrorsResult = rule.TryGetErrors(new object(),
+                    new RulesExecutionContext
                     {
-                        new object(),
-                        ValidationStrategy.Force,
-                        ErrorHelpers.DefaultErrorStub
-                    })
-                    .Errors
-                    .Single();
+                        ValidationStrategy = ValidationStrategy.Force,
+                        RulesOptions = new RulesOptionsStub()
+                    },
+                    out var errorsCollection);
 
-                Assert.Equal("message", error.Message);
-                Assert.Null(error.Arguments);
+                Assert.True(getErrorsResult);
+                Assert.Same(error, errorsCollection.Errors.Single());
             }
         }
 
@@ -145,14 +127,15 @@ namespace CoreValidation.UnitTests.Specifications
                     return true;
                 };
 
-                var rule = new ValidRule<object>(isValid, "message") as IRule;
+                var rule = new ValidRule<object>(isValid);
 
-                rule.Compile(new[]
-                {
-                    member,
-                    validationStrategy,
-                    ErrorHelpers.DefaultErrorStub
-                });
+                rule.TryGetErrors(member,
+                    new RulesExecutionContext
+                    {
+                        ValidationStrategy = validationStrategy,
+                        RulesOptions = new RulesOptionsStub()
+                    },
+                    out _);
 
                 Assert.True(executed);
             }
@@ -163,9 +146,9 @@ namespace CoreValidation.UnitTests.Specifications
             public void Should_PassEqualValueToPredicate(ValidationStrategy validationStrategy)
             {
                 var executed = false;
-                var member = 1230.123;
+                var member = 123.123;
 
-                Predicate<double> isValid = m =>
+                Predicate<object> isValid = m =>
                 {
                     executed = true;
                     Assert.Equal(member, m);
@@ -173,14 +156,15 @@ namespace CoreValidation.UnitTests.Specifications
                     return true;
                 };
 
-                var rule = new ValidRule<double>(isValid, "message") as IRule;
+                var rule = new ValidRule<object>(isValid);
 
-                rule.Compile(new object[]
-                {
-                    member,
-                    validationStrategy,
-                    ErrorHelpers.DefaultErrorStub
-                });
+                rule.TryGetErrors(member,
+                    new RulesExecutionContext
+                    {
+                        ValidationStrategy = validationStrategy,
+                        RulesOptions = new RulesOptionsStub()
+                    },
+                    out _);
 
                 Assert.True(executed);
             }
@@ -202,14 +186,15 @@ namespace CoreValidation.UnitTests.Specifications
                     return true;
                 };
 
-                var rule = new ValidRule<object>(isValid, "message") as IRule;
+                var rule = new ValidRule<object>(isValid);
 
-                rule.Compile(new[]
-                {
-                    new object(),
-                    validationStrategy,
-                    ErrorHelpers.DefaultErrorStub
-                });
+                rule.TryGetErrors(new object(),
+                    new RulesExecutionContext
+                    {
+                        ValidationStrategy = validationStrategy,
+                        RulesOptions = new RulesOptionsStub()
+                    },
+                    out _);
 
                 Assert.Equal(1, executed);
             }
@@ -229,14 +214,15 @@ namespace CoreValidation.UnitTests.Specifications
                     return true;
                 };
 
-                var rule = new ValidRule<object>(isValid, "message") as IRule;
+                var rule = new ValidRule<object>(isValid);
 
-                rule.Compile(new object[]
-                {
-                    null,
-                    validationStrategy,
-                    ErrorHelpers.DefaultErrorStub
-                });
+                rule.TryGetErrors(null,
+                    new RulesExecutionContext
+                    {
+                        ValidationStrategy = validationStrategy,
+                        RulesOptions = new RulesOptionsStub()
+                    },
+                    out _);
 
                 Assert.Equal(0, executed);
             }
@@ -253,14 +239,15 @@ namespace CoreValidation.UnitTests.Specifications
                     return true;
                 };
 
-                var rule = new ValidRule<object>(isValid, "message") as IRule;
+                var rule = new ValidRule<object>(isValid);
 
-                rule.Compile(new[]
-                {
-                    new object(),
-                    ValidationStrategy.Force,
-                    ErrorHelpers.DefaultErrorStub
-                });
+                rule.TryGetErrors(new object(),
+                    new RulesExecutionContext
+                    {
+                        ValidationStrategy = ValidationStrategy.Force,
+                        RulesOptions = new RulesOptionsStub()
+                    },
+                    out _);
 
                 Assert.Equal(0, executed);
             }
@@ -269,31 +256,22 @@ namespace CoreValidation.UnitTests.Specifications
         public class InvalidArguments
         {
             [Fact]
-            public void Should_ThrowException_When_Constructing_And_NullMessage_And_Arguments()
-            {
-                // ReSharper disable once ObjectCreationAsStatement
-                Assert.Throws<ArgumentException>(() => { new ValidRule<object>(c => true, null, new IMessageArg[] { }); });
-            }
-
-            [Fact]
             public void Should_ThrowException_When_Constructing_And_NullPredicate()
             {
                 // ReSharper disable once ObjectCreationAsStatement
-                Assert.Throws<ArgumentNullException>(() => { new ValidRule<object>(null, "message"); });
+                Assert.Throws<ArgumentNullException>(() => { new ValidRule<object>(null, new Error("message")); });
             }
 
             [Fact]
-            public void Should_ThrowException_When_NullStrategy()
+            public void Should_ThrowException_When_NullContext()
             {
-                var rule = new ValidRule<object>(c => true, "message");
+                var rule = new ValidRule<object>(c => true, new Error("message"));
 
-                Assert.Throws<NullReferenceException>(() =>
+                Assert.Throws<ArgumentNullException>(() =>
                 {
-                    rule.Compile(new[]
-                    {
-                        new object(),
-                        null
-                    });
+                    rule.TryGetErrors(new object(),
+                        null,
+                        out _);
                 });
             }
         }

@@ -23,7 +23,7 @@ namespace CoreValidation.PredefinedRules.UnitTests
         [MemberData(nameof(EqualTo_Should_CollectError_Data))]
         public void EqualTo_Should_CollectError(TimeSpan model, TimeSpan value, bool expectedIsValid)
         {
-            var builder = new MemberSpecification<object, TimeSpan>();
+            var builder = new MemberSpecificationBuilder<object, TimeSpan>();
 
             builder.EqualTo(value);
 
@@ -43,7 +43,7 @@ namespace CoreValidation.PredefinedRules.UnitTests
         [MemberData(nameof(NotEqualTo_Should_CollectError_Data))]
         public void NotEqualTo_Should_CollectError(TimeSpan model, TimeSpan value, bool expectedIsValid)
         {
-            var builder = new MemberSpecification<object, TimeSpan>();
+            var builder = new MemberSpecificationBuilder<object, TimeSpan>();
 
             builder.NotEqualTo(value);
 
@@ -63,7 +63,7 @@ namespace CoreValidation.PredefinedRules.UnitTests
         [MemberData(nameof(GreaterThan_Should_CollectError_Data))]
         public void GreaterThan_Should_CollectError(TimeSpan model, TimeSpan min, bool expectedIsValid)
         {
-            var builder = new MemberSpecification<object, TimeSpan>();
+            var builder = new MemberSpecificationBuilder<object, TimeSpan>();
 
             builder.GreaterThan(min);
 
@@ -83,7 +83,7 @@ namespace CoreValidation.PredefinedRules.UnitTests
         [MemberData(nameof(GreaterOrEqualTo_Should_CollectError_Data))]
         public void GreaterOrEqualTo_Should_CollectError(TimeSpan model, TimeSpan min, bool expectedIsValid)
         {
-            var builder = new MemberSpecification<object, TimeSpan>();
+            var builder = new MemberSpecificationBuilder<object, TimeSpan>();
 
             builder.GreaterOrEqualTo(min);
 
@@ -103,7 +103,7 @@ namespace CoreValidation.PredefinedRules.UnitTests
         [MemberData(nameof(LessThan_Should_CollectError_Data))]
         public void LessThan_Should_CollectError(TimeSpan model, TimeSpan max, bool expectedIsValid)
         {
-            var builder = new MemberSpecification<object, TimeSpan>();
+            var builder = new MemberSpecificationBuilder<object, TimeSpan>();
 
             builder.LessThan(max);
 
@@ -123,7 +123,7 @@ namespace CoreValidation.PredefinedRules.UnitTests
         [MemberData(nameof(LessOrEqualTo_Should_CollectError_Data))]
         public void LessOrEqualTo_Should_CollectError(TimeSpan model, TimeSpan max, bool expectedIsValid)
         {
-            var builder = new MemberSpecification<object, TimeSpan>();
+            var builder = new MemberSpecificationBuilder<object, TimeSpan>();
 
             builder.LessOrEqualTo(max);
 
@@ -143,7 +143,7 @@ namespace CoreValidation.PredefinedRules.UnitTests
         [MemberData(nameof(Between_Should_CollectError_Data))]
         public void Between_Should_CollectError(TimeSpan min, TimeSpan model, TimeSpan max, bool expectedIsValid)
         {
-            var builder = new MemberSpecification<object, TimeSpan>();
+            var builder = new MemberSpecificationBuilder<object, TimeSpan>();
 
             builder.Between(min, max);
 
@@ -163,7 +163,7 @@ namespace CoreValidation.PredefinedRules.UnitTests
         [MemberData(nameof(BetweenOrEqualTo_Should_CollectError_Data))]
         public void BetweenOrEqualTo_Should_CollectError(TimeSpan min, TimeSpan model, TimeSpan max, bool expectedIsValid)
         {
-            var builder = new MemberSpecification<object, TimeSpan>();
+            var builder = new MemberSpecificationBuilder<object, TimeSpan>();
 
             builder.BetweenOrEqualTo(min, max);
 
@@ -175,7 +175,7 @@ namespace CoreValidation.PredefinedRules.UnitTests
             [Fact]
             public void Between_Should_SetCustomMessage()
             {
-                var builder = new MemberSpecification<object, TimeSpan>();
+                var builder = new MemberSpecificationBuilder<object, TimeSpan>();
 
                 builder.Between(TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(3), "{min} {max} Overriden error message");
 
@@ -185,7 +185,7 @@ namespace CoreValidation.PredefinedRules.UnitTests
             [Fact]
             public void BetweenOrEqualTo_Should_SetCustomMessage()
             {
-                var builder = new MemberSpecification<object, TimeSpan>();
+                var builder = new MemberSpecificationBuilder<object, TimeSpan>();
 
                 builder.BetweenOrEqualTo(TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(3), "{min} {max} Overriden error message");
 
@@ -195,7 +195,7 @@ namespace CoreValidation.PredefinedRules.UnitTests
             [Fact]
             public void EqualTo_Should_SetCustomMessage()
             {
-                var builder = new MemberSpecification<object, TimeSpan>();
+                var builder = new MemberSpecificationBuilder<object, TimeSpan>();
 
                 builder.EqualTo(TimeSpan.FromMinutes(0), "{value} Overriden error message");
 
@@ -205,7 +205,7 @@ namespace CoreValidation.PredefinedRules.UnitTests
             [Fact]
             public void GreaterOrEqual_Should_SetCustomMessage()
             {
-                var builder = new MemberSpecification<object, TimeSpan>();
+                var builder = new MemberSpecificationBuilder<object, TimeSpan>();
 
                 builder.GreaterOrEqualTo(TimeSpan.FromMinutes(2), "{min} Overriden error message");
 
@@ -215,7 +215,7 @@ namespace CoreValidation.PredefinedRules.UnitTests
             [Fact]
             public void GreaterThan_Should_SetCustomMessage()
             {
-                var builder = new MemberSpecification<object, TimeSpan>();
+                var builder = new MemberSpecificationBuilder<object, TimeSpan>();
 
                 builder.GreaterThan(TimeSpan.FromMinutes(2), "{min} Overriden error message");
 
@@ -225,7 +225,7 @@ namespace CoreValidation.PredefinedRules.UnitTests
             [Fact]
             public void LessThan_Should_SetCustomMessage()
             {
-                var builder = new MemberSpecification<object, TimeSpan>();
+                var builder = new MemberSpecificationBuilder<object, TimeSpan>();
 
                 builder.LessThan(TimeSpan.FromMinutes(1), "{max} Overriden error message");
 
@@ -235,7 +235,7 @@ namespace CoreValidation.PredefinedRules.UnitTests
             [Fact]
             public void LessThanOrEqual_Should_SetCustomMessage()
             {
-                var builder = new MemberSpecification<object, TimeSpan>();
+                var builder = new MemberSpecificationBuilder<object, TimeSpan>();
 
                 builder.LessOrEqualTo(TimeSpan.FromMinutes(1), "{max} Overriden error message");
 
@@ -245,7 +245,7 @@ namespace CoreValidation.PredefinedRules.UnitTests
             [Fact]
             public void NotEqualTo_Should_SetCustomMessage()
             {
-                var builder = new MemberSpecification<object, TimeSpan>();
+                var builder = new MemberSpecificationBuilder<object, TimeSpan>();
 
                 builder.NotEqualTo(TimeSpan.FromMinutes(4), "{value} Overriden error message");
 

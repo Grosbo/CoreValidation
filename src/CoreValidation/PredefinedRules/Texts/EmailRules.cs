@@ -7,7 +7,7 @@ namespace CoreValidation
 {
     public static class EmailRules
     {
-        public static IMemberSpecification<TModel, string> Email<TModel>(this IMemberSpecification<TModel, string> @this, string message = null)
+        public static IMemberSpecificationBuilder<TModel, string> Email<TModel>(this IMemberSpecificationBuilder<TModel, string> @this, string message = null)
             where TModel : class
         {
             return @this.Valid(m =>

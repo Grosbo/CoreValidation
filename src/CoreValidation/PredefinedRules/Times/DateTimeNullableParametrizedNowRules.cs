@@ -6,19 +6,19 @@ namespace CoreValidation
 {
     internal static class DateTimeNullableParametrizedNowRules
     {
-        internal static IMemberSpecification<TModel, DateTime?> ParametrizedAfterNow<TModel>(this IMemberSpecification<TModel, DateTime?> @this, DateTime now, TimeComparison timeComparison = TimeComparison.All, string message = null)
+        internal static IMemberSpecificationBuilder<TModel, DateTime?> ParametrizedAfterNow<TModel>(this IMemberSpecificationBuilder<TModel, DateTime?> @this, DateTime now, TimeComparison timeComparison = TimeComparison.All, string message = null)
             where TModel : class
         {
             return @this.ValidNullable(m => m.ParametrizedAfterNow(now, timeComparison, message));
         }
 
-        internal static IMemberSpecification<TModel, DateTime?> ParametrizedBeforeNow<TModel>(this IMemberSpecification<TModel, DateTime?> @this, DateTime now, TimeComparison timeComparison = TimeComparison.All, string message = null)
+        internal static IMemberSpecificationBuilder<TModel, DateTime?> ParametrizedBeforeNow<TModel>(this IMemberSpecificationBuilder<TModel, DateTime?> @this, DateTime now, TimeComparison timeComparison = TimeComparison.All, string message = null)
             where TModel : class
         {
             return @this.ValidNullable(m => m.ParametrizedBeforeNow(now, timeComparison, message));
         }
 
-        internal static IMemberSpecification<TModel, DateTime?> ParametrizedFromNow<TModel>(this IMemberSpecification<TModel, DateTime?> @this, DateTime now, TimeSpan timeSpan, string message = null)
+        internal static IMemberSpecificationBuilder<TModel, DateTime?> ParametrizedFromNow<TModel>(this IMemberSpecificationBuilder<TModel, DateTime?> @this, DateTime now, TimeSpan timeSpan, string message = null)
             where TModel : class
         {
             return @this.ValidNullable(m => m.ParametrizedFromNow(now, timeSpan, message));

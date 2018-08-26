@@ -11,30 +11,28 @@ namespace CoreValidation.PredefinedRules.UnitTests
     {
         private static readonly IRulesOptions _rulesOptions = new RulesOptionsStub();
 
-        public static ErrorsCollection CompileSingleError<TMember>(TMember member, IReadOnlyCollection<IRule> rulesCollection, Error defaultError)
+        public static IErrorsCollection CompileSingleError<TMember>(TMember member, IReadOnlyCollection<IRule> rulesCollection, Error defaultError)
         {
-            var errorsCollection = new ErrorsCollection();
+            var errorsCollection = new ErrorsCollection() as IErrorsCollection;
 
             var rule = rulesCollection.Single();
 
+            var compilationContext = new RulesExecutionContext
+            {
+                RulesOptions = new RulesOptionsStub
+                {
+                    DefaultError = defaultError
+                },
+                ValidationStrategy = ValidationStrategy.Complete
+            };
+
             if (rule is ValidRule<TMember> validateRule)
             {
-                var error = validateRule.CompileError(member, ValidationStrategy.Complete, defaultError);
-
-                if (error != null)
-                {
-                    errorsCollection.AddError(error);
-                }
+                validateRule.TryGetErrors(member, compilationContext, out errorsCollection);
             }
-            else if (rule is ValidNullableRule)
+            else if (rule is ValidNullableRule validateNullableRule)
             {
-                errorsCollection = rule.Compile(new[]
-                {
-                    new object(),
-                    member,
-                    ValidationStrategy.Complete,
-                    _rulesOptions.DefaultError
-                });
+                validateNullableRule.TryGetErrors(new object(), member, compilationContext, out errorsCollection);
             }
 
             return errorsCollection;
@@ -44,12 +42,15 @@ namespace CoreValidation.PredefinedRules.UnitTests
         {
             var errorsCollection = CompileSingleError(member, rulesCollection, _rulesOptions.DefaultError);
 
-            Assert.Equal(expectedIsValid, errorsCollection.IsEmpty);
-
-            if (!errorsCollection.IsEmpty)
+            if (!expectedIsValid)
             {
+                Assert.False(errorsCollection.IsEmpty);
                 var error = errorsCollection.Errors.Single();
                 Assert.Equal(expectedErrorMessage, error.Message);
+            }
+            else
+            {
+                Assert.True((errorsCollection == null) || errorsCollection.IsEmpty);
             }
         }
 

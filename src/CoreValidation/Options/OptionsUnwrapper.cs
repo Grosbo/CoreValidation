@@ -5,7 +5,7 @@ using CoreValidation.Translations;
 
 namespace CoreValidation.Options
 {
-    public class OptionsUnwrapper
+    internal class OptionsUnwrapper
     {
         public IValidationContextOptions Unwrap(IValidationContextOptions wrapped, Func<ValidationContextOptions, ValidationContextOptions> processUnwrapped)
         {

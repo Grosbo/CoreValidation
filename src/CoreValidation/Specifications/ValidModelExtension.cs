@@ -6,11 +6,11 @@ namespace CoreValidation
 {
     public static class ValidModelExtension
     {
-        public static IMemberSpecification<TModel, TMember> ValidModel<TModel, TMember>(this IMemberSpecification<TModel, TMember> @this, Validator<TMember> nestedValidator = null)
+        public static IMemberSpecificationBuilder<TModel, TMember> ValidModel<TModel, TMember>(this IMemberSpecificationBuilder<TModel, TMember> @this, Validator<TMember> nestedValidator = null)
             where TModel : class
             where TMember : class
         {
-            var memberSpecification = (MemberSpecification<TModel, TMember>) @this;
+            var memberSpecification = (MemberSpecificationBuilder<TModel, TMember>) @this;
 
             memberSpecification.AddRule(new ValidModelRule<TMember>(nestedValidator));
 

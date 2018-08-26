@@ -4,9 +4,9 @@ using CoreValidation.Validators;
 
 namespace CoreValidation.Specifications
 {
-    internal class RulesCollector
+    internal static class MemberValidatorProcessor
     {
-        public IRulesCollection GetMemberRules<TModel, TMember>(MemberValidator<TModel, TMember> memberValidator)
+        public static IMemberSpecification Process<TModel, TMember>(MemberValidator<TModel, TMember> memberValidator)
             where TModel : class
         {
             if (memberValidator == null)
@@ -14,16 +14,16 @@ namespace CoreValidation.Specifications
                 throw new ArgumentNullException(nameof(memberValidator));
             }
 
-            var newSpecification = new MemberSpecification<TModel, TMember>();
+            var newSpecification = new MemberSpecificationBuilder<TModel, TMember>();
 
             var processedSpecification = memberValidator(newSpecification);
 
             if (!ReferenceEquals(newSpecification, processedSpecification))
             {
-                throw new InvalidProcessedReferenceException(typeof(MemberSpecification<TModel, TMember>));
+                throw new InvalidProcessedReferenceException(typeof(MemberSpecificationBuilder<TModel, TMember>));
             }
 
-            return processedSpecification as MemberSpecification<TModel, TMember>;
+            return processedSpecification as MemberSpecificationBuilder<TModel, TMember>;
         }
     }
 }

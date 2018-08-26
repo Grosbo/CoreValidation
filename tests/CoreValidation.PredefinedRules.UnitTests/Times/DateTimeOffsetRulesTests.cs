@@ -22,7 +22,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Times
         [MemberData(nameof(EqualTo_Should_CollectError_Data))]
         public void EqualTo_Should_CollectError(DateTimeOffset model, DateTimeOffset value, bool expectedIsValid)
         {
-            var builder = new MemberSpecification<object, DateTimeOffset>();
+            var builder = new MemberSpecificationBuilder<object, DateTimeOffset>();
 
             builder.EqualTo(value);
 
@@ -41,7 +41,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Times
         [MemberData(nameof(NotEqualTo_Should_CollectError_Data))]
         public void NotEqualTo_Should_CollectError(DateTimeOffset model, DateTimeOffset value, bool expectedIsValid)
         {
-            var builder = new MemberSpecification<object, DateTimeOffset>();
+            var builder = new MemberSpecificationBuilder<object, DateTimeOffset>();
 
             builder.NotEqualTo(value);
 
@@ -60,7 +60,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Times
         [MemberData(nameof(After_Should_CollectError_Data))]
         public void After_Should_CollectError(DateTimeOffset model, DateTimeOffset value, bool expectedIsValid)
         {
-            var builder = new MemberSpecification<object, DateTimeOffset>();
+            var builder = new MemberSpecificationBuilder<object, DateTimeOffset>();
 
             builder.After(value);
 
@@ -79,7 +79,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Times
         [MemberData(nameof(AfterOrEqualTo_Should_CollectError_Data))]
         public void AfterOrEqualTo_Should_CollectError(DateTimeOffset model, DateTimeOffset value, bool expectedIsValid)
         {
-            var builder = new MemberSpecification<object, DateTimeOffset>();
+            var builder = new MemberSpecificationBuilder<object, DateTimeOffset>();
 
             builder.AfterOrEqualTo(value);
 
@@ -98,7 +98,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Times
         [MemberData(nameof(Before_Should_CollectError_Data))]
         public void Before_Should_CollectError(DateTimeOffset model, DateTimeOffset max, bool expectedIsValid)
         {
-            var builder = new MemberSpecification<object, DateTimeOffset>();
+            var builder = new MemberSpecificationBuilder<object, DateTimeOffset>();
 
             builder.Before(max);
 
@@ -117,7 +117,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Times
         [MemberData(nameof(BeforeOrEqualTo_Should_CollectError_Data))]
         public void BeforeOrEqualTo_Should_CollectError(DateTimeOffset model, DateTimeOffset max, bool expectedIsValid)
         {
-            var builder = new MemberSpecification<object, DateTimeOffset>();
+            var builder = new MemberSpecificationBuilder<object, DateTimeOffset>();
 
             builder.BeforeOrEqualTo(max);
 
@@ -136,7 +136,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Times
         [MemberData(nameof(Between_Should_CollectError_Data))]
         public void Between_Should_CollectError(DateTimeOffset min, DateTimeOffset model, DateTimeOffset max, bool expectedIsValid)
         {
-            var builder = new MemberSpecification<object, DateTimeOffset>();
+            var builder = new MemberSpecificationBuilder<object, DateTimeOffset>();
 
             builder.Between(min, max);
 
@@ -155,7 +155,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Times
         [MemberData(nameof(BetweenOrEqualTo_Should_CollectError_Data))]
         public void BetweenOrEqualTo_Should_CollectError(DateTimeOffset min, DateTimeOffset model, DateTimeOffset max, bool expectedIsValid)
         {
-            var builder = new MemberSpecification<object, DateTimeOffset>();
+            var builder = new MemberSpecificationBuilder<object, DateTimeOffset>();
 
             builder.BetweenOrEqualTo(min, max);
 
@@ -191,7 +191,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Times
             [MemberData(nameof(EqualTo_Should_CollectError_When_TimeComparisonSet_Data))]
             public void EqualTo_Should_CollectError_When_TimeComparisonSet(DateTimeOffset model, DateTimeOffset value, TimeComparison timeComparison, bool expectedIsValid)
             {
-                var builder = new MemberSpecification<object, DateTimeOffset>();
+                var builder = new MemberSpecificationBuilder<object, DateTimeOffset>();
 
                 builder.EqualTo(value, timeComparison);
 
@@ -225,7 +225,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Times
             [MemberData(nameof(NotEqualTo_Should_CollectError_When_TimeComparisonSet_Data))]
             public void NotEqualTo_Should_CollectError_When_TimeComparisonSet(DateTimeOffset model, DateTimeOffset value, TimeComparison timeComparison, bool expectedIsValid)
             {
-                var builder = new MemberSpecification<object, DateTimeOffset>();
+                var builder = new MemberSpecificationBuilder<object, DateTimeOffset>();
 
                 builder.NotEqualTo(value, timeComparison);
 
@@ -274,7 +274,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Times
             [MemberData(nameof(After_Should_CollectError_When_TimeComparisonSet_Data))]
             public void After_Should_CollectError_When_TimeComparisonSet(DateTimeOffset model, DateTimeOffset value, TimeComparison timeComparison, bool expectedIsValid)
             {
-                var builder = new MemberSpecification<object, DateTimeOffset>();
+                var builder = new MemberSpecificationBuilder<object, DateTimeOffset>();
 
                 builder.After(value, timeComparison);
 
@@ -323,7 +323,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Times
             [MemberData(nameof(AfterOrEqualTo_Should_CollectError_When_TimeComparisonSet_Data))]
             public void AfterOrEqualTo_Should_CollectError_When_TimeComparisonSet(DateTimeOffset model, DateTimeOffset value, TimeComparison timeComparison, bool expectedIsValid)
             {
-                var builder = new MemberSpecification<object, DateTimeOffset>();
+                var builder = new MemberSpecificationBuilder<object, DateTimeOffset>();
 
                 builder.AfterOrEqualTo(value, timeComparison);
 
@@ -372,7 +372,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Times
             [MemberData(nameof(Before_Should_CollectError_When_TimeComparisonSet_Data))]
             public void Before_Should_CollectError_When_TimeComparisonSet(DateTimeOffset model, DateTimeOffset max, TimeComparison timeComparison, bool expectedIsValid)
             {
-                var builder = new MemberSpecification<object, DateTimeOffset>();
+                var builder = new MemberSpecificationBuilder<object, DateTimeOffset>();
 
                 builder.Before(max, timeComparison);
 
@@ -421,7 +421,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Times
             [MemberData(nameof(BeforeOrEqualTo_Should_CollectError_When_TimeComparisonSet_Data))]
             public void BeforeOrEqualTo_Should_CollectError_When_TimeComparisonSet(DateTimeOffset model, DateTimeOffset max, TimeComparison timeComparison, bool expectedIsValid)
             {
-                var builder = new MemberSpecification<object, DateTimeOffset>();
+                var builder = new MemberSpecificationBuilder<object, DateTimeOffset>();
 
                 builder.BeforeOrEqualTo(max, timeComparison);
 
@@ -495,7 +495,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Times
             [MemberData(nameof(Between_Should_CollectError_When_TimeComparisonSet_Data))]
             public void Between_Should_CollectError_When_TimeComparisonSet(DateTimeOffset min, DateTimeOffset model, DateTimeOffset max, TimeComparison timeComparison, bool expectedIsValid)
             {
-                var builder = new MemberSpecification<object, DateTimeOffset>();
+                var builder = new MemberSpecificationBuilder<object, DateTimeOffset>();
 
                 builder.Between(min, max, timeComparison);
 
@@ -569,7 +569,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Times
             [MemberData(nameof(BetweenOrEqualTo_Should_CollectError_When_TimeComparisonSet_Data))]
             public void BetweenOrEqualTo_Should_CollectError_When_TimeComparisonSet(DateTimeOffset min, DateTimeOffset model, DateTimeOffset max, TimeComparison timeComparison, bool expectedIsValid)
             {
-                var builder = new MemberSpecification<object, DateTimeOffset>();
+                var builder = new MemberSpecificationBuilder<object, DateTimeOffset>();
 
                 builder.BetweenOrEqualTo(min, max, timeComparison);
 
@@ -581,7 +581,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Times
                 [Fact]
                 public void Between_Should_SetCustomMessage()
                 {
-                    var builder = new MemberSpecification<object, DateTimeOffset>();
+                    var builder = new MemberSpecificationBuilder<object, DateTimeOffset>();
 
                     builder.Between(new DateTimeOffset(2020, 09, 21, 15, 0, 1, TimeSpan.Zero), new DateTimeOffset(2020, 09, 21, 15, 0, 3, TimeSpan.Zero), message: "{min} {max} {timeComparison} Overriden error message");
 
@@ -591,7 +591,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Times
                 [Fact]
                 public void BetweenOrEqualTo_Should_SetCustomMessage()
                 {
-                    var builder = new MemberSpecification<object, DateTimeOffset>();
+                    var builder = new MemberSpecificationBuilder<object, DateTimeOffset>();
 
                     builder.BetweenOrEqualTo(new DateTimeOffset(2020, 09, 21, 15, 0, 1, TimeSpan.Zero), new DateTimeOffset(2020, 09, 21, 15, 0, 3, TimeSpan.Zero), message: "{min} {max} {timeComparison} Overriden error message");
 
@@ -601,7 +601,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Times
                 [Fact]
                 public void EqualTo_Should_SetCustomMessage()
                 {
-                    var builder = new MemberSpecification<object, DateTimeOffset>();
+                    var builder = new MemberSpecificationBuilder<object, DateTimeOffset>();
 
                     builder.EqualTo(new DateTimeOffset(2020, 09, 21, 15, 0, 0, TimeSpan.Zero), message: "{value} {timeComparison} Overriden error message");
 
@@ -611,7 +611,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Times
                 [Fact]
                 public void GreaterOrEqual_Should_SetCustomMessage()
                 {
-                    var builder = new MemberSpecification<object, DateTimeOffset>();
+                    var builder = new MemberSpecificationBuilder<object, DateTimeOffset>();
 
                     builder.AfterOrEqualTo(new DateTimeOffset(2020, 09, 21, 15, 0, 2, TimeSpan.Zero), message: "{min} {timeComparison} Overriden error message");
 
@@ -621,7 +621,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Times
                 [Fact]
                 public void GreaterThan_Should_SetCustomMessage()
                 {
-                    var builder = new MemberSpecification<object, DateTimeOffset>();
+                    var builder = new MemberSpecificationBuilder<object, DateTimeOffset>();
 
                     builder.After(new DateTimeOffset(2020, 09, 21, 15, 0, 2, TimeSpan.Zero), message: "{min} {timeComparison} Overriden error message");
 
@@ -631,7 +631,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Times
                 [Fact]
                 public void LessThan_Should_SetCustomMessage()
                 {
-                    var builder = new MemberSpecification<object, DateTimeOffset>();
+                    var builder = new MemberSpecificationBuilder<object, DateTimeOffset>();
 
                     builder.Before(new DateTimeOffset(2020, 09, 21, 15, 0, 1, TimeSpan.Zero), message: "{max} {timeComparison} Overriden error message");
 
@@ -641,7 +641,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Times
                 [Fact]
                 public void LessThanOrEqual_Should_SetCustomMessage()
                 {
-                    var builder = new MemberSpecification<object, DateTimeOffset>();
+                    var builder = new MemberSpecificationBuilder<object, DateTimeOffset>();
 
                     builder.BeforeOrEqualTo(new DateTimeOffset(2020, 09, 21, 15, 0, 1, TimeSpan.Zero), message: "{max} {timeComparison} Overriden error message");
 
@@ -651,7 +651,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Times
                 [Fact]
                 public void NotEqualTo_Should_SetCustomMessage()
                 {
-                    var builder = new MemberSpecification<object, DateTimeOffset>();
+                    var builder = new MemberSpecificationBuilder<object, DateTimeOffset>();
 
                     builder.NotEqualTo(new DateTimeOffset(2020, 09, 21, 15, 0, 4, TimeSpan.Zero), message: "{value} {timeComparison} Overriden error message");
 

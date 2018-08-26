@@ -2,6 +2,6 @@
 
 namespace CoreValidation.Validators
 {
-    public delegate IMemberSpecification<TModel, TMember> MemberValidator<TModel, TMember>(IMemberSpecification<TModel, TMember> memberSpecification)
+    public delegate IMemberSpecificationBuilder<TModel, TMember> MemberValidator<TModel, TMember>(IMemberSpecificationBuilder<TModel, TMember> memberSpecificationBuilder)
         where TModel : class;
 }

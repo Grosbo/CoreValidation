@@ -48,16 +48,19 @@ namespace CoreValidation.UnitTests.Specifications
                 var args = new[] {new MessageArg("key", "value")};
                 var memberValidator = GetSingleRuleMemberValidator(validateType, false, "message", args);
 
-                var rule = new ValidNullableRule<object, int>(memberValidator);
+                ValidNullableRule rule = new ValidNullableRule<object, int>(memberValidator);
 
-                var errorsCollection = rule.Compile(new[]
-                {
+                var getErrorsResult = rule.TryGetErrors(
                     new object(),
                     default(int),
-                    validationStrategy,
-                    ErrorHelpers.DefaultErrorStub
-                });
+                    new RulesExecutionContext
+                    {
+                        RulesOptions = new RulesOptionsStub(),
+                        ValidationStrategy = validationStrategy
+                    },
+                    out var errorsCollection);
 
+                Assert.True(getErrorsResult);
                 Assert.Equal("message", errorsCollection.Errors.Single().Message);
                 Assert.Same(args, errorsCollection.Errors.Single().Arguments);
             }
@@ -68,16 +71,19 @@ namespace CoreValidation.UnitTests.Specifications
             {
                 var memberValidator = GetSingleRuleMemberValidator(validateType, false, "message");
 
-                var rule = new ValidNullableRule<object, int>(memberValidator);
+                ValidNullableRule rule = new ValidNullableRule<object, int>(memberValidator);
 
-                var errorsCollection = rule.Compile(new[]
-                {
+                var getErrorsResult = rule.TryGetErrors(
                     new object(),
                     default(int),
-                    validationStrategy,
-                    ErrorHelpers.DefaultErrorStub
-                });
+                    new RulesExecutionContext
+                    {
+                        RulesOptions = new RulesOptionsStub(),
+                        ValidationStrategy = validationStrategy
+                    },
+                    out var errorsCollection);
 
+                Assert.True(getErrorsResult);
                 Assert.Equal("message", errorsCollection.Errors.Single().Message);
                 Assert.Null(errorsCollection.Errors.Single().Arguments);
             }
@@ -88,16 +94,19 @@ namespace CoreValidation.UnitTests.Specifications
             {
                 var memberValidator = GetSingleRuleMemberValidator(validateType, true, "message");
 
-                var rule = new ValidNullableRule<object, int>(memberValidator);
+                ValidNullableRule rule = new ValidNullableRule<object, int>(memberValidator);
 
-                var errorsCollection = rule.Compile(new[]
-                {
+                var getErrorsResult = rule.TryGetErrors(
                     new object(),
                     default(int),
-                    validationStrategy,
-                    ErrorHelpers.DefaultErrorStub
-                });
+                    new RulesExecutionContext
+                    {
+                        RulesOptions = new RulesOptionsStub(),
+                        ValidationStrategy = validationStrategy
+                    },
+                    out var errorsCollection);
 
+                Assert.False(getErrorsResult);
                 Assert.True(errorsCollection.IsEmpty);
                 Assert.Empty(errorsCollection.Errors);
             }
@@ -106,18 +115,21 @@ namespace CoreValidation.UnitTests.Specifications
             [MemberData(nameof(OptionsData), new[] {ValidationStrategy.Complete, ValidationStrategy.FailFast}, new[] {ValidateType.Validate, ValidateType.ValidateRelation}, MemberType = typeof(ValidNullableRuleTests))]
             public void Should_NotAddError_When_NullMember(ValidationStrategy validationStrategy, ValidateType validateType)
             {
-                var memberValidator = GetSingleRuleMemberValidator(validateType, false, "message");
+                var memberValidator = GetSingleRuleMemberValidator(validateType, true, "message");
 
-                var rule = new ValidNullableRule<object, int>(memberValidator);
+                ValidNullableRule rule = new ValidNullableRule<object, int>(memberValidator);
 
-                var errorsCollection = rule.Compile(new[]
-                {
+                var getErrorsResult = rule.TryGetErrors(
                     new object(),
                     null,
-                    validationStrategy,
-                    ErrorHelpers.DefaultErrorStub
-                });
+                    new RulesExecutionContext
+                    {
+                        RulesOptions = new RulesOptionsStub(),
+                        ValidationStrategy = validationStrategy
+                    },
+                    out var errorsCollection);
 
+                Assert.False(getErrorsResult);
                 Assert.True(errorsCollection.IsEmpty);
                 Assert.Empty(errorsCollection.Errors);
             }
@@ -126,45 +138,82 @@ namespace CoreValidation.UnitTests.Specifications
             [MemberData(nameof(OptionsData), new[] {ValidationStrategy.Force}, new[] {ValidateType.Validate, ValidateType.ValidateRelation}, MemberType = typeof(ValidNullableRuleTests))]
             public void Should_AddError_When_NullMember_And_Force(ValidationStrategy validationStrategy, ValidateType validateType)
             {
-                var memberValidator = GetSingleRuleMemberValidator(validateType, true, "message");
+                var args = new[] {new MessageArg("key", "value")};
+                var memberValidator = GetSingleRuleMemberValidator(validateType, false, "message", args);
 
-                var rule = new ValidNullableRule<object, int>(memberValidator);
+                ValidNullableRule rule = new ValidNullableRule<object, int>(memberValidator);
 
-                var errorsCollection = rule.Compile(new[]
-                {
+                var getErrorsResult = rule.TryGetErrors(
                     new object(),
                     null,
-                    validationStrategy,
-                    ErrorHelpers.DefaultErrorStub
-                });
+                    new RulesExecutionContext
+                    {
+                        RulesOptions = new RulesOptionsStub(),
+                        ValidationStrategy = validationStrategy
+                    },
+                    out var errorsCollection);
 
+                Assert.True(getErrorsResult);
                 Assert.Equal("message", errorsCollection.Errors.Single().Message);
-                Assert.Null(errorsCollection.Errors.Single().Arguments);
+                Assert.Same(args, errorsCollection.Errors.Single().Arguments);
             }
 
             [Theory]
             [MemberData(nameof(OptionsData), new[] {ValidationStrategy.Force}, new[] {ValidateType.Validate, ValidateType.ValidateRelation}, MemberType = typeof(ValidNullableRuleTests))]
             public void Should_AddError_When_Valid_And_Force(ValidationStrategy validationStrategy, ValidateType validateType)
             {
-                var memberValidator = GetSingleRuleMemberValidator(validateType, true, "message");
+                var args = new[] {new MessageArg("key", "value")};
+                var memberValidator = GetSingleRuleMemberValidator(validateType, true, "message", args);
 
-                var rule = new ValidNullableRule<object, int>(memberValidator);
+                ValidNullableRule rule = new ValidNullableRule<object, int>(memberValidator);
 
-                var errorsCollection = rule.Compile(new[]
-                {
+                var getErrorsResult = rule.TryGetErrors(
                     new object(),
                     default(int),
-                    validationStrategy,
-                    ErrorHelpers.DefaultErrorStub
-                });
+                    new RulesExecutionContext
+                    {
+                        RulesOptions = new RulesOptionsStub(),
+                        ValidationStrategy = validationStrategy
+                    },
+                    out var errorsCollection);
 
+                Assert.True(getErrorsResult);
                 Assert.Equal("message", errorsCollection.Errors.Single().Message);
-                Assert.Null(errorsCollection.Errors.Single().Arguments);
+                Assert.Same(args, errorsCollection.Errors.Single().Arguments);
             }
         }
 
         public class AddingErrorsInChains
         {
+            [Theory]
+            [MemberData(nameof(OptionsData), new[] {ValidationStrategy.Complete, ValidationStrategy.FailFast, ValidationStrategy.Force}, new[] {ValidateType.Validate, ValidateType.ValidateRelation}, MemberType = typeof(ValidNullableRuleTests))]
+            public void Should_AddDefaultError_When_Invalid_And_NoError(ValidationStrategy validationStrategy, ValidateType validateType)
+            {
+                var args = new[] {new MessageArg("key", "value")};
+                var message = "default error {arg}";
+                var memberValidator = GetSingleRuleMemberValidator(validateType, false);
+
+                var rule = new ValidNullableRule<object, int>(memberValidator);
+
+                var getErrorsResult = rule.TryGetErrors(
+                    new object(),
+                    default(int),
+                    new RulesExecutionContext
+                    {
+                        RulesOptions = new RulesOptionsStub
+                        {
+                            DefaultError = new Error(message, args)
+                        },
+                        ValidationStrategy = validationStrategy
+                    },
+                    out var errorsCollection);
+
+                Assert.True(getErrorsResult);
+
+                Assert.Equal(message, errorsCollection.Errors.Single().Message);
+                Assert.Same(args, errorsCollection.Errors.Single().Arguments);
+            }
+
             [Fact]
             public void Should_AddErrors_When_Chain_And_Complete()
             {
@@ -184,13 +233,17 @@ namespace CoreValidation.UnitTests.Specifications
                     .ValidRelative(m => true, "message8", new[] {new MessageArg("key8", "value8")})
                 );
 
-                var errorsCollection = rule.Compile(new[]
-                {
+                var getErrorsResult = rule.TryGetErrors(
                     new object(),
                     default(int),
-                    ValidationStrategy.Complete,
-                    ErrorHelpers.DefaultErrorStub
-                });
+                    new RulesExecutionContext
+                    {
+                        RulesOptions = new RulesOptionsStub(),
+                        ValidationStrategy = ValidationStrategy.Complete
+                    },
+                    out var errorsCollection);
+
+                Assert.True(getErrorsResult);
 
                 Assert.Equal(4, errorsCollection.Errors.Count);
 
@@ -223,13 +276,17 @@ namespace CoreValidation.UnitTests.Specifications
                     .ValidRelative(m => true, "message8", new[] {new MessageArg("key8", "value8")})
                 );
 
-                var errorsCollection = rule.Compile(new[]
-                {
+                var getErrorsResult = rule.TryGetErrors(
                     new object(),
                     default(int),
-                    ValidationStrategy.FailFast,
-                    ErrorHelpers.DefaultErrorStub
-                });
+                    new RulesExecutionContext
+                    {
+                        RulesOptions = new RulesOptionsStub(),
+                        ValidationStrategy = ValidationStrategy.FailFast
+                    },
+                    out var errorsCollection);
+
+                Assert.True(getErrorsResult);
 
                 Assert.Equal(1, errorsCollection.Errors.Count);
 
@@ -260,13 +317,17 @@ namespace CoreValidation.UnitTests.Specifications
                     .ValidRelative(m => true, "message8", args8)
                 );
 
-                var errorsCollection = rule.Compile(new[]
-                {
+                var getErrorsResult = rule.TryGetErrors(
                     new object(),
                     default(int),
-                    ValidationStrategy.Force,
-                    ErrorHelpers.DefaultErrorStub
-                });
+                    new RulesExecutionContext
+                    {
+                        RulesOptions = new RulesOptionsStub(),
+                        ValidationStrategy = ValidationStrategy.Force
+                    },
+                    out var errorsCollection);
+
+                Assert.True(getErrorsResult);
 
                 Assert.Equal(8, errorsCollection.Errors.Count);
 
@@ -294,27 +355,6 @@ namespace CoreValidation.UnitTests.Specifications
                 Assert.Equal("message8", errorsCollection.Errors.ElementAt(7).Message);
                 Assert.Same(args8, errorsCollection.Errors.ElementAt(7).Arguments);
             }
-            [Theory]
-            [MemberData(nameof(OptionsData), new[] {ValidationStrategy.Complete, ValidationStrategy.FailFast, ValidationStrategy.Force}, new[] {ValidateType.Validate, ValidateType.ValidateRelation}, MemberType = typeof(ValidNullableRuleTests))]
-            public void Should_AddDefaultError_When_Invalid_And_NoMessage_And_NoArgs(ValidationStrategy validationStrategy, ValidateType validateType)
-            {
-                var args = new[] {new MessageArg("key", "value")};
-                var message = "default error {arg}";
-                var memberValidator = GetSingleRuleMemberValidator(validateType, false);
-
-                var rule = new ValidNullableRule<object, int>(memberValidator);
-
-                var errorsCollection = rule.Compile(new[]
-                {
-                    new object(),
-                    default(int),
-                    validationStrategy,
-                    new Error(message, args)
-                });
-
-                Assert.Equal(message, errorsCollection.Errors.Single().Message);
-                Assert.Same(args, errorsCollection.Errors.Single().Arguments);
-            }
         }
 
         public class OverridingErrorMessage
@@ -329,13 +369,17 @@ namespace CoreValidation.UnitTests.Specifications
 
                 var rule = new ValidNullableRule<object, int>(c => memberValidator(c).WithSummaryError("message_overriden", args));
 
-                var errorsCollection = rule.Compile(new[]
-                {
+                var getErrorsResult = rule.TryGetErrors(
                     new object(),
                     default(int),
-                    validationStrategy,
-                    ErrorHelpers.DefaultErrorStub
-                });
+                    new RulesExecutionContext
+                    {
+                        RulesOptions = new RulesOptionsStub(),
+                        ValidationStrategy = validationStrategy
+                    },
+                    out var errorsCollection);
+
+                Assert.True(getErrorsResult);
 
                 Assert.Equal("message_overriden", errorsCollection.Errors.Single().Message);
                 Assert.Equal(args, errorsCollection.Errors.Single().Arguments);
@@ -347,15 +391,21 @@ namespace CoreValidation.UnitTests.Specifications
             {
                 var memberValidator = GetSingleRuleMemberValidator(validateType, true, "message", new[] {new MessageArg("key", "value")});
 
-                var rule = new ValidNullableRule<object, int>(c => memberValidator(c).WithSummaryError("message_overriden", new[] {new MessageArg("key_overriden", "value_overriden")}));
+                var args = new[] {new MessageArg("key_overriden", "value_overriden")};
 
-                var errorsCollection = rule.Compile(new[]
-                {
+                var rule = new ValidNullableRule<object, int>(c => memberValidator(c).WithSummaryError("message_overriden", args));
+
+                var getErrorsResult = rule.TryGetErrors(
                     new object(),
                     default(int),
-                    validationStrategy,
-                    ErrorHelpers.DefaultErrorStub
-                });
+                    new RulesExecutionContext
+                    {
+                        RulesOptions = new RulesOptionsStub(),
+                        ValidationStrategy = validationStrategy
+                    },
+                    out var errorsCollection);
+
+                Assert.False(getErrorsResult);
 
                 Assert.True(errorsCollection.IsEmpty);
                 Assert.Empty(errorsCollection.Errors);
@@ -368,18 +418,23 @@ namespace CoreValidation.UnitTests.Specifications
                 var memberValidator = GetSingleRuleMemberValidator(validateType, true, "message", new[] {new MessageArg("key", "value")});
 
                 var args = new[] {new MessageArg("key_overriden", "value_overriden")};
+
                 var rule = new ValidNullableRule<object, int>(c => memberValidator(c).WithSummaryError("message_overriden", args));
 
-                var errorsCollection = rule.Compile(new[]
-                {
+                var getErrorsResult = rule.TryGetErrors(
                     new object(),
                     default(int),
-                    validationStrategy,
-                    ErrorHelpers.DefaultErrorStub
-                });
+                    new RulesExecutionContext
+                    {
+                        RulesOptions = new RulesOptionsStub(),
+                        ValidationStrategy = validationStrategy
+                    },
+                    out var errorsCollection);
+
+                Assert.True(getErrorsResult);
 
                 Assert.Equal("message_overriden", errorsCollection.Errors.Single().Message);
-                Assert.Same(args, errorsCollection.Errors.Single().Arguments);
+                Assert.Equal(args, errorsCollection.Errors.Single().Arguments);
             }
 
             [Theory]
@@ -402,18 +457,20 @@ namespace CoreValidation.UnitTests.Specifications
                     .WithSummaryError("message_overriden", args)
                 );
 
-                var errorsCollection = rule.Compile(new[]
-                {
+                var getErrorsResult = rule.TryGetErrors(
                     new object(),
                     default(int),
-                    validationStrategy,
-                    ErrorHelpers.DefaultErrorStub
-                });
+                    new RulesExecutionContext
+                    {
+                        RulesOptions = new RulesOptionsStub(),
+                        ValidationStrategy = validationStrategy
+                    },
+                    out var errorsCollection);
 
-                Assert.Equal(1, errorsCollection.Errors.Count);
+                Assert.True(getErrorsResult);
 
                 Assert.Equal("message_overriden", errorsCollection.Errors.Single().Message);
-                Assert.Same(args, errorsCollection.Errors.Single().Arguments);
+                Assert.Equal(args, errorsCollection.Errors.Single().Arguments);
             }
 
             [Theory]
@@ -475,13 +532,17 @@ namespace CoreValidation.UnitTests.Specifications
                     .WithSummaryError("message_overriden", new[] {new MessageArg("key_overriden", "value_overriden")})
                 );
 
-                rule.Compile(new[]
-                {
+                var getErrorsResult = rule.TryGetErrors(
                     new object(),
                     default(int),
-                    validationStrategy,
-                    ErrorHelpers.DefaultErrorStub
-                });
+                    new RulesExecutionContext
+                    {
+                        RulesOptions = new RulesOptionsStub(),
+                        ValidationStrategy = validationStrategy
+                    },
+                    out _);
+
+                Assert.True(getErrorsResult);
 
                 Assert.Equal(3, executionCounter);
             }
@@ -504,17 +565,19 @@ namespace CoreValidation.UnitTests.Specifications
                     executed = true;
 
                     return true;
-                }, "message");
+                });
 
                 var rule = new ValidNullableRule<object, int>(memberValidator);
 
-                rule.Compile(new[]
-                {
+                rule.TryGetErrors(
                     new object(),
                     member,
-                    validationStrategy,
-                    ErrorHelpers.DefaultErrorStub
-                });
+                    new RulesExecutionContext
+                    {
+                        RulesOptions = new RulesOptionsStub(),
+                        ValidationStrategy = validationStrategy
+                    },
+                    out _);
 
                 Assert.True(executed);
             }
@@ -534,17 +597,19 @@ namespace CoreValidation.UnitTests.Specifications
                     executed = true;
 
                     return true;
-                }, "message");
+                });
 
                 var rule = new ValidNullableRule<object, int>(memberValidator);
 
-                rule.Compile(new[]
-                {
+                rule.TryGetErrors(
                     model,
-                    123,
-                    validationStrategy,
-                    ErrorHelpers.DefaultErrorStub
-                });
+                    1230,
+                    new RulesExecutionContext
+                    {
+                        RulesOptions = new RulesOptionsStub(),
+                        ValidationStrategy = validationStrategy
+                    },
+                    out _);
 
                 Assert.True(executed);
             }
@@ -578,13 +643,15 @@ namespace CoreValidation.UnitTests.Specifications
 
                 var rule = new ValidNullableRule<object, int>(memberValidator);
 
-                rule.Compile(new[]
-                {
+                rule.TryGetErrors(
                     model,
                     member,
-                    validationStrategy,
-                    ErrorHelpers.DefaultErrorStub
-                });
+                    new RulesExecutionContext
+                    {
+                        RulesOptions = new RulesOptionsStub(),
+                        ValidationStrategy = validationStrategy
+                    },
+                    out _);
 
                 Assert.True(validateExecuted);
                 Assert.True(validateRelationExecuted);
@@ -609,13 +676,15 @@ namespace CoreValidation.UnitTests.Specifications
 
                 var rule = new ValidNullableRule<object, int>(memberValidator);
 
-                rule.Compile(new[]
-                {
+                rule.TryGetErrors(
                     new object(),
                     default(int),
-                    validationStrategy,
-                    ErrorHelpers.DefaultErrorStub
-                });
+                    new RulesExecutionContext
+                    {
+                        RulesOptions = new RulesOptionsStub(),
+                        ValidationStrategy = validationStrategy
+                    },
+                    out _);
 
                 Assert.True(executed);
             }
@@ -636,13 +705,15 @@ namespace CoreValidation.UnitTests.Specifications
 
                 var rule = new ValidNullableRule<object, int>(memberValidator);
 
-                rule.Compile(new[]
-                {
+                rule.TryGetErrors(
                     new object(),
                     default(int),
-                    validationStrategy,
-                    ErrorHelpers.DefaultErrorStub
-                });
+                    new RulesExecutionContext
+                    {
+                        RulesOptions = new RulesOptionsStub(),
+                        ValidationStrategy = validationStrategy
+                    },
+                    out _);
 
                 Assert.True(executed);
             }
@@ -663,13 +734,15 @@ namespace CoreValidation.UnitTests.Specifications
 
                 var rule = new ValidNullableRule<object, int>(memberValidator);
 
-                rule.Compile(new[]
-                {
+                rule.TryGetErrors(
                     new object(),
                     null,
-                    validationStrategy,
-                    ErrorHelpers.DefaultErrorStub
-                });
+                    new RulesExecutionContext
+                    {
+                        RulesOptions = new RulesOptionsStub(),
+                        ValidationStrategy = validationStrategy
+                    },
+                    out _);
 
                 Assert.False(executed);
             }
@@ -690,13 +763,15 @@ namespace CoreValidation.UnitTests.Specifications
 
                 var rule = new ValidNullableRule<object, int>(memberValidator);
 
-                rule.Compile(new[]
-                {
+                rule.TryGetErrors(
                     new object(),
                     null,
-                    validationStrategy,
-                    ErrorHelpers.DefaultErrorStub
-                });
+                    new RulesExecutionContext
+                    {
+                        RulesOptions = new RulesOptionsStub(),
+                        ValidationStrategy = validationStrategy
+                    },
+                    out _);
 
                 Assert.False(executed);
             }
@@ -715,13 +790,15 @@ namespace CoreValidation.UnitTests.Specifications
 
                 var rule = new ValidNullableRule<object, int>(memberValidator);
 
-                rule.Compile(new[]
-                {
+                rule.TryGetErrors(
                     new object(),
                     default(int),
-                    ValidationStrategy.Force,
-                    ErrorHelpers.DefaultErrorStub
-                });
+                    new RulesExecutionContext
+                    {
+                        RulesOptions = new RulesOptionsStub(),
+                        ValidationStrategy = ValidationStrategy.Force
+                    },
+                    out _);
 
                 Assert.False(executed);
             }
@@ -740,13 +817,15 @@ namespace CoreValidation.UnitTests.Specifications
 
                 var rule = new ValidNullableRule<object, int>(memberValidator);
 
-                rule.Compile(new[]
-                {
+                rule.TryGetErrors(
                     new object(),
                     default(int),
-                    ValidationStrategy.Force,
-                    ErrorHelpers.DefaultErrorStub
-                });
+                    new RulesExecutionContext
+                    {
+                        RulesOptions = new RulesOptionsStub(),
+                        ValidationStrategy = ValidationStrategy.Force
+                    },
+                    out _);
 
                 Assert.False(executed);
             }
@@ -755,19 +834,12 @@ namespace CoreValidation.UnitTests.Specifications
         [Fact]
         public void Should_ThrowException_When_WithName()
         {
-            var rule = new ValidNullableRule<object, int>(be => be
-                .WithName("anything")
-            );
-
             Assert.Throws<InvalidOperationException>(() =>
             {
-                rule.Compile(new[]
-                {
-                    new object(),
-                    default(int),
-                    ValidationStrategy.Complete,
-                    ErrorHelpers.DefaultErrorStub
-                });
+                // ReSharper disable once ObjectCreationAsStatement
+                new ValidNullableRule<object, int>(be => be
+                    .WithName("anything")
+                );
             });
         }
     }

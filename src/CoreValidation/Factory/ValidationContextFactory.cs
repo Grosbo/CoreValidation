@@ -4,12 +4,8 @@ using CoreValidation.Options;
 
 namespace CoreValidation.Factory
 {
-    public sealed class ValidationContextFactory : IValidationContextFactory
+    internal sealed class ValidationContextFactory : IValidationContextFactory
     {
-        internal ValidationContextFactory()
-        {
-        }
-
         public IValidationContext Create(Func<IValidationContextOptions, IValidationContextOptions> options = null)
         {
             var newOptions = new ValidationContextOptions();

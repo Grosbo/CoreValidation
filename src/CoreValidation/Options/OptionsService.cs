@@ -6,11 +6,11 @@ using CoreValidation.Validators;
 
 namespace CoreValidation.Options
 {
-    internal sealed class OptionsService
+    internal static class OptionsService
     {
         private static readonly OptionsUnwrapper _optionsUnwrapper = new OptionsUnwrapper();
 
-        public IValidationContextOptions GetMerged(IValidationContextOptions baseOptions, IValidationContextOptions newOptions)
+        public static IValidationContextOptions GetMerged(IValidationContextOptions baseOptions, IValidationContextOptions newOptions)
         {
             if (baseOptions == null)
             {
@@ -63,7 +63,7 @@ namespace CoreValidation.Options
             return GetVerifiedCoreValidatorOptions(merged);
         }
 
-        public IValidationContextOptions GetVerifiedCoreValidatorOptions(IValidationContextOptions options)
+        public static IValidationContextOptions GetVerifiedCoreValidatorOptions(IValidationContextOptions options)
         {
             if (options == null)
             {
@@ -85,7 +85,7 @@ namespace CoreValidation.Options
             return compiledOptions;
         }
 
-        public IValidationOptions GetVerifiedValidationOptions(IValidationOptions options)
+        public static IValidationOptions GetVerifiedValidationOptions(IValidationOptions options)
         {
             if (options == null)
             {
@@ -119,7 +119,7 @@ namespace CoreValidation.Options
             };
         }
 
-        public IReadOnlyCollection<Translation> GetVerifiedTranslations(IReadOnlyCollection<Translation> translations)
+        public static IReadOnlyCollection<Translation> GetVerifiedTranslations(IReadOnlyCollection<Translation> translations)
         {
             if (translations == null)
             {
@@ -132,7 +132,7 @@ namespace CoreValidation.Options
             {
                 if (translation == null)
                 {
-                    throw new InvalidOperationException($"Null in {translations} collection");
+                    throw new InvalidOperationException($"Null in {nameof(translations)} collection");
                 }
 
                 var compiledDictionary = compiled.FirstOrDefault(d => d.Name == translation.Name);
@@ -153,7 +153,7 @@ namespace CoreValidation.Options
             return compiled;
         }
 
-        public IReadOnlyDictionary<Type, object> GetVerifiedValidatorsDictionary(IReadOnlyDictionary<Type, object> validatorsDictionary)
+        public static IReadOnlyDictionary<Type, object> GetVerifiedValidatorsDictionary(IReadOnlyDictionary<Type, object> validatorsDictionary)
         {
             if (validatorsDictionary == null)
             {
@@ -178,7 +178,7 @@ namespace CoreValidation.Options
             return validatorsDictionary.ToDictionary(i => i.Key, i => i.Value);
         }
 
-        public string VerifyTranslationName(IReadOnlyCollection<Translation> translations, string translationName)
+        public static string VerifyTranslationName(IReadOnlyCollection<Translation> translations, string translationName)
         {
             if (translations == null)
             {

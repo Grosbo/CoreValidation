@@ -6,7 +6,7 @@ using CoreValidation.Options;
 
 namespace CoreValidation.Factory.Validators
 {
-    public static class ValidatorHoldersHelpers
+    internal static class ValidatorHoldersHelpers
     {
         public static void InvokeAddValidator(IValidationContextOptions options, object holderInstance, Type validatedType)
         {

@@ -12,7 +12,7 @@ namespace CoreValidation.UnitTests.Specifications
 {
     public class ValidModelRuleTests
     {
-        private static (ValidModelRule<T>, IValidatorsRepository) GetRule<T>(bool useRepository, Validator<T> validator)
+        private static (ValidModelRule, ISpecificationsRepository) GetRule<T>(bool useRepository, Validator<T> validator)
             where T : class
         {
             var validatorsRepositoryMock = new Mock<IValidatorsRepository>();
@@ -24,7 +24,7 @@ namespace CoreValidation.UnitTests.Specifications
                     .Returns(validator);
             }
 
-            return (new ValidModelRule<T>(useRepository ? null : validator), validatorsRepositoryMock.Object);
+            return (new ValidModelRule<T>(useRepository ? null : validator), new SpecificationsRepository(validatorsRepositoryMock.Object));
         }
 
         public static IEnumerable<object[]> AllStrategies_NullAndObject_Data()
@@ -54,15 +54,18 @@ namespace CoreValidation.UnitTests.Specifications
                 var args = new[] {new MessageArg("key", "value")};
                 var (rule, repository) = GetRule<object>(useRepository, be => be.Valid(m => false, "message", args));
 
-                var errorsCollection = rule.Compile(new[]
-                {
+                var getErrorsResult = rule.TryGetErrors(
                     new object(),
-                    repository,
-                    validationStrategy,
+                    new RulesExecutionContext
+                    {
+                        RulesOptions = new RulesOptionsStub(),
+                        SpecificationsRepository = repository,
+                        ValidationStrategy = validationStrategy
+                    },
                     0,
-                    new RulesOptionsStub()
-                });
+                    out var errorsCollection);
 
+                Assert.True(getErrorsResult);
                 Assert.Equal("message", errorsCollection.Errors.Single().Message);
                 Assert.Same(args, errorsCollection.Errors.Single().Arguments);
             }
@@ -73,34 +76,40 @@ namespace CoreValidation.UnitTests.Specifications
             {
                 var (rule, repository) = GetRule<object>(useRepository, be => be.Valid(m => true, "message", new[] {new MessageArg("key", "value")}));
 
-                var errorsCollection = rule.Compile(new[]
-                {
+                var getErrorsResult = rule.TryGetErrors(
                     new object(),
-                    repository,
-                    validationStrategy,
+                    new RulesExecutionContext
+                    {
+                        RulesOptions = new RulesOptionsStub(),
+                        SpecificationsRepository = repository,
+                        ValidationStrategy = validationStrategy
+                    },
                     0,
-                    new RulesOptionsStub()
-                });
+                    out var errorsCollection);
 
-                Assert.False(errorsCollection.Errors.Any());
+                Assert.False(getErrorsResult);
+                Assert.True(errorsCollection.IsEmpty);
             }
 
             [Theory]
             [MemberData(nameof(Strategies_TrueAndFalse_Data), new[] {ValidationStrategy.Force}, MemberType = typeof(ValidModelRuleTests))]
-            public void Should_NotAddErrorFromValidator_When_Valid_And_Force(ValidationStrategy validationStrategy, bool useRepository)
+            public void Should_AddErrorFromValidator_When_Valid_And_Force(ValidationStrategy validationStrategy, bool useRepository)
             {
                 var args = new[] {new MessageArg("key", "value")};
                 var (rule, repository) = GetRule<object>(useRepository, be => be.Valid(m => true, "message", args));
 
-                var errorsCollection = rule.Compile(new[]
-                {
+                var getErrorsResult = rule.TryGetErrors(
                     new object(),
-                    repository,
-                    validationStrategy,
+                    new RulesExecutionContext
+                    {
+                        RulesOptions = new RulesOptionsStub(),
+                        SpecificationsRepository = repository,
+                        ValidationStrategy = validationStrategy
+                    },
                     0,
-                    new RulesOptionsStub()
-                });
+                    out var errorsCollection);
 
+                Assert.True(getErrorsResult);
                 Assert.Equal("message", errorsCollection.Errors.Single().Message);
                 Assert.Same(args, errorsCollection.Errors.Single().Arguments);
             }
@@ -109,43 +118,47 @@ namespace CoreValidation.UnitTests.Specifications
         public class PassingValuesToValidator
         {
             [Theory]
-            [MemberData(nameof(AllStrategies_NullAndObject_Data), MemberType = typeof(ValidModelRuleTests))]
-            public void Should_PassMemberToRepoValidator_When_NullValidator(ValidationStrategy validationStrategy, object member)
+            [InlineData(ValidationStrategy.Complete)]
+            [InlineData(ValidationStrategy.FailFast)]
+            public void Should_PassMemberToRepoValidator_When_NullValidator(ValidationStrategy validationStrategy)
             {
+                var member = new object();
                 var executedRepoValidator = 0;
                 var validatorsRepositoryMock = new Mock<IValidatorsRepository>();
 
                 validatorsRepositoryMock
                     .Setup(r => r.Get<object>())
-                    .Returns(c =>
+                    .Returns(c => c.Valid(m =>
                     {
-                        Assert.IsType<Specification<object>>(c);
-                        Assert.Same(((Specification<object>)c).Model, member);
-                        Assert.Equal(((Specification<object>)c).ValidationStrategy, validationStrategy);
-
+                        Assert.Same(m, member);
                         executedRepoValidator++;
 
-                        return c;
-                    });
+                        return true;
+                    }));
 
-                var rule = new ValidModelRule<object>();
+                ValidModelRule rule = new ValidModelRule<object>();
 
-                rule.Compile(new[]
-                {
+                rule.TryGetErrors(
                     member,
-                    validatorsRepositoryMock.Object,
-                    validationStrategy,
+                    new RulesExecutionContext
+                    {
+                        RulesOptions = new RulesOptionsStub(),
+                        SpecificationsRepository = new SpecificationsRepository(validatorsRepositoryMock.Object),
+                        ValidationStrategy = validationStrategy
+                    },
                     0,
-                    new RulesOptionsStub()
-                });
+                    out _);
 
                 Assert.Equal(1, executedRepoValidator);
             }
 
             [Theory]
-            [MemberData(nameof(AllStrategies_NullAndObject_Data), MemberType = typeof(ValidModelRuleTests))]
-            public void Should_PassMemberToDefinedValidator_When_ValidatorDefined(ValidationStrategy validationStrategy, object member)
+            [InlineData(ValidationStrategy.Complete)]
+            [InlineData(ValidationStrategy.FailFast)]
+            public void Should_PassMemberToDefinedValidator_When_ValidatorDefined(ValidationStrategy validationStrategy)
             {
+                var member = new object();
+
                 var executedRepoValidator = 0;
                 var executedDefinedValidator = 0;
                 var validatorsRepositoryMock = new Mock<IValidatorsRepository>();
@@ -159,27 +172,26 @@ namespace CoreValidation.UnitTests.Specifications
                         return c;
                     });
 
-                Validator<object> validator = c =>
+                Validator<object> validator = c => c.Valid(m =>
                 {
-                    Assert.IsType<Specification<object>>(c);
-                    Assert.Same(((Specification<object>)c).Model, member);
-                    Assert.Equal(((Specification<object>)c).ValidationStrategy, validationStrategy);
-
+                    Assert.Same(m, member);
                     executedDefinedValidator++;
 
-                    return c;
-                };
-
-                var rule = new ValidModelRule<object>(validator);
-
-                rule.Compile(new[]
-                {
-                    member,
-                    validatorsRepositoryMock.Object,
-                    validationStrategy,
-                    0,
-                    new RulesOptionsStub()
+                    return true;
                 });
+
+                ValidModelRule rule = new ValidModelRule<object>(validator);
+
+                rule.TryGetErrors(
+                    member,
+                    new RulesExecutionContext
+                    {
+                        RulesOptions = new RulesOptionsStub(),
+                        SpecificationsRepository = new SpecificationsRepository(validatorsRepositoryMock.Object),
+                        ValidationStrategy = validationStrategy
+                    },
+                    0,
+                    out _);
 
                 Assert.Equal(1, executedDefinedValidator);
                 Assert.Equal(0, executedRepoValidator);
@@ -212,16 +224,18 @@ namespace CoreValidation.UnitTests.Specifications
                     return c;
                 };
 
-                var rule = new ValidModelRule<object>(validator);
+                ValidModelRule rule = new ValidModelRule<object>(validator);
 
-                rule.Compile(new[]
-                {
+                rule.TryGetErrors(
                     member,
-                    validatorsRepositoryMock.Object,
-                    validationStrategy,
+                    new RulesExecutionContext
+                    {
+                        RulesOptions = new RulesOptionsStub(),
+                        SpecificationsRepository = new SpecificationsRepository(validatorsRepositoryMock.Object),
+                        ValidationStrategy = validationStrategy
+                    },
                     0,
-                    new RulesOptionsStub()
-                });
+                    out _);
 
                 Assert.Equal(1, executedDefinedValidator);
                 Assert.Equal(0, executedRepoValidator);
@@ -244,16 +258,18 @@ namespace CoreValidation.UnitTests.Specifications
                         return c;
                     });
 
-                var rule = new ValidModelRule<object>();
+                ValidModelRule rule = new ValidModelRule<object>();
 
-                rule.Compile(new[]
-                {
+                rule.TryGetErrors(
                     member,
-                    validatorsRepositoryMock.Object,
-                    validationStrategy,
+                    new RulesExecutionContext
+                    {
+                        RulesOptions = new RulesOptionsStub(),
+                        SpecificationsRepository = new SpecificationsRepository(validatorsRepositoryMock.Object),
+                        ValidationStrategy = validationStrategy
+                    },
                     0,
-                    new RulesOptionsStub()
-                });
+                    out _);
 
                 Assert.Equal(1, executedRepoValidator);
             }
@@ -283,21 +299,23 @@ namespace CoreValidation.UnitTests.Specifications
                     .Setup(r => r.Get<Item3>())
                     .Returns(c => c.Valid(m => true, "error"));
 
-                var rule = new ValidModelRule<Item1>();
+                ValidModelRule rule = new ValidModelRule<Item1>();
 
                 Action compilation = () =>
                 {
-                    rule.Compile(new object[]
-                    {
+                    rule.TryGetErrors(
                         new Item1(),
-                        validatorsRepositoryMock.Object,
-                        ValidationStrategy.Complete,
-                        0,
-                        new RulesOptionsStub
+                        new RulesExecutionContext
                         {
-                            MaxDepth = maxDepth
-                        }
-                    });
+                            RulesOptions = new RulesOptionsStub
+                            {
+                                MaxDepth = maxDepth
+                            },
+                            SpecificationsRepository = new SpecificationsRepository(validatorsRepositoryMock.Object),
+                            ValidationStrategy = ValidationStrategy.Complete
+                        },
+                        0,
+                        out _);
                 };
 
                 if (expectException)
@@ -324,21 +342,23 @@ namespace CoreValidation.UnitTests.Specifications
                 Validator<Item2> item2Validator = c => c.For(m => m.Item3, m => m.ValidModel(item3Validator));
                 Validator<Item1> item1Validator = c => c.For(m => m.Item2, m => m.ValidModel(item2Validator));
 
-                var rule = new ValidModelRule<Item1>(item1Validator);
+                ValidModelRule rule = new ValidModelRule<Item1>(item1Validator);
 
                 Action compilation = () =>
                 {
-                    rule.Compile(new object[]
-                    {
+                    rule.TryGetErrors(
                         new Item1(),
-                        validatorsRepositoryMock.Object,
-                        ValidationStrategy.Complete,
-                        0,
-                        new RulesOptionsStub
+                        new RulesExecutionContext
                         {
-                            MaxDepth = maxDepth
-                        }
-                    });
+                            RulesOptions = new RulesOptionsStub
+                            {
+                                MaxDepth = maxDepth
+                            },
+                            SpecificationsRepository = new SpecificationsRepository(validatorsRepositoryMock.Object),
+                            ValidationStrategy = ValidationStrategy.Complete
+                        },
+                        0,
+                        out _);
                 };
 
                 if (expectException)
@@ -364,23 +384,25 @@ namespace CoreValidation.UnitTests.Specifications
 
                 validatorsRepositoryMock
                     .Setup(r => r.Get<ItemLoop>())
-                    .Returns(c => c.For(m => m.Nested, m => m.ValidModel()).Valid(m => true, "error"));
+                    .Returns(c => c.For(m => m.Nested, m => m.ValidModel()).Valid(m => true));
 
-                var rule = new ValidModelRule<ItemLoop>();
+                ValidModelRule rule = new ValidModelRule<ItemLoop>();
 
                 Assert.Throws<MaxDepthExceededException>(() =>
                 {
-                    rule.Compile(new object[]
-                    {
+                    rule.TryGetErrors(
                         new ItemLoop(),
-                        validatorsRepositoryMock.Object,
-                        ValidationStrategy.Complete,
-                        0,
-                        new RulesOptionsStub
+                        new RulesExecutionContext
                         {
-                            MaxDepth = maxDepth
-                        }
-                    });
+                            RulesOptions = new RulesOptionsStub
+                            {
+                                MaxDepth = maxDepth
+                            },
+                            SpecificationsRepository = new SpecificationsRepository(validatorsRepositoryMock.Object),
+                            ValidationStrategy = ValidationStrategy.Complete
+                        },
+                        0,
+                        out _);
                 });
             }
 

@@ -20,7 +20,7 @@ namespace CoreValidation.PredefinedRules.UnitTests
         [InlineData('Ą', 'ó', false)]
         public void EqualIgnoreCase_Should_CollectError(char model, char value, bool expectedIsValid)
         {
-            var builder = new MemberSpecification<object, char?>();
+            var builder = new MemberSpecificationBuilder<object, char?>();
 
             builder.EqualIgnoreCase(value);
 
@@ -41,7 +41,7 @@ namespace CoreValidation.PredefinedRules.UnitTests
         [InlineData('Ą', 'ó', true)]
         public void NotEqualIgnoreCase_Should_CollectError(char model, char value, bool expectedIsValid)
         {
-            var builder = new MemberSpecification<object, char?>();
+            var builder = new MemberSpecificationBuilder<object, char?>();
 
             builder.NotEqualIgnoreCase(value);
 
@@ -53,7 +53,7 @@ namespace CoreValidation.PredefinedRules.UnitTests
             [Fact]
             public void EqualIgnoreCase_Should_SetCustomMessage()
             {
-                var builder = new MemberSpecification<object, char?>();
+                var builder = new MemberSpecificationBuilder<object, char?>();
 
                 builder.EqualIgnoreCase('e', "{value} Overriden error message");
 
@@ -63,7 +63,7 @@ namespace CoreValidation.PredefinedRules.UnitTests
             [Fact]
             public void NotEqualIgnoreCase_Should_SetCustomMessage()
             {
-                var builder = new MemberSpecification<object, char?>();
+                var builder = new MemberSpecificationBuilder<object, char?>();
 
                 builder.NotEqualIgnoreCase('c', "{value} Overriden error message");
 

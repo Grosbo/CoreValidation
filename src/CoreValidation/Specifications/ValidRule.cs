@@ -1,71 +1,51 @@
 ﻿using System;
-using System.Collections.Generic;
 using CoreValidation.Errors;
 
 namespace CoreValidation.Specifications
 {
-    public abstract class ValidRule
+    internal abstract class ValidRule
     {
     }
 
-    public sealed class ValidRule<TMember> : ValidRule, IRule, IErrorMessageHolder
+    internal sealed class ValidRule<TMember> : ValidRule, IRule
     {
-        public ValidRule(Predicate<TMember> isValid, string message = null, IReadOnlyCollection<IMessageArg> args = null)
+        private readonly ErrorsCollection _errorInCollection;
+
+        public ValidRule(Predicate<TMember> isValid, Error error = null)
         {
             IsValid = isValid ?? throw new ArgumentNullException(nameof(isValid));
 
-            Error.AssertValidMessageAndArgs(message, args);
+            Error = error;
 
-            Message = message;
-            Arguments = args;
+            if (error != null)
+            {
+                _errorInCollection = new ErrorsCollection();
+                _errorInCollection.AddError(error);
+            }
         }
 
         public Predicate<TMember> IsValid { get; }
 
-        public IReadOnlyCollection<IMessageArg> Arguments { get; }
+        public Error Error { get; }
 
-        public string Message { get; }
-
-        public ErrorsCollection Compile(object[] args)
+        public bool TryGetErrors(TMember memberValue, IRulesExecutionContext rulesExecutionContext, out IErrorsCollection errorsCollection)
         {
-            return Compile(
-                IsValid,
-                Message,
-                Arguments,
-                (TMember) args[0],
-                (ValidationStrategy) args[1],
-                (Error)args[2]
-            );
-        }
-
-        public Error CompileError(TMember memberValue, ValidationStrategy validationStrategy, Error defaultError)
-        {
-            return CompileError(IsValid, Message, Arguments, memberValue, validationStrategy, defaultError);
-        }
-
-        public static ErrorsCollection Compile(Predicate<TMember> isValid, string message, IReadOnlyCollection<IMessageArg> args, TMember memberValue, ValidationStrategy validationStrategy, Error defaultError)
-        {
-            var errorsCollection = new ErrorsCollection();
-
-            var error = CompileError(isValid, message, args, memberValue, validationStrategy, defaultError);
-
-            if (error != null)
+            if (rulesExecutionContext == null)
             {
-                errorsCollection.AddError(error);
+                throw new ArgumentNullException(nameof(rulesExecutionContext));
             }
 
-            return errorsCollection;
-        }
-
-        public static Error CompileError(Predicate<TMember> isValid, string message, IReadOnlyCollection<IMessageArg> args, TMember memberValue, ValidationStrategy validationStrategy, Error defaultError)
-        {
-            if ((validationStrategy == ValidationStrategy.Force) ||
-                ((memberValue != null) && !isValid(memberValue)))
+            if ((rulesExecutionContext.ValidationStrategy == ValidationStrategy.Force) ||
+                ((memberValue != null) && !IsValid(memberValue)))
             {
-                return Error.CreateOrDefault(message, args, defaultError);
+                errorsCollection = _errorInCollection ?? rulesExecutionContext.DefaultErrorCollection;
+
+                return true;
             }
 
-            return null;
+            errorsCollection = ErrorsCollection.Empty;
+
+            return false;
         }
     }
 }

@@ -71,6 +71,11 @@ namespace CoreValidation.UnitTests.Specifications
             return indexes;
         }
 
+        public static bool AnyNonNullItem<T>(IEnumerable<T> member)
+        {
+            return (member != null) && member.Any(i => i != null);
+        }
+
         public class AddingMultipleErrorsToOutputCollection
         {
             [Fact]
@@ -96,15 +101,19 @@ namespace CoreValidation.UnitTests.Specifications
                     .Valid(v => v != invalidItem, "invalidItem2")
                 );
 
-                var errorsCollection = rule.Compile(new[]
-                {
+                var getErrorsResult = rule.TryGetErrors(
                     model,
                     member,
-                    validatorsRepositoryMock.Object,
-                    ValidationStrategy.FailFast,
+                    new RulesExecutionContext
+                    {
+                        RulesOptions = new RulesOptionsStub(),
+                        SpecificationsRepository = new SpecificationsRepository(validatorsRepositoryMock.Object),
+                        ValidationStrategy = ValidationStrategy.FailFast
+                    },
                     0,
-                    new RulesOptionsStub()
-                });
+                    out var errorsCollection);
+
+                Assert.True(getErrorsResult);
 
                 Assert.False(errorsCollection.IsEmpty);
 
@@ -137,15 +146,19 @@ namespace CoreValidation.UnitTests.Specifications
                     .Valid(v => v != invalidItem, "invalidItem2")
                 );
 
-                var errorsCollection = rule.Compile(new[]
-                {
+                var getErrorsResult = rule.TryGetErrors(
                     model,
                     member,
-                    validatorsRepositoryMock.Object,
-                    ValidationStrategy.Complete,
+                    new RulesExecutionContext
+                    {
+                        RulesOptions = new RulesOptionsStub(),
+                        SpecificationsRepository = new SpecificationsRepository(validatorsRepositoryMock.Object),
+                        ValidationStrategy = ValidationStrategy.Complete
+                    },
                     0,
-                    new RulesOptionsStub()
-                });
+                    out var errorsCollection);
+
+                Assert.True(getErrorsResult);
 
                 Assert.False(errorsCollection.IsEmpty);
 
@@ -183,15 +196,19 @@ namespace CoreValidation.UnitTests.Specifications
                     .Valid(v => v != invalidItem, "invalidItem2")
                 );
 
-                var errorsCollection = rule.Compile(new[]
-                {
+                var getErrorsResult = rule.TryGetErrors(
                     model,
                     member,
-                    validatorsRepositoryMock.Object,
-                    ValidationStrategy.Force,
+                    new RulesExecutionContext
+                    {
+                        RulesOptions = new RulesOptionsStub(),
+                        SpecificationsRepository = new SpecificationsRepository(validatorsRepositoryMock.Object),
+                        ValidationStrategy = ValidationStrategy.Force
+                    },
                     0,
-                    new RulesOptionsStub()
-                });
+                    out var errorsCollection);
+
+                Assert.True(getErrorsResult);
 
                 Assert.False(errorsCollection.IsEmpty);
 
@@ -218,28 +235,28 @@ namespace CoreValidation.UnitTests.Specifications
                     .Valid(v => v != invalidItem, "invalidItem")
                 );
 
-                var errorsCollection = rule.Compile(new[]
-                {
+                var getErrorsResult = rule.TryGetErrors(
                     model,
                     member,
-                    validatorsRepositoryMock.Object,
-                    ValidationStrategy.Complete,
+                    new RulesExecutionContext
+                    {
+                        RulesOptions = new RulesOptionsStub(),
+                        SpecificationsRepository = new SpecificationsRepository(validatorsRepositoryMock.Object),
+                        ValidationStrategy = ValidationStrategy.Complete
+                    },
                     0,
-                    new RulesOptionsStub()
-                });
+                    out var errorsCollection);
 
                 Assert.NotNull(errorsCollection);
 
-                if (member == null)
+                if (!member.Contains(invalidItem) && !member.Contains(null))
                 {
-                    Assert.True(errorsCollection.IsEmpty);
-                }
-                else if (!member.Contains(invalidItem) && !member.Contains(null))
-                {
+                    Assert.False(getErrorsResult);
                     Assert.True(errorsCollection.IsEmpty);
                 }
                 else
                 {
+                    Assert.True(getErrorsResult);
                     Assert.False(errorsCollection.IsEmpty);
 
                     Assert.Equal(member.Count(m => (m == invalidItem) || (m == null)), errorsCollection.Members.Count);
@@ -277,28 +294,28 @@ namespace CoreValidation.UnitTests.Specifications
                     .WithSummaryError("invalidItem_overriden")
                 );
 
-                var errorsCollection = rule.Compile(new[]
-                {
+                var getErrorsResult = rule.TryGetErrors(
                     model,
                     member,
-                    validatorsRepositoryMock.Object,
-                    ValidationStrategy.Complete,
+                    new RulesExecutionContext
+                    {
+                        RulesOptions = new RulesOptionsStub(),
+                        SpecificationsRepository = new SpecificationsRepository(validatorsRepositoryMock.Object),
+                        ValidationStrategy = ValidationStrategy.Complete
+                    },
                     0,
-                    new RulesOptionsStub()
-                });
+                    out var errorsCollection);
 
                 Assert.NotNull(errorsCollection);
 
-                if (member == null)
+                if (!member.Contains(invalidItem) && !member.Contains(null))
                 {
-                    Assert.True(errorsCollection.IsEmpty);
-                }
-                else if (!member.Contains(invalidItem) && !member.Contains(null))
-                {
+                    Assert.False(getErrorsResult);
                     Assert.True(errorsCollection.IsEmpty);
                 }
                 else
                 {
+                    Assert.True(getErrorsResult);
                     Assert.False(errorsCollection.IsEmpty);
 
                     Assert.Equal(member.Count(m => (m == invalidItem) || (m == null)), errorsCollection.Members.Count);
@@ -336,28 +353,28 @@ namespace CoreValidation.UnitTests.Specifications
                     .Optional()
                 );
 
-                var errorsCollection = rule.Compile(new[]
-                {
+                var getErrorsResult = rule.TryGetErrors(
                     model,
                     member,
-                    validatorsRepositoryMock.Object,
-                    ValidationStrategy.Complete,
+                    new RulesExecutionContext
+                    {
+                        RulesOptions = new RulesOptionsStub(),
+                        SpecificationsRepository = new SpecificationsRepository(validatorsRepositoryMock.Object),
+                        ValidationStrategy = ValidationStrategy.Complete
+                    },
                     0,
-                    new RulesOptionsStub()
-                });
+                    out var errorsCollection);
 
                 Assert.NotNull(errorsCollection);
 
-                if (member == null)
+                if (!member.Contains(invalidItem))
                 {
-                    Assert.True(errorsCollection.IsEmpty);
-                }
-                else if (!member.Contains(invalidItem))
-                {
+                    Assert.False(getErrorsResult);
                     Assert.True(errorsCollection.IsEmpty);
                 }
                 else
                 {
+                    Assert.True(getErrorsResult);
                     Assert.False(errorsCollection.IsEmpty);
 
                     Assert.Equal(member.Count(m => m == invalidItem), errorsCollection.Members.Count);
@@ -414,28 +431,28 @@ namespace CoreValidation.UnitTests.Specifications
                     .Valid(v => v != invalidItem, "invalidItem")
                 );
 
-                var errorsCollection = rule.Compile(new[]
-                {
+                var getErrorsResult = rule.TryGetErrors(
                     model,
                     member,
-                    validatorsRepositoryMock.Object,
-                    ValidationStrategy.FailFast,
+                    new RulesExecutionContext
+                    {
+                        RulesOptions = new RulesOptionsStub(),
+                        SpecificationsRepository = new SpecificationsRepository(validatorsRepositoryMock.Object),
+                        ValidationStrategy = ValidationStrategy.FailFast
+                    },
                     0,
-                    new RulesOptionsStub()
-                });
+                    out var errorsCollection);
 
                 Assert.NotNull(errorsCollection);
 
-                if (member == null)
+                if (!member.Contains(invalidItem) && !member.Contains(null))
                 {
-                    Assert.True(errorsCollection.IsEmpty);
-                }
-                else if (!member.Contains(invalidItem) && !member.Contains(null))
-                {
+                    Assert.False(getErrorsResult);
                     Assert.True(errorsCollection.IsEmpty);
                 }
                 else
                 {
+                    Assert.True(getErrorsResult);
                     Assert.False(errorsCollection.IsEmpty);
                     Assert.Single(errorsCollection.Members);
 
@@ -481,28 +498,28 @@ namespace CoreValidation.UnitTests.Specifications
                     .Optional()
                 );
 
-                var errorsCollection = rule.Compile(new[]
-                {
+                var getErrorsResult = rule.TryGetErrors(
                     model,
                     member,
-                    validatorsRepositoryMock.Object,
-                    ValidationStrategy.FailFast,
+                    new RulesExecutionContext
+                    {
+                        RulesOptions = new RulesOptionsStub(),
+                        SpecificationsRepository = new SpecificationsRepository(validatorsRepositoryMock.Object),
+                        ValidationStrategy = ValidationStrategy.FailFast
+                    },
                     0,
-                    new RulesOptionsStub()
-                });
+                    out var errorsCollection);
 
                 Assert.NotNull(errorsCollection);
 
-                if (member == null)
+                if (!member.Contains(invalidItem))
                 {
-                    Assert.True(errorsCollection.IsEmpty);
-                }
-                else if (!member.Contains(invalidItem))
-                {
+                    Assert.False(getErrorsResult);
                     Assert.True(errorsCollection.IsEmpty);
                 }
                 else
                 {
+                    Assert.True(getErrorsResult);
                     Assert.False(errorsCollection.IsEmpty);
                     Assert.Single(errorsCollection.Members);
                     Assert.Equal("invalidItem", errorsCollection.Members[firstInvalidIndex.ToString()].Errors.Single().Message);
@@ -546,28 +563,28 @@ namespace CoreValidation.UnitTests.Specifications
                     .WithSummaryError("invalidItem_overriden")
                 );
 
-                var errorsCollection = rule.Compile(new[]
-                {
+                var getErrorsResult = rule.TryGetErrors(
                     model,
                     member,
-                    validatorsRepositoryMock.Object,
-                    ValidationStrategy.FailFast,
+                    new RulesExecutionContext
+                    {
+                        RulesOptions = new RulesOptionsStub(),
+                        SpecificationsRepository = new SpecificationsRepository(validatorsRepositoryMock.Object),
+                        ValidationStrategy = ValidationStrategy.FailFast
+                    },
                     0,
-                    new RulesOptionsStub()
-                });
+                    out var errorsCollection);
 
                 Assert.NotNull(errorsCollection);
 
-                if (member == null)
+                if (!member.Contains(invalidItem) && !member.Contains(null))
                 {
-                    Assert.True(errorsCollection.IsEmpty);
-                }
-                else if (!member.Contains(invalidItem) && !member.Contains(null))
-                {
+                    Assert.False(getErrorsResult);
                     Assert.True(errorsCollection.IsEmpty);
                 }
                 else
                 {
+                    Assert.True(getErrorsResult);
                     Assert.False(errorsCollection.IsEmpty);
                     Assert.Single(errorsCollection.Members);
 
@@ -602,16 +619,19 @@ namespace CoreValidation.UnitTests.Specifications
                     .Valid(v => v != invalidItem, "invalidItem")
                 );
 
-                var errorsCollection = rule.Compile(new[]
-                {
+                var getErrorsResult = rule.TryGetErrors(
                     model,
                     member,
-                    validatorsRepositoryMock.Object,
-                    ValidationStrategy.Force,
+                    new RulesExecutionContext
+                    {
+                        RulesOptions = new RulesOptionsStub(),
+                        SpecificationsRepository = new SpecificationsRepository(validatorsRepositoryMock.Object),
+                        ValidationStrategy = ValidationStrategy.Force
+                    },
                     0,
-                    new RulesOptionsStub()
-                });
+                    out var errorsCollection);
 
+                Assert.True(getErrorsResult);
                 Assert.False(errorsCollection.IsEmpty);
 
                 Assert.Equal(1, errorsCollection.Members.Count);
@@ -634,17 +654,19 @@ namespace CoreValidation.UnitTests.Specifications
                     .Optional()
                 );
 
-                var errorsCollection = rule.Compile(new[]
-                {
+                var getErrorsResult = rule.TryGetErrors(
                     model,
                     member,
-                    validatorsRepositoryMock.Object,
-                    ValidationStrategy.Force,
+                    new RulesExecutionContext
+                    {
+                        RulesOptions = new RulesOptionsStub(),
+                        SpecificationsRepository = new SpecificationsRepository(validatorsRepositoryMock.Object),
+                        ValidationStrategy = ValidationStrategy.Force
+                    },
                     0,
-                    new RulesOptionsStub()
-                });
+                    out var errorsCollection);
 
-                Assert.False(errorsCollection.IsEmpty);
+                Assert.True(getErrorsResult);
 
                 Assert.Equal(1, errorsCollection.Members.Count);
                 Assert.Equal(1, errorsCollection.Members["*"].Errors.Count);
@@ -665,17 +687,19 @@ namespace CoreValidation.UnitTests.Specifications
                     .WithSummaryError("invalidItem_overriden")
                 );
 
-                var errorsCollection = rule.Compile(new[]
-                {
+                var getErrorsResult = rule.TryGetErrors(
                     model,
                     member,
-                    validatorsRepositoryMock.Object,
-                    ValidationStrategy.Force,
+                    new RulesExecutionContext
+                    {
+                        RulesOptions = new RulesOptionsStub(),
+                        SpecificationsRepository = new SpecificationsRepository(validatorsRepositoryMock.Object),
+                        ValidationStrategy = ValidationStrategy.Force
+                    },
                     0,
-                    new RulesOptionsStub()
-                });
+                    out var errorsCollection);
 
-                Assert.False(errorsCollection.IsEmpty);
+                Assert.True(getErrorsResult);
 
                 Assert.Equal(1, errorsCollection.Members.Count);
                 Assert.Equal(2, errorsCollection.Members["*"].Errors.Count);
@@ -700,18 +724,22 @@ namespace CoreValidation.UnitTests.Specifications
                     .WithRequiredError("Value is required (overriden)")
                 );
 
-                var errorsCollection = rule.Compile(new[]
-                {
+                var getErrorsResult = rule.TryGetErrors(
                     model,
                     new object[]
                     {
                         null
                     },
-                    validatorsRepositoryMock.Object,
-                    validationStrategy,
+                    new RulesExecutionContext
+                    {
+                        RulesOptions = new RulesOptionsStub(),
+                        SpecificationsRepository = new SpecificationsRepository(validatorsRepositoryMock.Object),
+                        ValidationStrategy = validationStrategy
+                    },
                     0,
-                    new RulesOptionsStub()
-                });
+                    out var errorsCollection);
+
+                Assert.True(getErrorsResult);
 
                 Assert.False(errorsCollection.IsEmpty);
                 Assert.Equal(1, errorsCollection.Members.Count);
@@ -753,18 +781,20 @@ namespace CoreValidation.UnitTests.Specifications
                         executionCounter++;
 
                         return true;
-                    }, "message")
+                    })
                 );
 
-                rule.Compile(new[]
-                {
+                rule.TryGetErrors(
                     model,
                     member,
-                    validatorsRepositoryMock.Object,
-                    validationStrategy,
+                    new RulesExecutionContext
+                    {
+                        RulesOptions = new RulesOptionsStub(),
+                        SpecificationsRepository = new SpecificationsRepository(validatorsRepositoryMock.Object),
+                        ValidationStrategy = validationStrategy
+                    },
                     0,
-                    new RulesOptionsStub()
-                });
+                    out _);
 
                 Assert.Equal(member.Count, executionCounter);
             }
@@ -790,18 +820,20 @@ namespace CoreValidation.UnitTests.Specifications
                         executionCounter++;
 
                         return true;
-                    }, "message")
+                    })
                 );
 
-                rule.Compile(new[]
-                {
+                rule.TryGetErrors(
                     model,
                     member,
-                    validatorsRepositoryMock.Object,
-                    validationStrategy,
+                    new RulesExecutionContext
+                    {
+                        RulesOptions = new RulesOptionsStub(),
+                        SpecificationsRepository = new SpecificationsRepository(validatorsRepositoryMock.Object),
+                        ValidationStrategy = validationStrategy
+                    },
                     0,
-                    new RulesOptionsStub()
-                });
+                    out _);
 
                 Assert.Equal(nonNullIndexes.Count, executionCounter);
             }
@@ -826,18 +858,20 @@ namespace CoreValidation.UnitTests.Specifications
                         executionCounter++;
 
                         return true;
-                    }, "message")
+                    })
                 );
 
-                rule.Compile(new[]
-                {
+                rule.TryGetErrors(
                     model,
                     member,
-                    validatorsRepositoryMock.Object,
-                    validationStrategy,
+                    new RulesExecutionContext
+                    {
+                        RulesOptions = new RulesOptionsStub(),
+                        SpecificationsRepository = new SpecificationsRepository(validatorsRepositoryMock.Object),
+                        ValidationStrategy = validationStrategy
+                    },
                     0,
-                    new RulesOptionsStub()
-                });
+                    out _);
 
                 Assert.Equal(nonNullIndexes.Count, executionCounter);
             }
@@ -863,18 +897,20 @@ namespace CoreValidation.UnitTests.Specifications
                         executionCounter++;
 
                         return true;
-                    }, "message"))
+                    }))
                 );
 
-                rule.Compile(new[]
-                {
+                rule.TryGetErrors(
                     model,
                     member,
-                    validatorsRepositoryMock.Object,
-                    validationStrategy,
+                    new RulesExecutionContext
+                    {
+                        RulesOptions = new RulesOptionsStub(),
+                        SpecificationsRepository = new SpecificationsRepository(validatorsRepositoryMock.Object),
+                        ValidationStrategy = validationStrategy
+                    },
                     0,
-                    new RulesOptionsStub()
-                });
+                    out _);
 
                 Assert.Equal(nonNullIndexes.Count, executionCounter);
             }
@@ -907,15 +943,17 @@ namespace CoreValidation.UnitTests.Specifications
                     .ValidModel()
                 );
 
-                rule.Compile(new[]
-                {
+                rule.TryGetErrors(
                     model,
                     member,
-                    validatorsRepositoryMock.Object,
-                    validationStrategy,
+                    new RulesExecutionContext
+                    {
+                        RulesOptions = new RulesOptionsStub(),
+                        SpecificationsRepository = new SpecificationsRepository(validatorsRepositoryMock.Object),
+                        ValidationStrategy = validationStrategy
+                    },
                     0,
-                    new RulesOptionsStub()
-                });
+                    out _);
 
                 Assert.Equal(nonNullIndexes.Count, executionCounter);
             }
@@ -946,19 +984,19 @@ namespace CoreValidation.UnitTests.Specifications
                     .ValidModel()
                 );
 
-                rule.Compile(new[]
-                {
+                rule.TryGetErrors(
                     model,
                     member,
-                    validatorsRepositoryMock.Object,
-                    ValidationStrategy.Complete,
+                    new RulesExecutionContext
+                    {
+                        RulesOptions = new RulesOptionsStub(),
+                        SpecificationsRepository = new SpecificationsRepository(validatorsRepositoryMock.Object),
+                        ValidationStrategy = ValidationStrategy.Complete
+                    },
                     0,
-                    new RulesOptionsStub()
-                });
+                    out _);
 
-                var nonNullIndexes = GetNotNullIndexes(member);
-
-                Assert.Equal(nonNullIndexes.Count, executedRepoValidator);
+                Assert.Equal(AnyNonNullItem(member) ? 1 : 0, executedRepoValidator);
             }
 
             [Theory]
@@ -984,15 +1022,17 @@ namespace CoreValidation.UnitTests.Specifications
                     .ValidModel()
                 );
 
-                rule.Compile(new[]
-                {
+                rule.TryGetErrors(
                     model,
                     member,
-                    validatorsRepositoryMock.Object,
-                    ValidationStrategy.Force,
+                    new RulesExecutionContext
+                    {
+                        RulesOptions = new RulesOptionsStub(),
+                        SpecificationsRepository = new SpecificationsRepository(validatorsRepositoryMock.Object),
+                        ValidationStrategy = ValidationStrategy.Force
+                    },
                     0,
-                    new RulesOptionsStub()
-                });
+                    out _);
 
                 Assert.Equal(1, executedRepoValidator);
             }
@@ -1002,21 +1042,6 @@ namespace CoreValidation.UnitTests.Specifications
             public void Should_ExecuteRepositoryValidator_When_ValidItemsWithNulls_FailFast(object[] member)
             {
                 var model = new object();
-
-                var firstNullIndex = -1;
-
-                if (member != null)
-                {
-                    for (var i = 0; i < member.Length; ++i)
-                    {
-                        if (member.ElementAt(i) == null)
-                        {
-                            firstNullIndex = i;
-
-                            break;
-                        }
-                    }
-                }
 
                 var executedRepoValidator = 0;
 
@@ -1035,24 +1060,19 @@ namespace CoreValidation.UnitTests.Specifications
                     .ValidModel()
                 );
 
-                rule.Compile(new[]
-                {
+                rule.TryGetErrors(
                     model,
                     member,
-                    validatorsRepositoryMock.Object,
-                    ValidationStrategy.FailFast,
+                    new RulesExecutionContext
+                    {
+                        RulesOptions = new RulesOptionsStub(),
+                        SpecificationsRepository = new SpecificationsRepository(validatorsRepositoryMock.Object),
+                        ValidationStrategy = ValidationStrategy.FailFast
+                    },
                     0,
-                    new RulesOptionsStub()
-                });
+                    out _);
 
-                if (firstNullIndex == -1)
-                {
-                    Assert.Equal(member?.Length ?? 0, executedRepoValidator);
-                }
-                else
-                {
-                    Assert.Equal(firstNullIndex, executedRepoValidator);
-                }
+                Assert.Equal(AnyNonNullItem(member) ? 1 : 0, executedRepoValidator);
             }
 
             [Theory]
@@ -1060,30 +1080,6 @@ namespace CoreValidation.UnitTests.Specifications
             public void Should_ExecuteRepositoryValidator_When_FailFast(object[] member, object invalidItem)
             {
                 var model = new object();
-
-                var firstInvalidIndex = -1;
-
-                for (var i = 0; i < member.Length; ++i)
-                {
-                    if (member.ElementAt(i) == invalidItem)
-                    {
-                        firstInvalidIndex = i;
-
-                        break;
-                    }
-                }
-
-                var firstNullIndex = -1;
-
-                for (var i = 0; i < member.Length; ++i)
-                {
-                    if (member.ElementAt(i) == null)
-                    {
-                        firstNullIndex = i;
-
-                        break;
-                    }
-                }
 
                 var executedRepoValidator = 0;
 
@@ -1102,32 +1098,19 @@ namespace CoreValidation.UnitTests.Specifications
                     .ValidModel()
                 );
 
-                rule.Compile(new[]
-                {
+                rule.TryGetErrors(
                     model,
                     member,
-                    validatorsRepositoryMock.Object,
-                    ValidationStrategy.FailFast,
+                    new RulesExecutionContext
+                    {
+                        RulesOptions = new RulesOptionsStub(),
+                        SpecificationsRepository = new SpecificationsRepository(validatorsRepositoryMock.Object),
+                        ValidationStrategy = ValidationStrategy.FailFast
+                    },
                     0,
-                    new RulesOptionsStub()
-                });
+                    out _);
 
-                if ((firstInvalidIndex == -1) && (firstNullIndex == -1))
-                {
-                    Assert.Equal(member.Length, executedRepoValidator);
-                }
-                else if ((firstInvalidIndex != -1) && (firstNullIndex == -1))
-                {
-                    Assert.Equal(firstInvalidIndex + 1, executedRepoValidator);
-                }
-                else if ((firstNullIndex != -1) && (firstInvalidIndex == -1))
-                {
-                    Assert.Equal(firstNullIndex, executedRepoValidator);
-                }
-                else
-                {
-                    Assert.Equal(Math.Min(firstInvalidIndex + 1, firstNullIndex), executedRepoValidator);
-                }
+                Assert.Equal(AnyNonNullItem(member) && (member.First() != null) ? 1 : 0, executedRepoValidator);
             }
         }
 
@@ -1162,19 +1145,19 @@ namespace CoreValidation.UnitTests.Specifications
                     })
                 );
 
-                rule.Compile(new[]
-                {
+                rule.TryGetErrors(
                     model,
                     member,
-                    validatorsRepositoryMock.Object,
-                    ValidationStrategy.Complete,
+                    new RulesExecutionContext
+                    {
+                        RulesOptions = new RulesOptionsStub(),
+                        SpecificationsRepository = new SpecificationsRepository(validatorsRepositoryMock.Object),
+                        ValidationStrategy = ValidationStrategy.Complete
+                    },
                     0,
-                    new RulesOptionsStub()
-                });
+                    out _);
 
-                var nonNullIndexes = GetNotNullIndexes(member);
-
-                Assert.Equal(nonNullIndexes.Count, executedDefinedValidator);
+                Assert.Equal(AnyNonNullItem(member) ? 1 : 0, executedDefinedValidator);
                 Assert.Equal(0, executedRepoValidator);
             }
 
@@ -1207,15 +1190,17 @@ namespace CoreValidation.UnitTests.Specifications
                     })
                 );
 
-                rule.Compile(new[]
-                {
+                rule.TryGetErrors(
                     model,
                     member,
-                    validatorsRepositoryMock.Object,
-                    ValidationStrategy.Force,
+                    new RulesExecutionContext
+                    {
+                        RulesOptions = new RulesOptionsStub(),
+                        SpecificationsRepository = new SpecificationsRepository(validatorsRepositoryMock.Object),
+                        ValidationStrategy = ValidationStrategy.Force
+                    },
                     0,
-                    new RulesOptionsStub()
-                });
+                    out _);
 
                 Assert.Equal(1, executedDefinedValidator);
                 Assert.Equal(0, executedRepoValidator);
@@ -1226,21 +1211,6 @@ namespace CoreValidation.UnitTests.Specifications
             public void Should_ExecuteDefinedValidator_When_ValidItemsWithNulls_FailFast(object[] member)
             {
                 var model = new object();
-
-                var firstNullIndex = -1;
-
-                if (member != null)
-                {
-                    for (var i = 0; i < member.Length; ++i)
-                    {
-                        if (member.ElementAt(i) == null)
-                        {
-                            firstNullIndex = i;
-
-                            break;
-                        }
-                    }
-                }
 
                 var executedRepoValidator = 0;
                 var executedDefinedValidator = 0;
@@ -1265,25 +1235,19 @@ namespace CoreValidation.UnitTests.Specifications
                     })
                 );
 
-                rule.Compile(new[]
-                {
+                rule.TryGetErrors(
                     model,
                     member,
-                    validatorsRepositoryMock.Object,
-                    ValidationStrategy.FailFast,
+                    new RulesExecutionContext
+                    {
+                        RulesOptions = new RulesOptionsStub(),
+                        SpecificationsRepository = new SpecificationsRepository(validatorsRepositoryMock.Object),
+                        ValidationStrategy = ValidationStrategy.FailFast
+                    },
                     0,
-                    new RulesOptionsStub()
-                });
+                    out _);
 
-                if (firstNullIndex == -1)
-                {
-                    Assert.Equal(member?.Length ?? 0, executedDefinedValidator);
-                }
-                else
-                {
-                    Assert.Equal(firstNullIndex, executedDefinedValidator);
-                }
-
+                Assert.Equal(AnyNonNullItem(member) && (member.First() != null) ? 1 : 0, executedDefinedValidator);
                 Assert.Equal(0, executedRepoValidator);
             }
 
@@ -1292,30 +1256,6 @@ namespace CoreValidation.UnitTests.Specifications
             public void Should_ExecuteDefinedValidator_When_FailFast(object[] member, object invalidItem)
             {
                 var model = new object();
-
-                var firstInvalidIndex = -1;
-
-                for (var i = 0; i < member.Length; ++i)
-                {
-                    if (member.ElementAt(i) == invalidItem)
-                    {
-                        firstInvalidIndex = i;
-
-                        break;
-                    }
-                }
-
-                var firstNullIndex = -1;
-
-                for (var i = 0; i < member.Length; ++i)
-                {
-                    if (member.ElementAt(i) == null)
-                    {
-                        firstNullIndex = i;
-
-                        break;
-                    }
-                }
 
                 var executedRepoValidator = 0;
                 var executedDefinedValidator = 0;
@@ -1340,33 +1280,19 @@ namespace CoreValidation.UnitTests.Specifications
                     })
                 );
 
-                rule.Compile(new[]
-                {
+                rule.TryGetErrors(
                     model,
                     member,
-                    validatorsRepositoryMock.Object,
-                    ValidationStrategy.FailFast,
+                    new RulesExecutionContext
+                    {
+                        RulesOptions = new RulesOptionsStub(),
+                        SpecificationsRepository = new SpecificationsRepository(validatorsRepositoryMock.Object),
+                        ValidationStrategy = ValidationStrategy.FailFast
+                    },
                     0,
-                    new RulesOptionsStub()
-                });
+                    out _);
 
-                if ((firstInvalidIndex == -1) && (firstNullIndex == -1))
-                {
-                    Assert.Equal(member.Length, executedDefinedValidator);
-                }
-                else if ((firstInvalidIndex != -1) && (firstNullIndex == -1))
-                {
-                    Assert.Equal(firstInvalidIndex + 1, executedDefinedValidator);
-                }
-                else if ((firstNullIndex != -1) && (firstInvalidIndex == -1))
-                {
-                    Assert.Equal(firstNullIndex, executedDefinedValidator);
-                }
-                else
-                {
-                    Assert.Equal(Math.Min(firstInvalidIndex + 1, firstNullIndex), executedDefinedValidator);
-                }
-
+                Assert.Equal(AnyNonNullItem(member) && (member.First() != null) ? 1 : 0, executedDefinedValidator);
                 Assert.Equal(0, executedRepoValidator);
             }
         }
@@ -1444,17 +1370,19 @@ namespace CoreValidation.UnitTests.Specifications
                         executed++;
 
                         return true;
-                    }, "error"));
+                    }));
 
-                rule.Compile(new[]
-                {
+                rule.TryGetErrors(
                     model,
                     dualEnumerable,
-                    validatorsRepositoryMock.Object,
-                    ValidationStrategy.Complete,
+                    new RulesExecutionContext
+                    {
+                        RulesOptions = new RulesOptionsStub(),
+                        SpecificationsRepository = new SpecificationsRepository(validatorsRepositoryMock.Object),
+                        ValidationStrategy = ValidationStrategy.Complete
+                    },
                     0,
-                    new RulesOptionsStub()
-                });
+                    out _);
 
                 Assert.Equal(3, executed);
             }
@@ -1478,17 +1406,19 @@ namespace CoreValidation.UnitTests.Specifications
                         executed++;
 
                         return true;
-                    }, "error"));
+                    }));
 
-                rule.Compile(new[]
-                {
+                rule.TryGetErrors(
                     model,
                     dualEnumerable,
-                    validatorsRepositoryMock.Object,
-                    ValidationStrategy.Complete,
+                    new RulesExecutionContext
+                    {
+                        RulesOptions = new RulesOptionsStub(),
+                        SpecificationsRepository = new SpecificationsRepository(validatorsRepositoryMock.Object),
+                        ValidationStrategy = ValidationStrategy.Complete
+                    },
                     0,
-                    new RulesOptionsStub()
-                });
+                    out _);
 
                 Assert.Equal(3, executed);
             }
@@ -1514,7 +1444,7 @@ namespace CoreValidation.UnitTests.Specifications
                         executedValidatorForItemA++;
 
                         return true;
-                    }, "error"));
+                    }));
 
                 validatorsRepositoryMock
                     .Setup(r => r.Get<ItemB>())
@@ -1525,21 +1455,23 @@ namespace CoreValidation.UnitTests.Specifications
                         executedValidatorForItemB++;
 
                         return true;
-                    }, "error"));
+                    }));
 
                 var rule = new ValidCollectionRule<object, ItemB>(be => be
                     .ValidModel()
                 );
 
-                rule.Compile(new[]
-                {
+                rule.TryGetErrors(
                     model,
                     member,
-                    validatorsRepositoryMock.Object,
-                    ValidationStrategy.Complete,
+                    new RulesExecutionContext
+                    {
+                        RulesOptions = new RulesOptionsStub(),
+                        SpecificationsRepository = new SpecificationsRepository(validatorsRepositoryMock.Object),
+                        ValidationStrategy = ValidationStrategy.Complete
+                    },
                     0,
-                    new RulesOptionsStub()
-                });
+                    out _);
 
                 Assert.Equal(3, executedValidatorForItemB);
                 Assert.Equal(0, executedValidatorForItemA);
@@ -1576,18 +1508,20 @@ namespace CoreValidation.UnitTests.Specifications
 
                 Action compilation = () =>
                 {
-                    rule.Compile(new[]
-                    {
+                    rule.TryGetErrors(
                         new object(),
                         new[] {new Item1()},
-                        validatorsRepositoryMock.Object,
-                        ValidationStrategy.Complete,
-                        0,
-                        new RulesOptionsStub
+                        new RulesExecutionContext
                         {
-                            MaxDepth = maxDepth
-                        }
-                    });
+                            RulesOptions = new RulesOptionsStub
+                            {
+                                MaxDepth = maxDepth
+                            },
+                            SpecificationsRepository = new SpecificationsRepository(validatorsRepositoryMock.Object),
+                            ValidationStrategy = ValidationStrategy.Complete
+                        },
+                        0,
+                        out _);
                 };
 
                 if (expectException)
@@ -1620,18 +1554,20 @@ namespace CoreValidation.UnitTests.Specifications
 
                 Action compilation = () =>
                 {
-                    rule.Compile(new[]
-                    {
+                    rule.TryGetErrors(
                         new object(),
                         new[] {new Item1()},
-                        validatorsRepositoryMock.Object,
-                        ValidationStrategy.Complete,
-                        0,
-                        new RulesOptionsStub
+                        new RulesExecutionContext
                         {
-                            MaxDepth = maxDepth
-                        }
-                    });
+                            RulesOptions = new RulesOptionsStub
+                            {
+                                MaxDepth = maxDepth
+                            },
+                            SpecificationsRepository = new SpecificationsRepository(validatorsRepositoryMock.Object),
+                            ValidationStrategy = ValidationStrategy.Complete
+                        },
+                        0,
+                        out _);
                 };
 
                 if (expectException)
@@ -1662,18 +1598,20 @@ namespace CoreValidation.UnitTests.Specifications
 
                 Assert.Throws<MaxDepthExceededException>(() =>
                 {
-                    rule.Compile(new[]
-                    {
+                    rule.TryGetErrors(
                         new object(),
                         new[] {new ItemLoop()},
-                        validatorsRepositoryMock.Object,
-                        ValidationStrategy.Complete,
-                        0,
-                        new RulesOptionsStub
+                        new RulesExecutionContext
                         {
-                            MaxDepth = maxDepth
-                        }
-                    });
+                            RulesOptions = new RulesOptionsStub
+                            {
+                                MaxDepth = maxDepth
+                            },
+                            SpecificationsRepository = new SpecificationsRepository(validatorsRepositoryMock.Object),
+                            ValidationStrategy = ValidationStrategy.Complete
+                        },
+                        0,
+                        out _);
                 });
             }
 
@@ -1712,25 +1650,12 @@ namespace CoreValidation.UnitTests.Specifications
         [Fact]
         public void Should_ThrowException_When_WithName()
         {
-            var model = new object();
-
-            var validatorsRepositoryMock = new Mock<IValidatorsRepository>();
-
-            var rule = new ValidCollectionRule<object, object>(be => be
-                .WithName("anything")
-            );
-
             Assert.Throws<InvalidOperationException>(() =>
             {
-                rule.Compile(new[]
-                {
-                    model,
-                    new[] {new object()},
-                    validatorsRepositoryMock.Object,
-                    ValidationStrategy.Complete,
-                    0,
-                    new RulesOptionsStub()
-                });
+                // ReSharper disable once ObjectCreationAsStatement
+                new ValidCollectionRule<object, object>(be => be
+                    .WithName("anything")
+                );
             });
         }
     }

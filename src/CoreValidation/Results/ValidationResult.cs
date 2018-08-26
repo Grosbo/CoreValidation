@@ -9,10 +9,10 @@ namespace CoreValidation.Results
     public sealed class ValidationResult<T> : IValidationResult<T>
         where T : class
     {
-        internal ValidationResult(Guid coreValidatorId, ITranslationProxy translationProxy, IRulesOptions rulesOptions, T model = null, ErrorsCollection errorsCollection = null)
+        internal ValidationResult(Guid coreValidatorId, ITranslationProxy translationProxy, IRulesOptions rulesOptions, T model = null, IErrorsCollection errorsCollection = null)
         {
             TranslationProxy = translationProxy ?? throw new ArgumentNullException(nameof(translationProxy));
-            ErrorsCollection = errorsCollection ?? new ErrorsCollection();
+            ErrorsCollection = errorsCollection ?? CoreValidation.Errors.ErrorsCollection.Empty;
             RulesOptions = rulesOptions ?? throw new ArgumentNullException(nameof(rulesOptions));
 
             ValidationDate = DateTime.UtcNow;

@@ -2,6 +2,6 @@
 
 namespace CoreValidation.Validators
 {
-    public delegate ISpecification<T> Validator<T>(ISpecification<T> specification)
+    public delegate ISpecificationBuilder<T> Validator<T>(ISpecificationBuilder<T> specificationBuilder)
         where T: class;
 }

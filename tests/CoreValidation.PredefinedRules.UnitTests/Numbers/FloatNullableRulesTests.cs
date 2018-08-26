@@ -26,7 +26,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Numbers
         [MemberData(nameof(CloseTo_MemberData))]
         public void CloseTo(float model, float value, bool expectedIsValid)
         {
-            var builder = new MemberSpecification<object, float?>();
+            var builder = new MemberSpecificationBuilder<object, float?>();
 
             builder.CloseTo(value);
 
@@ -51,7 +51,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Numbers
         [MemberData(nameof(CloseTo_WithTolerance_MemberData))]
         public void CloseTo_WithTolerance(float model, float value, float tolerance, bool expectedIsValid)
         {
-            var builder = new MemberSpecification<object, float?>();
+            var builder = new MemberSpecificationBuilder<object, float?>();
 
             builder.CloseTo(value, tolerance);
 
@@ -74,7 +74,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Numbers
         [MemberData(nameof(NotCloseTo_MemberData))]
         public void NotCloseTo(float model, float value, bool expectedIsValid)
         {
-            var builder = new MemberSpecification<object, float?>();
+            var builder = new MemberSpecificationBuilder<object, float?>();
 
             builder.NotCloseTo(value);
 
@@ -99,7 +99,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Numbers
         [MemberData(nameof(NotCloseTo_WithTolerance_MemberData))]
         public void NotCloseTo_WithTolerance(float model, float value, float tolerance, bool expectedIsValid)
         {
-            var builder = new MemberSpecification<object, float?>();
+            var builder = new MemberSpecificationBuilder<object, float?>();
 
             builder.NotCloseTo(value, tolerance);
 
@@ -124,7 +124,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Numbers
         [MemberData(nameof(GreaterThan_Should_CollectError_Data))]
         public void GreaterThan_Should_CollectError(float model, float min, bool expectedIsValid)
         {
-            var builder = new MemberSpecification<object, float?>();
+            var builder = new MemberSpecificationBuilder<object, float?>();
 
             builder.GreaterThan(min);
 
@@ -149,7 +149,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Numbers
         [MemberData(nameof(LessThan_Should_CollectError_Data))]
         public void LessThan_Should_CollectError(float model, float max, bool expectedIsValid)
         {
-            var builder = new MemberSpecification<object, float?>();
+            var builder = new MemberSpecificationBuilder<object, float?>();
 
             builder.LessThan(max);
 
@@ -172,7 +172,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Numbers
         [MemberData(nameof(Between_Should_CollectError_Data))]
         public void Between_Should_CollectError(float min, float model, float max, bool expectedIsValid)
         {
-            var builder = new MemberSpecification<object, float?>();
+            var builder = new MemberSpecificationBuilder<object, float?>();
 
             builder.Between(min, max);
 
@@ -184,7 +184,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Numbers
             [Fact]
             public void Between_Should_SetCustomMessage()
             {
-                var builder = new MemberSpecification<object, float?>();
+                var builder = new MemberSpecificationBuilder<object, float?>();
 
                 builder.Between(1, 3, "{min} {max} Overriden error message");
 
@@ -194,7 +194,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Numbers
             [Fact]
             public void BetweenOrEqualTo_Should_SetCustomMessage()
             {
-                var builder = new MemberSpecification<object, float?>();
+                var builder = new MemberSpecificationBuilder<object, float?>();
 
                 builder.Between(1, 3, "{min} {max} Overriden error message");
 
@@ -204,7 +204,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Numbers
             [Fact]
             public void CloseTo_Should_SetCustomMessage()
             {
-                var builder = new MemberSpecification<object, float?>();
+                var builder = new MemberSpecificationBuilder<object, float?>();
 
                 builder.CloseTo(0, (float)0.001, "{value} {tolerance} Overriden error message");
 
@@ -214,7 +214,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Numbers
             [Fact]
             public void GreaterThan()
             {
-                var builder = new MemberSpecification<object, float?>();
+                var builder = new MemberSpecificationBuilder<object, float?>();
 
                 builder.GreaterThan(2, "{min} Overriden error message");
 
@@ -224,7 +224,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Numbers
             [Fact]
             public void LessThan_Should_SetCustomMessage()
             {
-                var builder = new MemberSpecification<object, float?>();
+                var builder = new MemberSpecificationBuilder<object, float?>();
 
                 builder.LessThan(1, "{max} Overriden error message");
 
@@ -234,7 +234,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Numbers
             [Fact]
             public void NotCloseTo_Should_SetCustomMessage()
             {
-                var builder = new MemberSpecification<object, float?>();
+                var builder = new MemberSpecificationBuilder<object, float?>();
 
                 builder.NotCloseTo(4, (float)0.001, "{value} {tolerance} Overriden error message");
 

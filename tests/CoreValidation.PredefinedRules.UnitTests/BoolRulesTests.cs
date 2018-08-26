@@ -11,7 +11,7 @@ namespace CoreValidation.PredefinedRules.UnitTests
         [InlineData(false, false)]
         public void True_Should_CollectError(bool value, bool expectedIsValid)
         {
-            var builder = new MemberSpecification<object, bool>();
+            var builder = new MemberSpecificationBuilder<object, bool>();
 
             builder.True();
 
@@ -23,7 +23,7 @@ namespace CoreValidation.PredefinedRules.UnitTests
         [InlineData(true, false)]
         public void False_Should_CollectError(bool value, bool expectedIsValid)
         {
-            var builder = new MemberSpecification<object, bool>();
+            var builder = new MemberSpecificationBuilder<object, bool>();
 
             builder.False();
 
@@ -35,7 +35,7 @@ namespace CoreValidation.PredefinedRules.UnitTests
             [Fact]
             public void False_Should_SetCustomMessage()
             {
-                var builder = new MemberSpecification<object, bool>();
+                var builder = new MemberSpecificationBuilder<object, bool>();
 
                 builder.False("Overriden error message");
 
@@ -45,7 +45,7 @@ namespace CoreValidation.PredefinedRules.UnitTests
             [Fact]
             public void True_Should_SetCustomMessage()
             {
-                var builder = new MemberSpecification<object, bool>();
+                var builder = new MemberSpecificationBuilder<object, bool>();
 
                 builder.True("Overriden error message");
 

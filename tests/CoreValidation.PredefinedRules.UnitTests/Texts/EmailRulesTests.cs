@@ -32,7 +32,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Texts
         [InlineData(@"email@example.com ", false)]
         public void Email_Should_CollectError(string value, bool expectedIsValid)
         {
-            var builder = new MemberSpecification<object, string>();
+            var builder = new MemberSpecificationBuilder<object, string>();
 
             builder.Email();
 
@@ -44,7 +44,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Texts
             [Fact]
             public void Email_Should_SetCustomMessage()
             {
-                var builder = new MemberSpecification<object, string>();
+                var builder = new MemberSpecificationBuilder<object, string>();
 
                 builder.Email("Overriden error message");
 

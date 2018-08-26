@@ -1,58 +1,42 @@
-﻿using CoreValidation.Errors;
-using CoreValidation.Exceptions;
-using CoreValidation.Options;
+﻿using System;
+using CoreValidation.Errors;
 using CoreValidation.Validators;
 
 namespace CoreValidation.Specifications
 {
     internal abstract class ValidModelRule
     {
+        public abstract bool TryGetErrors(object memberValue, IRulesExecutionContext rulesExecutionContext, int depth, out IErrorsCollection errorsCollection);
     }
 
     internal sealed class ValidModelRule<TMember> : ValidModelRule, IRule
         where TMember : class
     {
+        private readonly string _id;
+
         public ValidModelRule(Validator<TMember> validator = null)
         {
+            _id = validator != null
+                ? $"VMR_{Guid.NewGuid().ToString().Substring(0, 7).ToUpperInvariant()}"
+                : null;
+
             Validator = validator;
         }
 
         public Validator<TMember> Validator { get; }
 
-        public ErrorsCollection Compile(object[] args)
+        public override bool TryGetErrors(object memberValue, IRulesExecutionContext rulesExecutionContext, int depth, out IErrorsCollection errorsCollection)
         {
-            return Compile(
-                Validator,
-                (TMember)args[0],
-                (IValidatorsRepository)args[1],
-                (ValidationStrategy)args[2],
-                (int)args[3],
-                (IRulesOptions)args[4]
-            );
+            return TryGetErrors((TMember)memberValue, rulesExecutionContext, depth, out errorsCollection);
         }
 
-        public static ErrorsCollection Compile(Validator<TMember> validator, TMember memberValue, IValidatorsRepository validatorsRepository, ValidationStrategy validationStrategy, int depth, IRulesOptions rulesOptions)
+        public bool TryGetErrors(TMember memberValue, IRulesExecutionContext rulesExecutionContext, int depth, out IErrorsCollection errorsCollection)
         {
-            var finalValidator = validator ?? validatorsRepository.Get<TMember>();
+            var specification = rulesExecutionContext.SpecificationsRepository.GetOrInit(Validator, _id);
 
-            return Compile(memberValue, finalValidator, validatorsRepository, validationStrategy, depth, rulesOptions);
-        }
+            errorsCollection = SpecificationRulesExecutor.ExecuteSpecificationRules(specification, memberValue, rulesExecutionContext, depth + 1);
 
-        private static ErrorsCollection Compile<T>(T model, Validator<T> validator, IValidatorsRepository validatorsRepository, ValidationStrategy validationStrategy, int depth, IRulesOptions rulesOptions)
-            where T : class
-        {
-            var validatorToCompile = validator ?? validatorsRepository.Get<T>();
-
-            var builder = new Specification<T>(model, validatorsRepository, validationStrategy, depth + 1, rulesOptions);
-
-            var processedBuilder = validatorToCompile(builder) as Specification<T>;
-
-            if (!ReferenceEquals(builder, processedBuilder))
-            {
-                throw new InvalidProcessedReferenceException(typeof(Specification<T>));
-            }
-
-            return builder.GetErrors();
+            return (errorsCollection != null) && !errorsCollection.IsEmpty;
         }
     }
 }

@@ -4,36 +4,36 @@ using CoreValidation.Errors;
 
 namespace CoreValidation.Specifications
 {
-    internal sealed class MemberSpecification<TModel, TMember> : IMemberSpecification<TModel, TMember>, IRulesCollection
+    internal sealed class MemberSpecificationBuilder<TModel, TMember> : IMemberSpecificationBuilder<TModel, TMember>, IMemberSpecification
         where TModel : class
     {
         private readonly List<IRule> _rules = new List<IRule>();
 
-        public IMemberSpecification<TModel, TMember> ValidRelative(Predicate<TModel> isValid, string message = null, IReadOnlyCollection<IMessageArg> args = null)
+        public IMemberSpecificationBuilder<TModel, TMember> ValidRelative(Predicate<TModel> isValid, string message = null, IReadOnlyCollection<IMessageArg> args = null)
         {
             if (isValid == null)
             {
                 throw new ArgumentNullException(nameof(isValid));
             }
 
-            AddRule(new ValidRelativeRule<TModel>(isValid, message, args));
+            AddRule(new ValidRelativeRule<TModel>(isValid, Error.CreateValidOrNull(message, args)));
 
             return this;
         }
 
-        public IMemberSpecification<TModel, TMember> Valid(Predicate<TMember> isValid, string message = null, IReadOnlyCollection<IMessageArg> args = null)
+        public IMemberSpecificationBuilder<TModel, TMember> Valid(Predicate<TMember> isValid, string message = null, IReadOnlyCollection<IMessageArg> args = null)
         {
             if (isValid == null)
             {
                 throw new ArgumentNullException(nameof(isValid));
             }
 
-            AddRule(new ValidRule<TMember>(isValid, message, args));
+            AddRule(new ValidRule<TMember>(isValid, Error.CreateValidOrNull(message, args)));
 
             return this;
         }
 
-        public IMemberSpecification<TModel, TMember> WithSummaryError(string message, IReadOnlyCollection<IMessageArg> args = null)
+        public IMemberSpecificationBuilder<TModel, TMember> WithSummaryError(string message, IReadOnlyCollection<IMessageArg> args = null)
         {
             if (message == null)
             {
@@ -50,7 +50,7 @@ namespace CoreValidation.Specifications
             return this;
         }
 
-        public IMemberSpecification<TModel, TMember> WithName(string name)
+        public IMemberSpecificationBuilder<TModel, TMember> WithName(string name)
         {
             if (name == null)
             {
@@ -95,7 +95,7 @@ namespace CoreValidation.Specifications
             _rules.Add(rule);
         }
 
-        internal IMemberSpecification<TModel, TMember> WithRequiredError(string message, IReadOnlyCollection<IMessageArg> args = null)
+        internal IMemberSpecificationBuilder<TModel, TMember> WithRequiredError(string message, IReadOnlyCollection<IMessageArg> args = null)
         {
             if (message == null)
             {
@@ -112,7 +112,7 @@ namespace CoreValidation.Specifications
             return this;
         }
 
-        internal IMemberSpecification<TModel, TMember> Optional()
+        internal IMemberSpecificationBuilder<TModel, TMember> Optional()
         {
             if (IsOptional)
             {

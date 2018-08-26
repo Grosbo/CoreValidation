@@ -8,12 +8,12 @@ namespace CoreValidation
 {
     public static class ValidModelsCollectionExtension
     {
-        public static IMemberSpecification<TModel, TMember> ValidModelsCollection<TModel, TMember, TItem>(this IMemberSpecification<TModel, TMember> @this, Validator<TItem> validator = null, bool itemsOptional = false)
+        public static IMemberSpecificationBuilder<TModel, TMember> ValidModelsCollection<TModel, TMember, TItem>(this IMemberSpecificationBuilder<TModel, TMember> @this, Validator<TItem> validator = null, bool itemsOptional = false)
             where TModel : class
             where TMember : class, IEnumerable<TItem>
             where TItem: class
         {
-            var memberSpecification = (MemberSpecification<TModel, TMember>) @this;
+            var memberSpecification = (MemberSpecificationBuilder<TModel, TMember>) @this;
 
             memberSpecification.AddRule(itemsOptional
                 ? new ValidCollectionRule<TModel, TItem>(be => be.ValidModel(validator).Optional())
@@ -22,56 +22,56 @@ namespace CoreValidation
             return @this;
         }
 
-        public static IMemberSpecification<TModel, TItem[]> ValidModelsCollection<TModel, TItem>(this IMemberSpecification<TModel, TItem[]> @this, Validator<TItem> validator = null, bool itemsOptional = false)
+        public static IMemberSpecificationBuilder<TModel, TItem[]> ValidModelsCollection<TModel, TItem>(this IMemberSpecificationBuilder<TModel, TItem[]> @this, Validator<TItem> validator = null, bool itemsOptional = false)
             where TModel : class
             where TItem: class
         {
             return @this.ValidModelsCollection<TModel, TItem[], TItem>(validator, itemsOptional);
         }
 
-        public static IMemberSpecification<TModel, IEnumerable<TItem>> ValidModelsCollection<TModel, TItem>(this IMemberSpecification<TModel, IEnumerable<TItem>> @this, Validator<TItem> validator = null, bool itemsOptional = false)
+        public static IMemberSpecificationBuilder<TModel, IEnumerable<TItem>> ValidModelsCollection<TModel, TItem>(this IMemberSpecificationBuilder<TModel, IEnumerable<TItem>> @this, Validator<TItem> validator = null, bool itemsOptional = false)
             where TModel : class
             where TItem: class
         {
             return @this.ValidModelsCollection<TModel, IEnumerable<TItem>, TItem>(validator, itemsOptional);
         }
 
-        public static IMemberSpecification<TModel, ICollection<TItem>> ValidModelsCollection<TModel, TItem>(this IMemberSpecification<TModel, ICollection<TItem>> @this, Validator<TItem> validator = null, bool itemsOptional = false)
+        public static IMemberSpecificationBuilder<TModel, ICollection<TItem>> ValidModelsCollection<TModel, TItem>(this IMemberSpecificationBuilder<TModel, ICollection<TItem>> @this, Validator<TItem> validator = null, bool itemsOptional = false)
             where TModel : class
             where TItem: class
         {
             return @this.ValidModelsCollection<TModel, ICollection<TItem>, TItem>(validator, itemsOptional);
         }
 
-        public static IMemberSpecification<TModel, Collection<TItem>> ValidModelsCollection<TModel, TItem>(this IMemberSpecification<TModel, Collection<TItem>> @this, Validator<TItem> validator = null, bool itemsOptional = false)
+        public static IMemberSpecificationBuilder<TModel, Collection<TItem>> ValidModelsCollection<TModel, TItem>(this IMemberSpecificationBuilder<TModel, Collection<TItem>> @this, Validator<TItem> validator = null, bool itemsOptional = false)
             where TModel : class
             where TItem: class
         {
             return @this.ValidModelsCollection<TModel, Collection<TItem>, TItem>(validator, itemsOptional);
         }
 
-        public static IMemberSpecification<TModel, IReadOnlyCollection<TItem>> ValidModelsCollection<TModel, TItem>(this IMemberSpecification<TModel, IReadOnlyCollection<TItem>> @this, Validator<TItem> validator = null, bool itemsOptional = false)
+        public static IMemberSpecificationBuilder<TModel, IReadOnlyCollection<TItem>> ValidModelsCollection<TModel, TItem>(this IMemberSpecificationBuilder<TModel, IReadOnlyCollection<TItem>> @this, Validator<TItem> validator = null, bool itemsOptional = false)
             where TModel : class
             where TItem: class
         {
             return @this.ValidModelsCollection<TModel, IReadOnlyCollection<TItem>, TItem>(validator, itemsOptional);
         }
 
-        public static IMemberSpecification<TModel, ReadOnlyCollection<TItem>> ValidModelsCollection<TModel, TItem>(this IMemberSpecification<TModel, ReadOnlyCollection<TItem>> @this, Validator<TItem> validator = null, bool itemsOptional = false)
+        public static IMemberSpecificationBuilder<TModel, ReadOnlyCollection<TItem>> ValidModelsCollection<TModel, TItem>(this IMemberSpecificationBuilder<TModel, ReadOnlyCollection<TItem>> @this, Validator<TItem> validator = null, bool itemsOptional = false)
             where TModel : class
             where TItem: class
         {
             return @this.ValidModelsCollection<TModel, ReadOnlyCollection<TItem>, TItem>(validator, itemsOptional);
         }
 
-        public static IMemberSpecification<TModel, IList<TItem>> ValidModelsCollection<TModel, TItem>(this IMemberSpecification<TModel, IList<TItem>> @this, Validator<TItem> validator = null, bool itemsOptional = false)
+        public static IMemberSpecificationBuilder<TModel, IList<TItem>> ValidModelsCollection<TModel, TItem>(this IMemberSpecificationBuilder<TModel, IList<TItem>> @this, Validator<TItem> validator = null, bool itemsOptional = false)
             where TModel : class
             where TItem: class
         {
             return @this.ValidModelsCollection<TModel, IList<TItem>, TItem>(validator, itemsOptional);
         }
 
-        public static IMemberSpecification<TModel, List<TItem>> ValidModelsCollection<TModel, TItem>(this IMemberSpecification<TModel, List<TItem>> @this, Validator<TItem> validator = null, bool itemsOptional = false)
+        public static IMemberSpecificationBuilder<TModel, List<TItem>> ValidModelsCollection<TModel, TItem>(this IMemberSpecificationBuilder<TModel, List<TItem>> @this, Validator<TItem> validator = null, bool itemsOptional = false)
             where TModel : class
             where TItem: class
         {

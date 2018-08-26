@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using CoreValidation.Errors;
 using CoreValidation.Translations;
 
 namespace CoreValidation.Options
@@ -11,15 +10,7 @@ namespace CoreValidation.Options
 
         public IReadOnlyDictionary<Type, object> Validators { get; set; } = new Dictionary<Type, object>();
 
-        public IValidationOptions ValidationOptions { get; set; } = new ValidationOptions
-        {
-            NullRootStrategy = NullRootStrategy.RequiredError,
-            ValidationStrategy = ValidationStrategy.Complete,
-            TranslationName = null,
-            CollectionForceKey = "*",
-            MaxDepth = 10,
-            RequiredError = new Error(Phrases.English[Phrases.Keys.Required]),
-            DefaultError = new Error(Phrases.English[Phrases.Keys.Invalid])
-        };
+        // todo: why when applying static immutable default options, it breaks when working parallely ?
+        public IValidationOptions ValidationOptions { get; set; } = Options.ValidationOptions.CreateDefault();
     }
 }

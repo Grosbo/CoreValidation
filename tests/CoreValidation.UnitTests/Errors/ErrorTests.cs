@@ -72,30 +72,6 @@ namespace CoreValidation.UnitTests.Errors
         }
 
         [Fact]
-        public void Should_Clone()
-        {
-            var arg = new MessageArg("arg", "value");
-            var args = new IMessageArg[] {arg};
-
-            var error = new Error("test123 {arg}", args);
-
-            var clonedError = error.Clone();
-
-            Assert.Equal("test123 {arg}", error.Message);
-            Assert.Equal("test123 value", error.StringifiedMessage);
-            Assert.Equal(1, error.Arguments.Count);
-            Assert.Same(arg, error.Arguments.Single());
-
-            Assert.NotNull(clonedError);
-            Assert.NotSame(clonedError, error);
-
-            Assert.Equal("test123 {arg}", clonedError.Message);
-            Assert.Equal("test123 value", clonedError.StringifiedMessage);
-            Assert.Equal(1, clonedError.Arguments.Count);
-            Assert.Same(arg, clonedError.Arguments.Single());
-        }
-
-        [Fact]
         public void Should_SetMessages_When_EmptyArgs()
         {
             var args = Array.Empty<IMessageArg>();

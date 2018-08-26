@@ -22,7 +22,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Texts
         [InlineData("ĘÓĄŚŁŻŹĆ", "EOASLZZC", false)]
         public void EqualTo_Should_CollectError(string model, string value, bool expectedIsValid)
         {
-            var builder = new MemberSpecification<object, string>();
+            var builder = new MemberSpecificationBuilder<object, string>();
 
             builder.EqualTo(value);
 
@@ -43,7 +43,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Texts
         [InlineData("ĘÓĄŚŁŻŹĆ", "EOASLZZC", true)]
         public void NotEqualTo_Should_CollectError(string model, string value, bool expectedIsValid)
         {
-            var builder = new MemberSpecification<object, string>();
+            var builder = new MemberSpecificationBuilder<object, string>();
 
             builder.NotEqualTo(value);
 
@@ -66,7 +66,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Texts
         [InlineData("ĘÓĄŚŁŻŹĆ", "EOASLZZC", false)]
         public void EqualTo_Should_CollectError_When_ComparisonIgnoreCase(string model, string value, bool expectedIsValid)
         {
-            var builder = new MemberSpecification<object, string>();
+            var builder = new MemberSpecificationBuilder<object, string>();
 
             builder.EqualTo(value, StringComparison.OrdinalIgnoreCase);
             RulesHelper.AssertErrorCompilation(model, builder.Rules, expectedIsValid, Phrases.Keys.Texts.EqualTo);
@@ -88,7 +88,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Texts
         [InlineData("ĘÓĄŚŁŻŹĆ", "EOASLZZC", true)]
         public void NotEqualTo_Should_CollectError_When_ComparisonIgnoreCase(string model, string value, bool expectedIsValid)
         {
-            var builder = new MemberSpecification<object, string>();
+            var builder = new MemberSpecificationBuilder<object, string>();
 
             builder.NotEqualTo(value, StringComparison.OrdinalIgnoreCase);
 
@@ -120,7 +120,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Texts
         [MemberData(nameof(Contains_Should_CollectError_Data))]
         public void Contains_Should_CollectError(string model, string value, StringComparison stringComparison, bool expectedIsValid)
         {
-            var builder = new MemberSpecification<object, string>();
+            var builder = new MemberSpecificationBuilder<object, string>();
 
             builder.Contains(value, stringComparison);
 
@@ -152,7 +152,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Texts
         [MemberData(nameof(NotContains_Should_CollectError_Data))]
         public void NotContains_Should_CollectError(string model, string value, StringComparison stringComparison, bool expectedIsValid)
         {
-            var builder = new MemberSpecification<object, string>();
+            var builder = new MemberSpecificationBuilder<object, string>();
 
             builder.NotContains(value, stringComparison);
 
@@ -172,7 +172,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Texts
         [MemberData(nameof(NotEmpty_Should_CollectError_NewLines_Data))]
         public void NotEmpty_Should_CollectError(string model, bool expectedIsValid)
         {
-            var builder = new MemberSpecification<object, string>();
+            var builder = new MemberSpecificationBuilder<object, string>();
 
             builder.NotEmpty();
 
@@ -199,7 +199,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Texts
         [MemberData(nameof(NotWhiteSpace_Should_CollectError_NewLines_Data))]
         public void NotWhiteSpace_Should_CollectError(string model, bool expectedIsValid)
         {
-            var builder = new MemberSpecification<object, string>();
+            var builder = new MemberSpecificationBuilder<object, string>();
 
             builder.NotWhiteSpace();
 
@@ -221,7 +221,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Texts
         [MemberData(nameof(SingleLine_Should_CollectError_NewLines_Data))]
         public void SingleLine_Should_CollectError(string model, bool expectedIsValid)
         {
-            var builder = new MemberSpecification<object, string>();
+            var builder = new MemberSpecificationBuilder<object, string>();
 
             builder.SingleLine();
 
@@ -249,7 +249,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Texts
         [MemberData(nameof(ExactLength_Should_CollectError_NewLines_Data))]
         public void ExactLength_Should_CollectError(string model, int value, bool expectedIsValid)
         {
-            var builder = new MemberSpecification<object, string>();
+            var builder = new MemberSpecificationBuilder<object, string>();
 
             builder.ExactLength(value);
 
@@ -261,7 +261,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Texts
         [InlineData(int.MinValue)]
         public void ExactLength_Should_ThrowException_When_NegativeLength(int value)
         {
-            var builder = new MemberSpecification<object, string>();
+            var builder = new MemberSpecificationBuilder<object, string>();
 
             Assert.Throws<ArgumentOutOfRangeException>(() => { builder.ExactLength(value); });
         }
@@ -288,7 +288,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Texts
         [MemberData(nameof(MaxLength_Should_CollectError_NewLines_Data))]
         public void MaxLength_Should_CollectError(string model, int value, bool expectedIsValid)
         {
-            var builder = new MemberSpecification<object, string>();
+            var builder = new MemberSpecificationBuilder<object, string>();
 
             builder.MaxLength(value);
 
@@ -300,7 +300,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Texts
         [InlineData(int.MinValue)]
         public void MaxLength_Should_ThrowException_When_NegativeLength(int value)
         {
-            var builder = new MemberSpecification<object, string>();
+            var builder = new MemberSpecificationBuilder<object, string>();
 
             Assert.Throws<ArgumentOutOfRangeException>(() => { builder.MaxLength(value); });
         }
@@ -327,7 +327,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Texts
         [MemberData(nameof(MinLength_Should_CollectError_NewLines_Data))]
         public void MinLength_Should_CollectError(string model, int value, bool expectedIsValid)
         {
-            var builder = new MemberSpecification<object, string>();
+            var builder = new MemberSpecificationBuilder<object, string>();
 
             builder.MinLength(value);
 
@@ -339,7 +339,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Texts
         [InlineData(int.MinValue)]
         public void MinLength_Should_ThrowException_When_NegativeLength(int value)
         {
-            var builder = new MemberSpecification<object, string>();
+            var builder = new MemberSpecificationBuilder<object, string>();
 
             Assert.Throws<ArgumentOutOfRangeException>(() => { builder.MinLength(value); });
         }
@@ -374,7 +374,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Texts
         [MemberData(nameof(LengthBetween_Should_CollectError_NewLines_Data))]
         public void LengthBetween_Should_CollectError(string model, int min, int max, bool expectedIsValid)
         {
-            var builder = new MemberSpecification<object, string>();
+            var builder = new MemberSpecificationBuilder<object, string>();
 
             builder.LengthBetween(min, max);
 
@@ -387,7 +387,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Texts
         [InlineData(int.MinValue, int.MaxValue)]
         public void LengthBetween_Should_ThrowException_When_NegativeLength(int min, int max)
         {
-            var builder = new MemberSpecification<object, string>();
+            var builder = new MemberSpecificationBuilder<object, string>();
 
             Assert.Throws<ArgumentOutOfRangeException>(() => { builder.LengthBetween(min, max); });
         }
@@ -398,7 +398,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Texts
         [InlineData(1000, 100)]
         public void LengthBetween_Should_ThrowException_When_MinGreaterThanMax(int min, int max)
         {
-            var builder = new MemberSpecification<object, string>();
+            var builder = new MemberSpecificationBuilder<object, string>();
 
             Assert.Throws<ArgumentException>(() => { builder.LengthBetween(min, max); });
         }
@@ -408,7 +408,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Texts
             [Fact]
             public void Contains_Should_SetCustomMessage()
             {
-                var builder = new MemberSpecification<object, string>();
+                var builder = new MemberSpecificationBuilder<object, string>();
 
                 builder.Contains("value123", message: "{value} {stringComparison} Overriden error message");
 
@@ -418,7 +418,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Texts
             [Fact]
             public void EqualTo_Should_SetCustomMessage()
             {
-                var builder = new MemberSpecification<object, string>();
+                var builder = new MemberSpecificationBuilder<object, string>();
 
                 builder.EqualTo("value123", message: "{value} {stringComparison} Overriden error message");
 
@@ -428,7 +428,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Texts
             [Fact]
             public void ExactLength_Should_SetCustomMessage()
             {
-                var builder = new MemberSpecification<object, string>();
+                var builder = new MemberSpecificationBuilder<object, string>();
 
                 builder.ExactLength(10, "{length} Overriden error message");
 
@@ -438,7 +438,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Texts
             [Fact]
             public void LengthBetween_Should_SetCustomMessage()
             {
-                var builder = new MemberSpecification<object, string>();
+                var builder = new MemberSpecificationBuilder<object, string>();
 
                 builder.LengthBetween(9, 10, "{min} {max} Overriden error message");
 
@@ -448,7 +448,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Texts
             [Fact]
             public void MaxLength_Should_SetCustomMessage()
             {
-                var builder = new MemberSpecification<object, string>();
+                var builder = new MemberSpecificationBuilder<object, string>();
 
                 builder.MaxLength(1, "{max} Overriden error message");
 
@@ -458,7 +458,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Texts
             [Fact]
             public void MinLength_Should_SetCustomMessage()
             {
-                var builder = new MemberSpecification<object, string>();
+                var builder = new MemberSpecificationBuilder<object, string>();
 
                 builder.MinLength(10, "{min} Overriden error message");
 
@@ -468,7 +468,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Texts
             [Fact]
             public void NotContains_Should_SetCustomMessage()
             {
-                var builder = new MemberSpecification<object, string>();
+                var builder = new MemberSpecificationBuilder<object, string>();
 
                 builder.NotContains("value123", message: "{value} {stringComparison} Overriden error message");
 
@@ -478,7 +478,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Texts
             [Fact]
             public void NotEmpty_Should_SetCustomMessage()
             {
-                var builder = new MemberSpecification<object, string>();
+                var builder = new MemberSpecificationBuilder<object, string>();
 
                 builder.NotEmpty("Overriden error message");
 
@@ -488,7 +488,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Texts
             [Fact]
             public void NotEqualTo_Should_SetCustomMessage()
             {
-                var builder = new MemberSpecification<object, string>();
+                var builder = new MemberSpecificationBuilder<object, string>();
 
                 builder.NotEqualTo("value123", message: "{value} {stringComparison} Overriden error message");
 
@@ -498,7 +498,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Texts
             [Fact]
             public void NotWhitespace_Should_SetCustomMessage()
             {
-                var builder = new MemberSpecification<object, string>();
+                var builder = new MemberSpecificationBuilder<object, string>();
 
                 builder.NotWhiteSpace("Overriden error message");
 
@@ -508,7 +508,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Texts
             [Fact]
             public void SingleLine_Should_SetCustomMessage()
             {
-                var builder = new MemberSpecification<object, string>();
+                var builder = new MemberSpecificationBuilder<object, string>();
 
                 builder.SingleLine("Overriden error message");
 
@@ -519,7 +519,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Texts
         [Fact]
         public void Contains_Should_ThrowException_When_NullValue()
         {
-            var builder = new MemberSpecification<object, string>();
+            var builder = new MemberSpecificationBuilder<object, string>();
 
             Assert.Throws<ArgumentNullException>(() => { builder.Contains(null); });
         }
@@ -527,7 +527,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Texts
         [Fact]
         public void EqualTo_Should_ThrowException_When_NullValue()
         {
-            var builder = new MemberSpecification<object, string>();
+            var builder = new MemberSpecificationBuilder<object, string>();
 
             Assert.Throws<ArgumentNullException>(() => { builder.EqualTo(null); });
         }
@@ -535,7 +535,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Texts
         [Fact]
         public void NotContains_Should_ThrowException_When_NullValue()
         {
-            var builder = new MemberSpecification<object, string>();
+            var builder = new MemberSpecificationBuilder<object, string>();
 
             Assert.Throws<ArgumentNullException>(() => { builder.NotContains(null); });
         }
@@ -543,7 +543,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Texts
         [Fact]
         public void NotEqualTo_Should_ThrowException_When_NullValuee()
         {
-            var builder = new MemberSpecification<object, string>();
+            var builder = new MemberSpecificationBuilder<object, string>();
 
             Assert.Throws<ArgumentNullException>(() => { builder.NotEqualTo(null); });
         }

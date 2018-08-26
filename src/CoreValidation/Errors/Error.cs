@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace CoreValidation.Errors
 {
-    public sealed class Error : IErrorMessageHolder
+    public sealed class Error
     {
         private static readonly MessageStringifier _messageStringifier = new MessageStringifier();
 
@@ -31,29 +31,19 @@ namespace CoreValidation.Errors
             return string.Equals(StringifiedMessage, other?.StringifiedMessage, StringComparison.Ordinal);
         }
 
-        public Error Clone()
+        public static Error CreateValidOrNull(string message, IReadOnlyCollection<IMessageArg> args)
         {
-            return new Error(Message, Arguments, StringifiedMessage);
-        }
+            if ((message == null) && (args == null))
+            {
+                return null;
+            }
 
-        public static void AssertValidMessageAndArgs(string message, IReadOnlyCollection<IMessageArg> args)
-        {
             if ((message == null) && (args != null))
             {
                 throw new ArgumentException($"Defining {nameof(args)} not allowed if {nameof(message)} is null");
             }
-        }
 
-        public static Error CreateOrDefault(string message, IReadOnlyCollection<IMessageArg> args, Error defaultError)
-        {
-            AssertValidMessageAndArgs(message, args);
-
-            if ((message == null) && (defaultError == null))
-            {
-                throw new ArgumentException($"Either {nameof(message)} or {nameof(defaultError)} must not be null.");
-            }
-
-            return message == null ? new Error(defaultError.Message, defaultError.Arguments) : new Error(message, args);
+            return new Error(message, args);
         }
     }
 }

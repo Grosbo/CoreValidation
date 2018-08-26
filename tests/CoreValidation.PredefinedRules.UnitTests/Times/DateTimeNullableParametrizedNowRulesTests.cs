@@ -23,7 +23,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Times
         [MemberData(nameof(ParametrizedAfterNow_Should_CollectError_MemberData))]
         public void ParametrizedAfterNow_Should_CollectError(DateTime model, DateTime now, bool expectedIsValid)
         {
-            var builder = new MemberSpecification<object, DateTime?>();
+            var builder = new MemberSpecificationBuilder<object, DateTime?>();
 
             builder.ParametrizedAfterNow(now);
 
@@ -42,7 +42,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Times
         [MemberData(nameof(ParametrizedBeforeNow_Should_CollectError_Data))]
         public void ParametrizedBeforeNow_Should_CollectError(DateTime model, DateTime now, bool expectedIsValid)
         {
-            var builder = new MemberSpecification<object, DateTime?>();
+            var builder = new MemberSpecificationBuilder<object, DateTime?>();
 
             builder.ParametrizedBeforeNow(now);
 
@@ -66,7 +66,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Times
         [MemberData(nameof(ParametrizedFromNow_Should_CollectError_Data))]
         public void ParametrizedFromNow_Should_CollectError(DateTime now, DateTime model, TimeSpan value, bool expectedIsValid)
         {
-            var builder = new MemberSpecification<object, DateTime?>();
+            var builder = new MemberSpecificationBuilder<object, DateTime?>();
 
             builder.ParametrizedFromNow(now, value);
 
@@ -78,7 +78,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Times
             [Fact]
             public void ParametrizedAfterNow_Should_SetCustomMessage()
             {
-                var builder = new MemberSpecification<object, DateTime?>();
+                var builder = new MemberSpecificationBuilder<object, DateTime?>();
 
                 builder.ParametrizedAfterNow(new DateTime(2020, 09, 21, 15, 0, 2), message: "{now} {timeComparison} Overriden error message");
 
@@ -88,7 +88,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Times
             [Fact]
             public void ParametrizedBeforeNow_Should_SetCustomMessage()
             {
-                var builder = new MemberSpecification<object, DateTime?>();
+                var builder = new MemberSpecificationBuilder<object, DateTime?>();
 
                 builder.ParametrizedBeforeNow(new DateTime(2020, 09, 21, 15, 0, 1), message: "{now} {timeComparison} Overriden error message");
 
@@ -98,7 +98,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Times
             [Fact]
             public void ParametrizedFromNow_Should_SetCustomMessage()
             {
-                var builder = new MemberSpecification<object, DateTime?>();
+                var builder = new MemberSpecificationBuilder<object, DateTime?>();
 
                 builder.ParametrizedFromNow(new DateTime(2020, 09, 21, 15, 0, 7), TimeSpan.FromSeconds(2), "{now} {timeSpan} Overriden error message");
 

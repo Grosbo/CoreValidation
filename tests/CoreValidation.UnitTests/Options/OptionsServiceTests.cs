@@ -52,13 +52,13 @@ namespace CoreValidation.UnitTests.Options
             [MemberData(nameof(VerifyTranslationName_Should_ThrowException_When_TranslationNotFound_Data))]
             public void VerifyTranslationName_Should_ThrowException_When_TranslationNotFound(Translation[] translations)
             {
-                Assert.Throws<TranslationNotFoundException>(() => { new OptionsService().VerifyTranslationName(translations, "some_other_value"); });
+                Assert.Throws<TranslationNotFoundException>(() => { OptionsService.VerifyTranslationName(translations, "some_other_value"); });
             }
 
             [Fact]
             public void VerifyTranslationName_Should_ReturnNull_When_NullDictionaryName()
             {
-                var result = new OptionsService().VerifyTranslationName(Array.Empty<Translation>(), null);
+                var result = OptionsService.VerifyTranslationName(Array.Empty<Translation>(), null);
 
                 Assert.Null(result);
             }
@@ -66,13 +66,13 @@ namespace CoreValidation.UnitTests.Options
             [Fact]
             public void VerifyTranslationName_Should_ThrowException_When_NullTranslations()
             {
-                Assert.Throws<ArgumentNullException>(() => { new OptionsService().VerifyTranslationName(null, "some_value"); });
+                Assert.Throws<ArgumentNullException>(() => { OptionsService.VerifyTranslationName(null, "some_value"); });
             }
 
             [Fact]
             public void VerifyTranslationName_Should_VerifyPositive()
             {
-                var result = new OptionsService().VerifyTranslationName(new[] {new Translation("name", new Dictionary<string, string> {{"a", "b"}})}, "name");
+                var result = OptionsService.VerifyTranslationName(new[] {new Translation("name", new Dictionary<string, string> {{"a", "b"}})}, "name");
 
                 Assert.Equal("name", result);
             }
@@ -105,7 +105,7 @@ namespace CoreValidation.UnitTests.Options
             [MemberData(nameof(GetVerifiedValidatorsDictionary_Should_ThrowException_When_DictionaryContainsNullValue_Data))]
             public void GetVerifiedValidatorsDictionary_Should_ThrowException_When_DictionaryContainsNullValue(IReadOnlyDictionary<Type, object> validatorsDictionary)
             {
-                Assert.Throws<InvalidOperationException>(() => { new OptionsService().GetVerifiedValidatorsDictionary(validatorsDictionary); });
+                Assert.Throws<InvalidOperationException>(() => { OptionsService.GetVerifiedValidatorsDictionary(validatorsDictionary); });
             }
 
             public static IEnumerable<object[]> GetVerifiedValidatorsDictionary_Should_ThrowException_When_InvalidValidatorTypeForKeyType_Data()
@@ -132,13 +132,13 @@ namespace CoreValidation.UnitTests.Options
             [MemberData(nameof(GetVerifiedValidatorsDictionary_Should_ThrowException_When_InvalidValidatorTypeForKeyType_Data))]
             public void GetVerifiedValidatorsDictionary_Should_ThrowException_When_InvalidValidatorTypeForKeyType(IReadOnlyDictionary<Type, object> validatorsDictionary)
             {
-                Assert.Throws<InvalidValidatorTypeException>(() => { new OptionsService().GetVerifiedValidatorsDictionary(validatorsDictionary); });
+                Assert.Throws<InvalidValidatorTypeException>(() => { OptionsService.GetVerifiedValidatorsDictionary(validatorsDictionary); });
             }
 
             [Fact]
             public void GetVerifiedValidatorsDictionary_Should_ThrowException_When_NullDictionary()
             {
-                Assert.Throws<ArgumentNullException>(() => { new OptionsService().GetVerifiedValidatorsDictionary(null); });
+                Assert.Throws<ArgumentNullException>(() => { OptionsService.GetVerifiedValidatorsDictionary(null); });
             }
 
             [Fact]
@@ -150,7 +150,7 @@ namespace CoreValidation.UnitTests.Options
                     {typeof(Address), null}
                 };
 
-                Assert.Throws<InvalidOperationException>(() => { new OptionsService().GetVerifiedValidatorsDictionary(validatorsDictionary); });
+                Assert.Throws<InvalidOperationException>(() => { OptionsService.GetVerifiedValidatorsDictionary(validatorsDictionary); });
             }
 
 
@@ -163,7 +163,7 @@ namespace CoreValidation.UnitTests.Options
                     {typeof(Address), new Validator<Address>(c => c)}
                 };
 
-                var result = new OptionsService().GetVerifiedValidatorsDictionary(validatorsDictionary);
+                var result = OptionsService.GetVerifiedValidatorsDictionary(validatorsDictionary);
 
                 Assert.Equal(2, result.Count);
 
@@ -305,7 +305,7 @@ namespace CoreValidation.UnitTests.Options
             [MemberData(nameof(GetVerifiedTranslations_Should_VerifyPositiveTranslations_Data))]
             public void GetVerifiedTranslations_Should_VerifyPositiveTranslations(IReadOnlyCollection<Translation> translations, IReadOnlyCollection<Translation> expectedTranslations)
             {
-                var results = new OptionsService().GetVerifiedTranslations(translations);
+                var results = OptionsService.GetVerifiedTranslations(translations);
 
                 Assert.Equal(expectedTranslations.Count, results.Count);
 
@@ -327,7 +327,7 @@ namespace CoreValidation.UnitTests.Options
             [Fact]
             public void GetVerifiedTranslations_Should_ThrowException_When_NullCollection()
             {
-                Assert.Throws<ArgumentNullException>(() => { new OptionsService().GetVerifiedTranslations(null); });
+                Assert.Throws<ArgumentNullException>(() => { OptionsService.GetVerifiedTranslations(null); });
             }
 
             [Fact]
@@ -340,7 +340,7 @@ namespace CoreValidation.UnitTests.Options
                     new Translation("test2", new Dictionary<string, string>())
                 };
 
-                Assert.Throws<InvalidOperationException>(() => { new OptionsService().GetVerifiedTranslations(translations); });
+                Assert.Throws<InvalidOperationException>(() => { OptionsService.GetVerifiedTranslations(translations); });
             }
         }
 
@@ -424,7 +424,7 @@ namespace CoreValidation.UnitTests.Options
             [MemberData(nameof(GetVerifiedValidationOptions_Should_VerifyPositive_Data))]
             public void GetVerifiedValidationOptions_Should_VerifyPositive(ValidationOptions validationOptions)
             {
-                var result = new OptionsService().GetVerifiedValidationOptions(validationOptions);
+                var result = OptionsService.GetVerifiedValidationOptions(validationOptions);
 
                 Assert.NotSame(validationOptions, result);
                 Assert.Equal(validationOptions.NullRootStrategy, result.NullRootStrategy);
@@ -438,27 +438,27 @@ namespace CoreValidation.UnitTests.Options
             [Fact]
             public void GetVerifiedValidationOptions_Should_ThrowException_When_NegativeMaxDepth()
             {
-                Assert.Throws<InvalidOperationException>(() => { new OptionsService().GetVerifiedValidationOptions(ExampleNegativeMaxDepth); });
+                Assert.Throws<InvalidOperationException>(() => { OptionsService.GetVerifiedValidationOptions(ExampleNegativeMaxDepth); });
             }
 
 
             [Fact]
             public void GetVerifiedValidationOptions_Should_ThrowException_When_NullArgument()
             {
-                Assert.Throws<ArgumentNullException>(() => new OptionsService().GetVerifiedValidationOptions(null));
+                Assert.Throws<ArgumentNullException>(() => OptionsService.GetVerifiedValidationOptions(null));
             }
 
             [Fact]
             public void GetVerifiedValidationOptions_Should_ThrowException_When_NullCollectionForceKey()
             {
-                Assert.Throws<InvalidOperationException>(() => { new OptionsService().GetVerifiedValidationOptions(ExampleNullCollectionForceKey); });
+                Assert.Throws<InvalidOperationException>(() => { OptionsService.GetVerifiedValidationOptions(ExampleNullCollectionForceKey); });
             }
 
 
             [Fact]
             public void GetVerifiedValidationOptions_Should_ThrowException_When_NullRequiredError()
             {
-                Assert.Throws<InvalidOperationException>(() => { new OptionsService().GetVerifiedValidationOptions(ExampleNullRequiredError); });
+                Assert.Throws<InvalidOperationException>(() => { OptionsService.GetVerifiedValidationOptions(ExampleNullRequiredError); });
             }
         }
 
@@ -490,7 +490,7 @@ namespace CoreValidation.UnitTests.Options
             [MemberData(nameof(GetMerged_Should_ThrowException_When_NullOptions_Data))]
             public void GetMerged_Should_ThrowException_When_NullOptions(IValidationContextOptions baseOptions, IValidationContextOptions newOptions)
             {
-                Assert.Throws<ArgumentNullException>(() => { new OptionsService().GetMerged(baseOptions, newOptions); });
+                Assert.Throws<ArgumentNullException>(() => { OptionsService.GetMerged(baseOptions, newOptions); });
             }
 
 
@@ -576,7 +576,7 @@ namespace CoreValidation.UnitTests.Options
                     newOptions.ValidationOptions = validationOptions;
                 }
 
-                Assert.Throws<InvalidOperationException>(() => { new OptionsService().GetMerged(baseOptions, newOptions); });
+                Assert.Throws<InvalidOperationException>(() => { OptionsService.GetMerged(baseOptions, newOptions); });
             }
 
             [Fact]
@@ -640,7 +640,7 @@ namespace CoreValidation.UnitTests.Options
                     }
                 };
 
-                var result = new OptionsService().GetMerged(baseOptions, newOptions);
+                var result = OptionsService.GetMerged(baseOptions, newOptions);
 
                 Assert.NotNull(result);
 
@@ -729,7 +729,7 @@ namespace CoreValidation.UnitTests.Options
                     }
                 };
 
-                var result = new OptionsService().GetMerged(baseOptions, newOptions);
+                var result = OptionsService.GetMerged(baseOptions, newOptions);
 
                 Assert.NotNull(result);
 
@@ -809,7 +809,7 @@ namespace CoreValidation.UnitTests.Options
                     }
                 };
 
-                var result = new OptionsService().GetMerged(baseOptions, newOptions);
+                var result = OptionsService.GetMerged(baseOptions, newOptions);
 
                 Assert.NotNull(result);
 
@@ -879,7 +879,7 @@ namespace CoreValidation.UnitTests.Options
                     ValidationOptions = validationOptions
                 };
 
-                Assert.Throws<InvalidOperationException>(() => new OptionsService().GetVerifiedCoreValidatorOptions(options));
+                Assert.Throws<InvalidOperationException>(() => OptionsService.GetVerifiedCoreValidatorOptions(options));
             }
 
             [Fact]
@@ -900,13 +900,13 @@ namespace CoreValidation.UnitTests.Options
                     }
                 };
 
-                Assert.Throws<TranslationNotFoundException>(() => new OptionsService().GetVerifiedCoreValidatorOptions(options));
+                Assert.Throws<TranslationNotFoundException>(() => OptionsService.GetVerifiedCoreValidatorOptions(options));
             }
 
             [Fact]
             public void GetVerifiedCoreValidatorOptions_Should_ThrowException_When_NullArgument()
             {
-                Assert.Throws<ArgumentNullException>(() => new OptionsService().GetVerifiedCoreValidatorOptions(null));
+                Assert.Throws<ArgumentNullException>(() => OptionsService.GetVerifiedCoreValidatorOptions(null));
             }
 
             [Fact]
@@ -960,7 +960,7 @@ namespace CoreValidation.UnitTests.Options
                     }
                 };
 
-                var result = new OptionsService().GetVerifiedCoreValidatorOptions(options);
+                var result = OptionsService.GetVerifiedCoreValidatorOptions(options);
 
                 Assert.NotNull(result);
 

@@ -5,13 +5,13 @@ namespace CoreValidation
 {
     public static class BoolNullableRules
     {
-        public static IMemberSpecification<TModel, bool?> True<TModel>(this IMemberSpecification<TModel, bool?> @this, string message = null)
+        public static IMemberSpecificationBuilder<TModel, bool?> True<TModel>(this IMemberSpecificationBuilder<TModel, bool?> @this, string message = null)
             where TModel : class
         {
             return @this.ValidNullable(m => m.True(message));
         }
 
-        public static IMemberSpecification<TModel, bool?> False<TModel>(this IMemberSpecification<TModel, bool?> @this, string message = null)
+        public static IMemberSpecificationBuilder<TModel, bool?> False<TModel>(this IMemberSpecificationBuilder<TModel, bool?> @this, string message = null)
             where TModel : class
         {
             return @this.ValidNullable(m => m.False(message));

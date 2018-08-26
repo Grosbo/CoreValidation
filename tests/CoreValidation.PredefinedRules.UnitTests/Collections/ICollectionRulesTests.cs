@@ -21,7 +21,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Collections
         [MemberData(nameof(ExactSize_Should_CollectError_Data))]
         public void ExactSize_Should_CollectError(ICollection<int> items, int expectedSize, bool expectedIsValid)
         {
-            var builder = new MemberSpecification<object, ICollection<int>>();
+            var builder = new MemberSpecificationBuilder<object, ICollection<int>>();
 
             builder.ExactSize(expectedSize);
 
@@ -32,7 +32,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Collections
         [MemberData(nameof(ExactSize_Should_CollectError_Data))]
         public void ExactSize_Should_CollectError_When_LongType(ICollection<int> items, long expectedSize, bool expectedIsValid)
         {
-            var builder = new MemberSpecification<object, ICollection<int>>();
+            var builder = new MemberSpecificationBuilder<object, ICollection<int>>();
 
             builder.ExactSize(expectedSize);
 
@@ -44,7 +44,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Collections
         [InlineData(int.MinValue)]
         public void ExactSize_Should_ThrowException_When_NegativeSize(int expectedSize)
         {
-            var builder = new MemberSpecification<object, ICollection<int>>();
+            var builder = new MemberSpecificationBuilder<object, ICollection<int>>();
 
             Assert.Throws<ArgumentOutOfRangeException>(() => { builder.ExactSize(expectedSize); });
         }
@@ -54,7 +54,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Collections
         [InlineData(long.MinValue)]
         public void ExactSize_Should_ThrowException_When_NegativeSize_And_LongType(long expectedSize)
         {
-            var builder = new MemberSpecification<object, ICollection<int>>();
+            var builder = new MemberSpecificationBuilder<object, ICollection<int>>();
 
             Assert.Throws<ArgumentOutOfRangeException>(() => { builder.ExactSize(expectedSize); });
         }
@@ -68,7 +68,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Collections
         [MemberData(nameof(NotEmpty_Should_CollectError_Data))]
         public void NotEmpty_Should_CollectError(ICollection<int> items, bool expectedIsValid)
         {
-            var builder = new MemberSpecification<object, ICollection<int>>();
+            var builder = new MemberSpecificationBuilder<object, ICollection<int>>();
 
             builder.NotEmpty();
 
@@ -84,7 +84,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Collections
         [MemberData(nameof(Empty_Should_CollectError_Data))]
         public void Empty_Should_CollectError(ICollection<int> items, bool expectedIsValid)
         {
-            var builder = new MemberSpecification<object, ICollection<int>>();
+            var builder = new MemberSpecificationBuilder<object, ICollection<int>>();
 
             builder.Empty();
 
@@ -100,7 +100,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Collections
         [MemberData(nameof(MaxSize_Should_CollectError_Data))]
         public void MaxSize_Should_CollectError(ICollection<int> items, int maxSize, bool expectedIsValid)
         {
-            var builder = new MemberSpecification<object, ICollection<int>>();
+            var builder = new MemberSpecificationBuilder<object, ICollection<int>>();
 
             builder.MaxSize(maxSize);
 
@@ -117,7 +117,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Collections
         [MemberData(nameof(MaxSize_Should_CollectError_When_LongSize_Data))]
         public void MaxSize_Should_CollectError_When_LongSize(ICollection<int> items, long maxSize, bool expectedIsValid)
         {
-            var builder = new MemberSpecification<object, ICollection<int>>();
+            var builder = new MemberSpecificationBuilder<object, ICollection<int>>();
 
             builder.MaxSize(maxSize);
 
@@ -133,7 +133,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Collections
         [MemberData(nameof(MinSize_Should_CollectError_Data))]
         public void MinSize_Should_CollectError(ICollection<int> items, int minSize, bool expectedIsValid)
         {
-            var builder = new MemberSpecification<object, ICollection<int>>();
+            var builder = new MemberSpecificationBuilder<object, ICollection<int>>();
 
             builder.MinSize(minSize);
 
@@ -150,7 +150,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Collections
         [MemberData(nameof(MinSize_Should_CollectError_When_LongSize_Data))]
         public void MinSize_Should_CollectError_When_LongSize(ICollection<int> items, long minSize, bool expectedIsValid)
         {
-            var builder = new MemberSpecification<object, ICollection<int>>();
+            var builder = new MemberSpecificationBuilder<object, ICollection<int>>();
 
             builder.MinSize(minSize);
 
@@ -162,7 +162,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Collections
         [InlineData(int.MinValue)]
         public void MinSize_Should_ThrowException_When_NegativeSize(int minSize)
         {
-            var builder = new MemberSpecification<object, ICollection<int>>();
+            var builder = new MemberSpecificationBuilder<object, ICollection<int>>();
 
             Assert.Throws<ArgumentOutOfRangeException>(() => { builder.MinSize(minSize); });
         }
@@ -172,7 +172,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Collections
         [InlineData(long.MinValue)]
         public void MinSize_Should_ThrowException_When_NegativeSize_And_LongSize(long minSize)
         {
-            var builder = new MemberSpecification<object, ICollection<int>>();
+            var builder = new MemberSpecificationBuilder<object, ICollection<int>>();
 
             Assert.Throws<ArgumentOutOfRangeException>(() => { builder.MinSize(minSize); });
         }
@@ -182,7 +182,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Collections
         [InlineData(int.MinValue)]
         public void MaxSize_Should_ThrowException_When_NegativeSize(int maxSize)
         {
-            var builder = new MemberSpecification<object, ICollection<int>>();
+            var builder = new MemberSpecificationBuilder<object, ICollection<int>>();
 
             Assert.Throws<ArgumentOutOfRangeException>(() => { builder.MaxSize(maxSize); });
         }
@@ -192,7 +192,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Collections
         [InlineData(long.MinValue)]
         public void MaxSize_Should_ThrowException_When_NegativeSize_And_LongSize(long maxSize)
         {
-            var builder = new MemberSpecification<object, ICollection<int>>();
+            var builder = new MemberSpecificationBuilder<object, ICollection<int>>();
 
             Assert.Throws<ArgumentOutOfRangeException>(() => { builder.MaxSize(maxSize); });
         }
@@ -206,7 +206,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Collections
         [MemberData(nameof(SizeBetween_Should_CollectError_Data))]
         public void SizeBetween_Should_CollectError(ICollection<int> items, int minSize, int maxSize, bool expectedIsValid)
         {
-            var builder = new MemberSpecification<object, ICollection<int>>();
+            var builder = new MemberSpecificationBuilder<object, ICollection<int>>();
 
             builder.SizeBetween(minSize, maxSize);
 
@@ -223,7 +223,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Collections
         [MemberData(nameof(SizeBetween_Should_CollectError_When_LongSize_Data))]
         public void SizeBetween_Should_CollectError_When_LongSize(ICollection<int> items, long minSize, long maxSize, bool expectedIsValid)
         {
-            var builder = new MemberSpecification<object, ICollection<int>>();
+            var builder = new MemberSpecificationBuilder<object, ICollection<int>>();
 
             builder.SizeBetween(minSize, maxSize);
 
@@ -235,7 +235,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Collections
         [InlineData(int.MinValue)]
         public void SizeBetween_Should_ThrowException_When_MaxSizeIsNegative(int maxSize)
         {
-            var builder = new MemberSpecification<object, ICollection<int>>();
+            var builder = new MemberSpecificationBuilder<object, ICollection<int>>();
 
             Assert.Throws<ArgumentOutOfRangeException>(() => { builder.SizeBetween(0, maxSize); });
         }
@@ -245,7 +245,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Collections
         [InlineData(long.MinValue)]
         public void SizeBetween_Should_ThrowException_When_MaxSizeIsLongNegative(long maxSize)
         {
-            var builder = new MemberSpecification<object, ICollection<int>>();
+            var builder = new MemberSpecificationBuilder<object, ICollection<int>>();
 
             Assert.Throws<ArgumentOutOfRangeException>(() => { builder.SizeBetween(0, maxSize); });
         }
@@ -255,7 +255,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Collections
         [InlineData(int.MinValue)]
         public void SizeBetween_Should_ThrowException_When_MinSizeIsNegative(int minSize)
         {
-            var builder = new MemberSpecification<object, ICollection<int>>();
+            var builder = new MemberSpecificationBuilder<object, ICollection<int>>();
 
             Assert.Throws<ArgumentOutOfRangeException>(() => { builder.SizeBetween(minSize, 10); });
         }
@@ -265,7 +265,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Collections
         [InlineData(long.MinValue)]
         public void SizeBetween_Should_ThrowException_When_MinSizeIsLongNegative(long minSize)
         {
-            var builder = new MemberSpecification<object, ICollection<int>>();
+            var builder = new MemberSpecificationBuilder<object, ICollection<int>>();
 
             Assert.Throws<ArgumentOutOfRangeException>(() => { builder.SizeBetween(minSize, 10L); });
         }
@@ -276,7 +276,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Collections
         [InlineData(int.MaxValue, 1)]
         public void SizeBetween_Should_ThrowException_When_MinLargerThanMax(int minSize, int maxSize)
         {
-            var builder = new MemberSpecification<object, ICollection<int>>();
+            var builder = new MemberSpecificationBuilder<object, ICollection<int>>();
 
             Assert.Throws<ArgumentOutOfRangeException>(() => { builder.SizeBetween(minSize, maxSize); });
         }
@@ -287,7 +287,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Collections
         [InlineData(long.MaxValue, 1)]
         public void SizeBetween_Should_ThrowException_When_MinLargerThanMax_And_LongMinAndMax(long minSize, long maxSize)
         {
-            var builder = new MemberSpecification<object, ICollection<int>>();
+            var builder = new MemberSpecificationBuilder<object, ICollection<int>>();
 
             Assert.Throws<ArgumentOutOfRangeException>(() => { builder.SizeBetween(minSize, maxSize); });
         }
@@ -297,7 +297,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Collections
             [Fact]
             public void Empty_Should_SetCustomMessage()
             {
-                var builder = new MemberSpecification<object, ICollection<int>>();
+                var builder = new MemberSpecificationBuilder<object, ICollection<int>>();
 
                 builder.Empty("Overriden error message");
 
@@ -307,7 +307,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Collections
             [Fact]
             public void ExactSize_Should_SetCustomMessage()
             {
-                var builder = new MemberSpecification<object, ICollection<int>>();
+                var builder = new MemberSpecificationBuilder<object, ICollection<int>>();
 
                 builder.ExactSize(10, "{size} Overriden error message");
 
@@ -317,7 +317,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Collections
             [Fact]
             public void ExactSize_Should_SetCustomMessage_When_LongType()
             {
-                var builder = new MemberSpecification<object, ICollection<int>>();
+                var builder = new MemberSpecificationBuilder<object, ICollection<int>>();
 
                 builder.ExactSize((long)10, "{size} Overriden error message");
 
@@ -327,7 +327,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Collections
             [Fact]
             public void MaxSize_Should_SetCustomMessage()
             {
-                var builder = new MemberSpecification<object, ICollection<int>>();
+                var builder = new MemberSpecificationBuilder<object, ICollection<int>>();
 
                 builder.MaxSize(3, "{max} Overriden error message");
 
@@ -337,7 +337,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Collections
             [Fact]
             public void MaxSize_Should_SetCustomMessage_When_LongType()
             {
-                var builder = new MemberSpecification<object, ICollection<int>>();
+                var builder = new MemberSpecificationBuilder<object, ICollection<int>>();
 
                 builder.MaxSize((long)3, "{max} Overriden error message");
 
@@ -347,7 +347,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Collections
             [Fact]
             public void MinSize_Should_SetCustomMessage()
             {
-                var builder = new MemberSpecification<object, ICollection<int>>();
+                var builder = new MemberSpecificationBuilder<object, ICollection<int>>();
 
                 builder.MinSize(3, "{min} Overriden error message");
 
@@ -357,7 +357,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Collections
             [Fact]
             public void MinSize_Should_SetCustomMessage_When_LongType()
             {
-                var builder = new MemberSpecification<object, ICollection<int>>();
+                var builder = new MemberSpecificationBuilder<object, ICollection<int>>();
 
                 builder.MinSize((long)3, "{min} Overriden error message");
 
@@ -367,7 +367,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Collections
             [Fact]
             public void NotEmpty_Should_SetCustomMessage()
             {
-                var builder = new MemberSpecification<object, ICollection<int>>();
+                var builder = new MemberSpecificationBuilder<object, ICollection<int>>();
 
                 builder.NotEmpty("Overriden error message");
 
@@ -377,7 +377,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Collections
             [Fact]
             public void SizeBetween_Should_SetCustomMessage()
             {
-                var builder = new MemberSpecification<object, ICollection<int>>();
+                var builder = new MemberSpecificationBuilder<object, ICollection<int>>();
 
                 builder.SizeBetween(3, 4, "{min} {max} Overriden error message");
 
@@ -387,7 +387,7 @@ namespace CoreValidation.PredefinedRules.UnitTests.Collections
             [Fact]
             public void SizeBetween_Should_SetCustomMessage_When_LongType()
             {
-                var builder = new MemberSpecification<object, ICollection<int>>();
+                var builder = new MemberSpecificationBuilder<object, ICollection<int>>();
 
                 builder.SizeBetween(3, (long)4, "{min} {max} Overriden error message");
 

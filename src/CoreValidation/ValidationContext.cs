@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using CoreValidation.Errors;
-using CoreValidation.Exceptions;
 using CoreValidation.Factory;
 using CoreValidation.Options;
 using CoreValidation.Results;
@@ -14,13 +13,12 @@ namespace CoreValidation
 {
     public sealed class ValidationContext : IValidationContext
     {
-        private static readonly OptionsService _optionsService = new OptionsService();
-
         public ValidationContext(IValidationContextOptions options = null)
         {
             Id = Guid.NewGuid();
-            Options = _optionsService.GetVerifiedCoreValidatorOptions(options ?? new ValidationContextOptions());
+            Options = OptionsService.GetVerifiedCoreValidatorOptions(options ?? new ValidationContextOptions());
             ValidatorsRepository = new ValidatorsRepository(Options.Validators);
+            SpecificationsRepository = new SpecificationsRepository(ValidatorsRepository);
             TranslatorsRepository = new TranslatorsRepository(Options.Translations.ToArray());
         }
 
@@ -29,6 +27,8 @@ namespace CoreValidation
         public static IValidationContextFactory Factory { get; } = new ValidationContextFactory();
 
         public ITranslatorsRepository TranslatorsRepository { get; }
+
+        internal ISpecificationsRepository SpecificationsRepository { get; }
 
         public IValidationContextOptions Options { get; }
 
@@ -41,7 +41,7 @@ namespace CoreValidation
             }
 
             var validationOptions = setOptions != null
-                ? _optionsService.GetVerifiedValidationOptions(setOptions(Options.ValidationOptions))
+                ? OptionsService.GetVerifiedValidationOptions(setOptions(Options.ValidationOptions))
                 : Options.ValidationOptions;
 
             var defaultTranslator = validationOptions.TranslationName != null
@@ -49,8 +49,6 @@ namespace CoreValidation
                 : TranslatorsRepository.GetOriginal();
 
             var translationProxy = new TranslationProxy(defaultTranslator, TranslatorsRepository);
-
-            var validator = ValidatorsRepository.Get<T>();
 
             if (model == null)
             {
@@ -70,32 +68,23 @@ namespace CoreValidation
                     {
                         var report = new ErrorsCollection();
 
-                        report.AddError(Options.ValidationOptions.RequiredError.Clone());
+                        report.AddError(Options.ValidationOptions.RequiredError);
 
                         return new ValidationResult<T>(Id, translationProxy, Options.ValidationOptions, null, report);
                     }
                 }
             }
 
-            var rawModelRules = new Specification<T>(model, ValidatorsRepository, validationOptions.ValidationStrategy, 0, Options.ValidationOptions);
+            var specification = SpecificationsRepository.GetOrInit<T>();
 
-            ISpecification<T> specification;
-
-            try
+            var compilationContext = new RulesExecutionContext
             {
-                specification = validator(rawModelRules);
-            }
-            catch (Exception ex)
-            {
-                throw new ValidationException(typeof(T), model, ex);
-            }
+                RulesOptions = validationOptions,
+                SpecificationsRepository = SpecificationsRepository,
+                ValidationStrategy = validationOptions.ValidationStrategy
+            };
 
-            if (!ReferenceEquals(rawModelRules, specification) || !(specification is Specification<T>))
-            {
-                throw new InvalidProcessedReferenceException(typeof(Specification<T>));
-            }
-
-            var errorsCollection = (specification as Specification<T>).GetErrors();
+            var errorsCollection = SpecificationRulesExecutor.ExecuteSpecificationRules(specification, model, compilationContext, 0);
 
             return new ValidationResult<T>(Id, translationProxy, Options.ValidationOptions, model, errorsCollection);
         }
@@ -112,14 +101,14 @@ namespace CoreValidation
         {
             var blankOptions = new ValidationContextOptions
             {
-                ValidationOptions = _optionsService.GetVerifiedValidationOptions(Options.ValidationOptions)
+                ValidationOptions = OptionsService.GetVerifiedValidationOptions(Options.ValidationOptions)
             };
 
             var options = modifyOptions != null
                 ? modifyOptions(blankOptions)
                 : blankOptions;
 
-            var finalOptions = _optionsService.GetMerged(Options, options);
+            var finalOptions = OptionsService.GetMerged(Options, options);
 
             return new ValidationContext(finalOptions);
         }

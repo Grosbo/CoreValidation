@@ -10,21 +10,21 @@ namespace CoreValidation
 {
     public static class BaseCollectionRules
     {
-        public static IMemberSpecification<TModel, TMember> Empty<TModel, TMember, TItem>(this IMemberSpecification<TModel, TMember> @this, string message = null)
+        public static IMemberSpecificationBuilder<TModel, TMember> Empty<TModel, TMember, TItem>(this IMemberSpecificationBuilder<TModel, TMember> @this, string message = null)
             where TModel : class
             where TMember : class, IEnumerable<TItem>
         {
             return @this.Valid(m => !m.Any(), message ?? Phrases.Keys.Collections.Empty);
         }
 
-        public static IMemberSpecification<TModel, TMember> NotEmpty<TModel, TMember, TItem>(this IMemberSpecification<TModel, TMember> @this, string message = null)
+        public static IMemberSpecificationBuilder<TModel, TMember> NotEmpty<TModel, TMember, TItem>(this IMemberSpecificationBuilder<TModel, TMember> @this, string message = null)
             where TModel : class
             where TMember : class, IEnumerable<TItem>
         {
             return @this.Valid(m => m.Any(), message ?? Phrases.Keys.Collections.NotEmpty);
         }
 
-        public static IMemberSpecification<TModel, TMember> ExactSize<TModel, TMember, TItem>(this IMemberSpecification<TModel, TMember> @this, int size, string message = null)
+        public static IMemberSpecificationBuilder<TModel, TMember> ExactSize<TModel, TMember, TItem>(this IMemberSpecificationBuilder<TModel, TMember> @this, int size, string message = null)
             where TModel : class
             where TMember : class, IEnumerable<TItem>
         {
@@ -36,7 +36,7 @@ namespace CoreValidation
             return @this.Valid(m => m.Count() == size, message ?? Phrases.Keys.Collections.ExactSize, new[] {new NumberArg(nameof(size), size)});
         }
 
-        public static IMemberSpecification<TModel, TMember> ExactSize<TModel, TMember, TItem>(this IMemberSpecification<TModel, TMember> @this, long size, string message = null)
+        public static IMemberSpecificationBuilder<TModel, TMember> ExactSize<TModel, TMember, TItem>(this IMemberSpecificationBuilder<TModel, TMember> @this, long size, string message = null)
             where TModel : class
             where TMember : class, IEnumerable<TItem>
         {
@@ -48,7 +48,7 @@ namespace CoreValidation
             return @this.Valid(m => m.LongCount() == size, message ?? Phrases.Keys.Collections.ExactSize, new[] {new NumberArg(nameof(size), size)});
         }
 
-        public static IMemberSpecification<TModel, TMember> MaxSize<TModel, TMember, TItem>(this IMemberSpecification<TModel, TMember> @this, int max, string message = null)
+        public static IMemberSpecificationBuilder<TModel, TMember> MaxSize<TModel, TMember, TItem>(this IMemberSpecificationBuilder<TModel, TMember> @this, int max, string message = null)
             where TModel : class
             where TMember : class, IEnumerable<TItem>
         {
@@ -60,7 +60,7 @@ namespace CoreValidation
             return @this.Valid(m => m.Count() <= max, message ?? Phrases.Keys.Collections.MaxSize, new[] {new NumberArg(nameof(max), max)});
         }
 
-        public static IMemberSpecification<TModel, TMember> MaxSize<TModel, TMember, TItem>(this IMemberSpecification<TModel, TMember> @this, long max, string message = null)
+        public static IMemberSpecificationBuilder<TModel, TMember> MaxSize<TModel, TMember, TItem>(this IMemberSpecificationBuilder<TModel, TMember> @this, long max, string message = null)
             where TModel : class
             where TMember : class, IEnumerable<TItem>
         {
@@ -72,7 +72,7 @@ namespace CoreValidation
             return @this.Valid(m => m.LongCount() <= max, message ?? Phrases.Keys.Collections.MaxSize, new[] {new NumberArg(nameof(max), max)});
         }
 
-        public static IMemberSpecification<TModel, TMember> MinSize<TModel, TMember, TItem>(this IMemberSpecification<TModel, TMember> @this, int min, string message = null)
+        public static IMemberSpecificationBuilder<TModel, TMember> MinSize<TModel, TMember, TItem>(this IMemberSpecificationBuilder<TModel, TMember> @this, int min, string message = null)
             where TModel : class
             where TMember : class, IEnumerable<TItem>
         {
@@ -84,7 +84,7 @@ namespace CoreValidation
             return @this.Valid(m => m.Count() >= min, message ?? Phrases.Keys.Collections.MinSize, new[] {new NumberArg(nameof(min), min)});
         }
 
-        public static IMemberSpecification<TModel, TMember> MinSize<TModel, TMember, TItem>(this IMemberSpecification<TModel, TMember> @this, long min, string message = null)
+        public static IMemberSpecificationBuilder<TModel, TMember> MinSize<TModel, TMember, TItem>(this IMemberSpecificationBuilder<TModel, TMember> @this, long min, string message = null)
             where TModel : class
             where TMember : class, IEnumerable<TItem>
         {
@@ -96,7 +96,7 @@ namespace CoreValidation
             return @this.Valid(m => m.LongCount() >= min, message ?? Phrases.Keys.Collections.MinSize, new[] {new NumberArg(nameof(min), min)});
         }
 
-        public static IMemberSpecification<TModel, TMember> SizeBetween<TModel, TMember, TItem>(this IMemberSpecification<TModel, TMember> @this, int min, int max, string message = null)
+        public static IMemberSpecificationBuilder<TModel, TMember> SizeBetween<TModel, TMember, TItem>(this IMemberSpecificationBuilder<TModel, TMember> @this, int min, int max, string message = null)
             where TModel : class
             where TMember : class, IEnumerable<TItem>
         {
@@ -125,7 +125,7 @@ namespace CoreValidation
                 new[] {new NumberArg(nameof(min), min), new NumberArg(nameof(max), max)});
         }
 
-        public static IMemberSpecification<TModel, TMember> SizeBetween<TModel, TMember, TItem>(this IMemberSpecification<TModel, TMember> @this, long min, long max, string message = null)
+        public static IMemberSpecificationBuilder<TModel, TMember> SizeBetween<TModel, TMember, TItem>(this IMemberSpecificationBuilder<TModel, TMember> @this, long min, long max, string message = null)
             where TModel : class
             where TMember : class, IEnumerable<TItem>
         {

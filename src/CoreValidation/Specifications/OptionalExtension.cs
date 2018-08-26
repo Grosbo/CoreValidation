@@ -5,18 +5,18 @@ namespace CoreValidation
 {
     public static class OptionalRuleExtension
     {
-        public static IMemberSpecification<TModel, TMember> Optional<TModel, TMember>(this IMemberSpecification<TModel, TMember> memberSpecification)
+        public static IMemberSpecificationBuilder<TModel, TMember> Optional<TModel, TMember>(this IMemberSpecificationBuilder<TModel, TMember> memberSpecificationBuilder)
             where TModel : class
             where TMember : class
         {
-            return ((MemberSpecification<TModel, TMember>) memberSpecification).Optional();
+            return ((MemberSpecificationBuilder<TModel, TMember>) memberSpecificationBuilder).Optional();
         }
 
-        public static IMemberSpecification<TModel, TMember?> Optional<TModel, TMember>(this IMemberSpecification<TModel, TMember?> memberSpecification)
+        public static IMemberSpecificationBuilder<TModel, TMember?> Optional<TModel, TMember>(this IMemberSpecificationBuilder<TModel, TMember?> memberSpecificationBuilder)
             where TModel : class
             where TMember : struct
         {
-            return ((MemberSpecification<TModel, TMember?>) memberSpecification).Optional();
+            return ((MemberSpecificationBuilder<TModel, TMember?>) memberSpecificationBuilder).Optional();
         }
     }
 }
