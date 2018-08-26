@@ -1,19 +1,25 @@
+Param (
+    [Parameter(Position = 0, Mandatory = $false)][string]$configuration = "Debug"
+)
+
 $ErrorActionPreference = 'Stop'
 
 $scriptsPath = Convert-Path $PSScriptRoot
 . $scriptsPath\Helpers.ps1
 
+Print "Bulding: $($configuration)"
+
 Exec "dotnet SDK" {
     & dotnet --version
 }
 
-$rootDir = Convert-Path "$($scriptsPath)\..\"
-$solutionFile = Convert-Path "$($rootDir)\CoreValidation.sln"
+$rootPath = Convert-Path "$($scriptsPath)\..\"
+$solutionFile = Convert-Path "$($rootPath)\CoreValidation.sln"
 
 Exec "Cleaning builds" {
-    & dotnet clean $solutionFile -c Release --verbosity m
+    & dotnet clean $solutionFile -c $configuration --verbosity m
 }
 
 Exec "Building" {
-    & dotnet build $solutionFile -c Release --no-incremental
+    & dotnet build $solutionFile -c $configuration --no-incremental
 }

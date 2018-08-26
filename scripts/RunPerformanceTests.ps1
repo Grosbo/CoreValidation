@@ -3,16 +3,21 @@ $ErrorActionPreference = 'Stop'
 $scriptsPath = Convert-Path $PSScriptRoot
 . $scriptsPath\Helpers.ps1
 
-$rootDir = Convert-Path "$($scriptsPath)\..\"
-$testsDir = Convert-Path "$($rootDir)\tests"
+$rootPath = Convert-Path "$($scriptsPath)\..\"
+$testsPath = Convert-Path "$($rootPath)\tests"
 
-$artifactsDir = Convert-Path "$($rootDir)\artifacts"
+$artifactsPath = Convert-Path "$($rootPath)\artifacts"
 
-New-Item -ItemType Directory -Force -Path $artifactsDir
+Exec "Building before performance tests" {
+  & $scriptsPath\Build.ps1 -configuration Release
+}
 
-$benchmarkArtifactsDir = "$($artifactsDir)\benchmark_$([DateTime]::UtcNow.ToString('yyyyMMddHHmmss'))"
+New-Item -ItemType Directory -Force -Path $artifactsPath
 
-New-Item -ItemType Directory -Force -Path $benchmarkArtifactsDir
+$benchmarkPath = "$($artifactsPath)\benchmark"
+
+New-Item -ItemType Directory -Force -Path $benchmarkPath
+$benchmarkPath = Convert-Path $benchmarkPath
 
 $testNames = @(
     "MessagesBenchmark*"
@@ -21,6 +26,6 @@ $testNames = @(
 
 for ($i = 0; $i -lt $testNames.length; $i++) {
     Exec "Running: $($testNames[$i])" {
-        & dotnet run --project $testsDir\CoreValidation.PerformanceTests\CoreValidation.PerformanceTests.csproj -c Release -- --filter "*$($testNames[$i])" --artifacts=$benchmarkArtifactsDir
+        & dotnet run --project $testsPath\CoreValidation.PerformanceTests\CoreValidation.PerformanceTests.csproj -c Release --no-build -- --filter "*$($testNames[$i])" --artifacts=$benchmarkPath
     }
 }

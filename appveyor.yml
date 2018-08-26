@@ -11,18 +11,23 @@ skip_commits:
   files:
     - docs/*
     - .github/*
-    - logo/*
     - '**/*.md'
 
 environment:
   NUGET_API_KEY:
     secure: UHweOfsSUq1apwinPBbBuxw/yW+Q6DhikKofkACtOTt2kDESEbL9jtpEkfn7fxOM
+  COVERALLS_API_KEY:
+    secure: f5krYcmz+/kxHE8V08gNC38tflPfhHLmFy/aj6C+eEX1YuiDlOI1bTMi9UrrYKIT
 
 build_script:
-- pwsh: .\scripts\ServerBuild.ps1
+- pwsh: .\scripts\RunCI.ps1
 
 test: off
 
 artifacts:
-- path: .\artifacts\*.nupkg
+- path: .\artifacts\nuget\*.nupkg
   name: NuGet
+- path: .\artifacts\coverage\coverage.opencover.xml
+  name: OpenCoverResult
+- path: .\artifacts\coverage\coverage.report.zip
+  name: CodeCoverageReport

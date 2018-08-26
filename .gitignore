@@ -301,3 +301,9 @@ __pycache__/
 
 # Benchmarkdotnet
 BenchmarkDotNet.Artifacts/
+
+# Tools
+tools/
+
+# Artifacts archive
+artifacts_archive/

@@ -8,15 +8,14 @@ $scriptsPath = Convert-Path $PSScriptRoot
 . $scriptsPath\Helpers.ps1
 
 if ($build) {
-    Exec "Building before testing" {
-        & ($scriptsPath + "\Build.ps1")
-    }
+  Exec "Building before functional tests" {
+    & $scriptsPath\Build.ps1 -configuration Debug
+  }
 }
 
-$rootDir = Convert-Path "$($scriptsPath)\..\"
-$testsDir = Convert-Path "$($rootDir)\tests"
+$rootPath = Convert-Path "$($scriptsPath)\..\"
+$testsPath = Convert-Path "$($rootPath)\tests"
 
 Exec "Functional tests" {
-    & dotnet test $testsDir\CoreValidation.FunctionalTests\CoreValidation.FunctionalTests.csproj -c Release --no-build
+  & dotnet test $testsPath\CoreValidation.FunctionalTests\CoreValidation.FunctionalTests.csproj -c Debug --no-build
 }
-

@@ -25,3 +25,44 @@ function Print {
     }
 }
 
+function ArchiveArtifactsIfAny {
+    param(
+        [Parameter(Position = 0, Mandatory = 1)][string]$rootPath
+    )
+
+    $artifactsDirItem = Get-ChildItem -Path $rootPath -Filter "artifacts" -Directory
+
+    if ($null -ne $artifactsDirItem) {
+        New-Item -ItemType Directory -Force -Path "$($rootPath)\artifacts_archive"
+        Move-Item -Path "$($rootPath)\artifacts" -Destination "$($rootPath)\artifacts_archive\$($artifactsDirItem.CreationTime.ToString('yyyy-MM-dd_HH-mm-ss'))"
+    }
+}
+
+function CheckAllConditions {
+    param([pscustomobject[]]$checks)
+
+    $log = ""
+    $passed = $true
+
+    for ($i = 0; $i -lt $checks.length; $i++) {
+        $log = ( $log + "`n$($checks[$i].name): $($checks[$i].checked)")
+        if ($passed -and ($checks[$i].checked -eq $false)) {
+            $passed = $false
+        }
+    }
+
+    $log = $log + "`nRESULT: $($passed)"
+
+    return New-Object PsObject -Property @{log = $log ; passed = $passed}
+}
+
+function TryGetToolExecutableItem {
+    param([string]$toolsDir,
+        [string]$name,
+        [string]$version,
+        [string]$executable)
+
+    return Get-ChildItem -Path $toolsDir -Filter $executable -Recurse -ErrorAction SilentlyContinue -Force |
+        Where-Object {$_.FullName.Split([System.IO.Path]::DirectorySeparatorChar).Contains($version)} |
+        Select-Object -First 1
+}

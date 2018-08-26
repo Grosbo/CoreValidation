@@ -1,6 +1,6 @@
 Param (
     [Parameter(Position = 0, Mandatory = $true)][string]$version,
-    [bool]$build = $true
+    [Parameter(Position = 1, Mandatory = $false)][bool]$build = $true
 )
 
 $ErrorActionPreference = 'Stop'
@@ -9,24 +9,24 @@ $scriptsPath = Convert-Path $PSScriptRoot
 . $scriptsPath\Helpers.ps1
 
 if ($build) {
-    Exec "Building before packing" {
-        & $scriptsPath\Build.ps1
+    Exec "Building before creating package" {
+        & $scriptsPath\Build.ps1 -configuration Release
     }
 }
 
 $projectFilePath = Convert-Path "$($scriptsPath)\..\src\CoreValidation\CoreValidation.csproj"
-$artifactsDirPath = "$($scriptsPath)\..\artifacts"
+$nugetPath = "$($scriptsPath)\..\artifacts\nuget"
 
-New-Item -ItemType Directory -Force -Path $artifactsDirPath
+New-Item -ItemType Directory -Force -Path $nugetPath
 
-$nugetPackagePath = "$($artifactsDirPath)\CoreValidation.$($version).nupkg"
+$nugetPackagePath = "$($nugetPath)\CoreValidation.$($version).nupkg"
 
-Exec "Cleaning existing artifacts" {
-  if (Test-Path $nugetPackagePath) {
-      Remove-Item $nugetPackagePath
-  }
+if (Test-Path $nugetPackagePath) {
+    Exec "Cleaning existing artifacts" {
+        Remove-Item $nugetPackagePath
+    }
 }
 
 Exec "Packing version $($version)" {
-    & dotnet pack $projectFilePath -c Release --no-build -o $artifactsDirPath /p:Version=$version
+    & dotnet pack $projectFilePath -c Release --no-build -o $nugetPath /p:Version=$version
 }
