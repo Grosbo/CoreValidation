@@ -28,6 +28,4 @@ artifacts:
 - path: .\artifacts\nuget\*.nupkg
   name: NuGet
 - path: .\artifacts\coverage\coverage.opencover.xml
-  name: OpenCoverResult
-- path: .\artifacts\coverage\coverage.report.zip
-  name: CodeCoverageReport
+  name: OpenCoverReport

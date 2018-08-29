@@ -49,12 +49,11 @@ if ($environmentInfo.IsServer) {
     }
 }
 
-
 Print "Version: $($version)"
 
-$isUbuntuOrLocal = (-not $environmentInfo.IsServer) -or $environmentInfo.IsUbuntuServer
+$isUbuntuOrLocal = $environmentInfo.IsUbuntuServer -or $environmentInfo.IsLocal
 
-& $scriptsPath\RunUnitTests.ps1 -build $false -checkCoverage $isUbuntuOrLocal -coverageReportTag $version -zipCoverageReport $environmentInfo.IsServer
+& $scriptsPath\RunUnitTests.ps1 -build $false -checkCoverage $isUbuntuOrLocal -coverageReportTag $version -generateReport $environmentInfo.IsLocal
 
 & $scriptsPath\RunFunctionalTests.ps1 -build $false
 

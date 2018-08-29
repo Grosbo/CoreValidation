@@ -1,4 +1,5 @@
 return @{
+    "IsLocal"                 = -not (Test-Path env:APPVEYOR)
     "IsServer"                = (Test-Path env:APPVEYOR) -and ($env:APPVEYOR.ToLower() -eq "true")
     "IsUbuntuServer"          = ($env:APPVEYOR_BUILD_WORKER_IMAGE -eq "Ubuntu")
     "IsCommit"                = (Test-Path env:APPVEYOR_REPO_COMMIT)

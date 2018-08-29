@@ -2,7 +2,7 @@ Param (
     [bool]$build = $true,
     [bool]$checkCoverage = $true,
     [string]$coverageReportTag = "",
-    [bool]$zipCoverageReport = $false
+    [bool]$generateReport = $true
 )
 
 $ErrorActionPreference = 'Stop'
@@ -30,7 +30,7 @@ Exec "Unit tests" {
     & dotnet test $testsPath\CoreValidation.UnitTests\CoreValidation.UnitTests.csproj -c Debug --no-build /p:CollectCoverage=$checkCoverage /p:CoverletOutput=$coveragePath\ /p:CoverletOutputFormat=opencover
 }
 
-if ($checkCoverage) {
+if ($generateReport) {
     New-Item -ItemType Directory -Force -Path $toolsPath
     $toolsPath = Convert-Path $toolsPath
 
@@ -38,7 +38,7 @@ if ($checkCoverage) {
 
     New-Item -ItemType Directory -Force -Path $coverageReportPath
     $coverageReportPath = Convert-Path $coverageReportPath
-3
+
     $reportGeneratorToolItem = TryGetToolExecutableItem $toolsPath "dotnet-reportgenerator-globaltool" "4.0.0-rc4" "ReportGenerator.dll"
 
     if (($null -eq $reportGeneratorToolItem)) {
@@ -49,17 +49,5 @@ if ($checkCoverage) {
     Exec "Generating report" {
         $opencoverReport = Convert-Path $coveragePath\coverage.opencover.xml
         & dotnet ($reportGeneratorToolItem.FullName) -- "-reports:$($opencoverReport)" "-targetdir:$($coverageReportPath)\" "-verbosity:Info" "-tag:$($coverageReportTag)"
-    }
-
-    if ($zipCoverageReport) {
-        $zipReportPath = Join-Path $coveragePath report.zip
-
-        Exec "Packing report" {
-            & Compress-Archive -Path $coverageReportPath\* -DestinationPath $zipReportPath
-        }
-
-        Exec "Cleaning report files" {
-            & Remove-Item -Path $coverageReportPath -Recurse -Force
-        }
     }
 }
