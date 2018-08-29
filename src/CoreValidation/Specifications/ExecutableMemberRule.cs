@@ -17,7 +17,9 @@ namespace CoreValidation.Specifications
 
             _getErrors = (executableRule, model, rulesExecutionContext, depth) =>
             {
-                var memberValue = (TMember)executableRule.MemberPropertyInfo.GetValue(model);
+                var memberValue = model != null
+                    ? (TMember)executableRule.MemberPropertyInfo.GetValue(model)
+                    : default;
 
                 return SpecificationRulesExecutor.ExecuteMemberSpecificationRules(
                     executableRule.MemberSpecification,
