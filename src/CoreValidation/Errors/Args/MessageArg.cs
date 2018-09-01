@@ -23,7 +23,7 @@ namespace CoreValidation.Errors.Args
         }
     }
 
-    public class MessageArg : MessageArg<string>
+    public sealed class MessageArg : MessageArg<string>
     {
         public MessageArg(string name, string value)
             : base(name, value)

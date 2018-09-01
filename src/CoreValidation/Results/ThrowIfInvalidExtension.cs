@@ -5,12 +5,12 @@ namespace CoreValidation
 {
     public static class ThrowIfInvalidExtension
     {
-        public static void ThrowIfInvalid<T>(this IValidationResult<T> validationResult)
+        public static void ThrowIfInvalid<T>(this IValidationResult<T> @this)
             where T : class
         {
-            if (!validationResult.IsValid())
+            if (!@this.IsValid())
             {
-                throw new InvalidModelException<T>(validationResult);
+                throw new InvalidModelException<T>(@this);
             }
         }
     }

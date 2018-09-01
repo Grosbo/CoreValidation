@@ -9,11 +9,11 @@ namespace CoreValidation.Results
     public sealed class ValidationResult<T> : IValidationResult<T>
         where T : class
     {
-        internal ValidationResult(Guid coreValidatorId, ITranslationProxy translationProxy, IRulesOptions rulesOptions, T model = null, IErrorsCollection errorsCollection = null)
+        internal ValidationResult(Guid coreValidatorId, ITranslationProxy translationProxy, IExecutionOptions executionOptions, T model = null, IErrorsCollection errorsCollection = null)
         {
             TranslationProxy = translationProxy ?? throw new ArgumentNullException(nameof(translationProxy));
-            ErrorsCollection = errorsCollection ?? CoreValidation.Errors.ErrorsCollection.Empty;
-            RulesOptions = rulesOptions ?? throw new ArgumentNullException(nameof(rulesOptions));
+            ErrorsCollection = errorsCollection ?? Errors.ErrorsCollection.Empty;
+            ExecutionOptions = executionOptions ?? throw new ArgumentNullException(nameof(executionOptions));
 
             ValidationDate = DateTime.UtcNow;
             CoreValidatorId = coreValidatorId;
@@ -23,7 +23,7 @@ namespace CoreValidation.Results
 
         public ITranslationProxy TranslationProxy { get; }
 
-        public IRulesOptions RulesOptions { get; }
+        public IExecutionOptions ExecutionOptions { get; }
 
         public IValidationResult<T> Merge(params IErrorsCollection[] errorsCollections)
         {
@@ -46,7 +46,7 @@ namespace CoreValidation.Results
                 mergedErrorsCollection.Include(errorsCollection);
             }
 
-            return new ValidationResult<T>(CoreValidatorId, TranslationProxy, RulesOptions, Model, mergedErrorsCollection)
+            return new ValidationResult<T>(CoreValidatorId, TranslationProxy, ExecutionOptions, Model, mergedErrorsCollection)
             {
                 ContainsMergedErrors = true
             };

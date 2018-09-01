@@ -24,15 +24,15 @@ namespace CoreValidation
                 ? @this.TranslationProxy.DefaultTranslator
                 : @this.TranslationProxy.TranslatorsRepository.Get(translationName);
 
-            return BuildModelReport(@this.ErrorsCollection, translator, 0, @this.RulesOptions);
+            return BuildModelReport(@this.ErrorsCollection, translator, 0, @this.ExecutionOptions);
         }
 
         // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
-        private static IModelReport BuildModelReport(IErrorsCollection errorsCollection, Translator translator, int depth, IRulesOptions rulesOptions)
+        private static IModelReport BuildModelReport(IErrorsCollection errorsCollection, Translator translator, int depth, IExecutionOptions executionOptions)
         {
-            if (depth > rulesOptions.MaxDepth)
+            if (depth > executionOptions.MaxDepth)
             {
-                throw new MaxDepthExceededException(rulesOptions.MaxDepth);
+                throw new MaxDepthExceededException(executionOptions.MaxDepth);
             }
 
             if (errorsCollection.IsEmpty)
@@ -60,7 +60,7 @@ namespace CoreValidation
 
             foreach (var memberPair in errorsCollection.Members)
             {
-                var memberReport = BuildModelReport(memberPair.Value, translator, depth + 1, rulesOptions);
+                var memberReport = BuildModelReport(memberPair.Value, translator, depth + 1, executionOptions);
 
                 if (memberReport != null)
                 {

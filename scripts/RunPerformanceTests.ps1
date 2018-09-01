@@ -4,7 +4,7 @@ $scriptsPath = Convert-Path $PSScriptRoot
 . $scriptsPath\Helpers.ps1
 
 $rootPath = Convert-Path "$($scriptsPath)\..\"
-$testsPath = Convert-Path "$($rootPath)\tests"
+$testsPath = Convert-Path "$($rootPath)\test"
 
 $artifactsPath = Convert-Path "$($rootPath)\artifacts"
 

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using CoreValidation.Errors;
+using CoreValidation.Errors.Args;
 
 namespace CoreValidation.Specifications
 {

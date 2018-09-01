@@ -1,26 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using CoreValidation.Errors.Args;
 
 namespace CoreValidation.Errors
 {
     public sealed class Error
     {
-        private static readonly MessageStringifier _messageStringifier = new MessageStringifier();
-
         public Error(string message, IReadOnlyCollection<IMessageArg> args = null)
-            : this(message, args, _messageStringifier.Stringify(message, args))
+            : this(message, args, MessageFormatter.Format(message, args))
         {
         }
 
 
-        private Error(string message, IReadOnlyCollection<IMessageArg> args, string stringifiedMessage)
+        private Error(string message, IReadOnlyCollection<IMessageArg> args, string formattedMessage)
         {
             Message = message ?? throw new ArgumentNullException(nameof(message));
             Arguments = args;
-            StringifiedMessage = stringifiedMessage;
+            FormattedMessage = formattedMessage;
         }
 
-        public string StringifiedMessage { get; }
+        public string FormattedMessage { get; }
 
         public string Message { get; }
 
@@ -28,7 +27,7 @@ namespace CoreValidation.Errors
 
         public bool EqualContent(Error other)
         {
-            return string.Equals(StringifiedMessage, other?.StringifiedMessage, StringComparison.Ordinal);
+            return string.Equals(FormattedMessage, other?.FormattedMessage, StringComparison.Ordinal);
         }
 
         public static Error CreateValidOrNull(string message, IReadOnlyCollection<IMessageArg> args)

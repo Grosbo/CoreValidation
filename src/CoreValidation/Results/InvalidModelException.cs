@@ -26,9 +26,6 @@ namespace CoreValidation.Results
 
         public IValidationResult<T> ValidationResult { get; }
 
-        public new T Model
-        {
-            get => ValidationResult.Model;
-        }
+        public new T Model => ValidationResult.Model;
     }
 }

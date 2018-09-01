@@ -10,13 +10,11 @@ namespace CoreValidation
 {
     public static class TranslationsOptionsExtension
     {
-        private static readonly OptionsUnwrapper _optionsUnwrapper = new OptionsUnwrapper();
-
         public static IValidationContextOptions AddTranslation(this IValidationContextOptions options, string name, IDictionary<string, string> dictionary, bool asDefault = false)
         {
             var translation = new Translation(name, dictionary);
 
-            var processedOptions = _optionsUnwrapper.UnwrapTranslations(options, translations => { translations.Add(translation); });
+            var processedOptions = OptionsUnwrapper.UnwrapTranslations(options, translations => { translations.Add(translation); });
 
             if (asDefault)
             {
@@ -33,7 +31,7 @@ namespace CoreValidation
                 throw new ArgumentNullException(nameof(translationsPackage));
             }
 
-            return _optionsUnwrapper.UnwrapTranslations(options, translations =>
+            return OptionsUnwrapper.UnwrapTranslations(options, translations =>
             {
                 var translationsFromPackage = translationsPackage.Select(pair => new Translation(pair.Key, pair.Value)).ToArray();
 

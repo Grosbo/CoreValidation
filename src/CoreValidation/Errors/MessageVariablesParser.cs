@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace CoreValidation.Errors
 {
-    internal class MessageVariablesParser
+    internal static class MessageVariablesParser
     {
         private static readonly Regex _curlyBracketsRegex = new Regex(@"(?<=\{)[^}]*(?=\})", RegexOptions.Compiled);
 
@@ -13,7 +13,7 @@ namespace CoreValidation.Errors
 
         public static char Assignment { get; } = '=';
 
-        public IReadOnlyDictionary<string, MessageVariable> Parse(string input)
+        public static IReadOnlyDictionary<string, MessageVariable> Parse(string input)
         {
             if (input == null)
             {
@@ -82,6 +82,7 @@ namespace CoreValidation.Errors
 
                             break;
                         }
+
                         parameters.Add(groups.ElementAt(0), groups.ElementAt(1));
                     }
 

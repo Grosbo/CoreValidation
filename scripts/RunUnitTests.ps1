@@ -17,7 +17,7 @@ if ($build) {
 }
 
 $rootDir = Convert-Path "$($scriptsPath)\..\"
-$testsPath = Convert-Path "$($rootDir)\tests"
+$testsPath = Convert-Path "$($rootDir)\test"
 $coveragePath = "$($rootDir)\artifacts\coverage"
 $toolsPath = "$($rootDir)\tools"
 

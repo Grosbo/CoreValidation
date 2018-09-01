@@ -1,6 +1,6 @@
 ﻿namespace CoreValidation.Options
 {
-    public interface IValidationOptions : IRulesOptions
+    public interface IValidationOptions : IExecutionOptions
     {
         string TranslationName { get; }
 

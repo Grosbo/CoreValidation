@@ -23,7 +23,7 @@ A code is worth a thousand words - so keep scrolling this document down and you 
 
 For more, read the [documentation](DOCUMENTATION.md).
 
-Moreover, all the code snippets are being maintained as the [functional tests](../tests/CoreValidation.FunctionalTests), so you can debug them and examine the behavior in no time.
+Moreover, all the code snippets are being maintained as the [functional tests](../test/CoreValidation.FunctionalTests), so you can debug them and examine the behavior in no time.
 
 ## Release notes
 
@@ -39,16 +39,18 @@ For a start, let's quickly cover the entry point of many web apps; logging the u
 
 ``` csharp
 // Setting the rules for the model:
-Validator<LoginModel> loginValidator = login => login
+Specification<LoginModel> loginSpecification = login => login
     .For(m => m.Email, be => be
         .Email()
         .MaxLength(50)
         .Valid(email => email.EndsWith("gmail.com"), "Only gmails are accepted"))
     .For(m => m.Password, be => be.NotEmpty());
 
+var loginModel = JsonConvert.DeserializeObject<LoginModel>(incomingJson);
+
 // Creating the validation context and instantly triggering the validation to get the result:
 var result = ValidationContext.Factory
-    .Create(options => options.AddValidator(loginValidator))
+    .Create(options => options.AddSpecification(loginSpecification))
     .Validate(loginModel);
 
 // Creating json-ready ModelReport from the result:
@@ -78,7 +80,7 @@ The output of `JsonConvert.SerializeObject(modelReport)` would be:
 }
 ```
 
-Functional test: [Quickstart.cs](../tests/CoreValidation.FunctionalTests/Readme/Quickstart.cs).
+Functional test: [Quickstart.cs](../test/CoreValidation.FunctionalTests/Readme/Quickstart.cs).
 
 
 ## End-to-end
@@ -124,12 +126,12 @@ The package is hosted on [nuget.org](https://www.nuget.org/packages/CoreValidati
 dotnet add package CoreValidation --version 1.0.0-beta
 ```
 
-### Define validators
+### Define specifications
 
 You can create them inline or in separate classes - it's up to you how you would like to structure your code
 
 ``` csharp
-Validator<AddressModel> addressValidator = specs => specs
+Specification<AddressModel> addressSpecification = specs => specs
     // Validate members in their scope (error attached to the selected member):
     .For(m => m.Street, be => be.NotWhiteSpace())
     .For(m => m.PostCode, be => be.MaxLength(10))
@@ -143,25 +145,25 @@ Validator<AddressModel> addressValidator = specs => specs
 ```
 
 ``` csharp
-Validator<UserModel> userValidator = specs => specs
+Specification<UserModel> userSpecification = specs => specs
     // Validate members with the predefined rules:
     .For(m => m.Email, be => be.Email())
 
     // Apply many rules along with custom predicates:
     .For(m => m.Name, be => be
-            // By default, everything specified is required, so marking the selected member as optional:
-            .Optional()
-            // If present, proceed with validation:
-            .LengthBetween(6, 15)
-            // The value is always guaranteed to be non-null inside the predicate:
-            .Valid(v => char.IsLetter(v.FirstOrDefault()), "Must start with a letter")
-            .Valid(v => v.All(char.IsLetterOrDigit), "Must contains only letters and digits"))
+        // By default, everything specified is required, so marking the selected member as optional:
+        .Optional()
+        // If present, proceed with validation:
+        .LengthBetween(6, 15)
+        // The value is always guaranteed to be non-null inside the predicate:
+        .Valid(v => char.IsLetter(v.FirstOrDefault()), "Must start with a letter")
+        .Valid(v => v.All(char.IsLetterOrDigit), "Must contains only letters and digits"))
 
     // Replace all errors with a single one:
     .For(m => m.Password, be => be
         .MinLength(6)
         .NotWhiteSpace()
-        .Valid(v => v.Any(char.IsUpper) && v.Any(char.IsDigit), string.Empty)
+        .Valid(v => v.Any(char.IsUpper) && v.Any(char.IsDigit))
         // If any rule in the chain fails, only the SummaryError is recorded:
         .WithSummaryError("Minimum 6 characters, at least one upper case and one digit"))
 
@@ -174,7 +176,7 @@ Validator<UserModel> userValidator = specs => specs
             "Confirmation doesn't match password"))
 
     // Validate nested model:
-    .For(m => m.Address, be => be.ValidModel(addressValidator))
+    .For(m => m.Address, be => be.ValidModel(addressSpecification))
 
     // Validate collection:
     .For(m => m.Tags, be => be
@@ -193,7 +195,7 @@ Validator<UserModel> userValidator = specs => specs
         // Override default RequiredError for selected member:
         .WithRequiredError("Date of birth is required")
         // Arguments could be parametrized:
-        .After(min: new DateTime(1900, 1, 1), message: "Earliest allowed date is {min|format=yyyy-MM-dd}" ));
+        .After(min: new DateTime(1900, 1, 1), message: "Earliest allowed date is {min|format=yyyy-MM-dd}"));
 ```
 
 ### Create validation context
@@ -202,14 +204,14 @@ Use a factory to create and configure `IValidationContext` instance (which itsel
 
 ``` csharp
 var validationContext = ValidationContext.Factory.Create(options => options
-    // Add validators for all models (including nested ones)
-    .AddValidator(userValidator)
-    .AddValidator(addressValidator)
+    // Add specifications for all models to validate (including nested ones)
+    .AddSpecification(userSpecification)
+    .AddSpecification(addressSpecification)
 
     // Add translations (to have possibility to serve results in different language), e.g. Polish
     .AddPolishTranslation(asDefault: false, include: new Dictionary<string, string>
     {
-        // Add more phrases to Polish translation - e.g. for the custom messages used in userValidator
+        // Add more phrases to Polish translation - e.g. for the custom messages used in userSpecification
         // Translation is a standard dictionary, so you can easily deserialize it from JSON, or create inline like:
         {"Date of birth is required", "Data urodzenia jest wymagana"},
 
@@ -332,7 +334,7 @@ You can perform a validation with a different set of options
 ``` csharp
 // Adjust ValidationOptions for a single validation
 var failFastResult = validationContext.Validate(userModel, options => options
-    // You can override all options of the IValidationContext (except validators and translations):
+    // You can override all options of the IValidationContext (except specifications and translations):
     // Like setting `FailFast` strategy - so the model will be validated until the first error
     .SetValidationStategy(ValidationStrategy.FailFast)
 );
@@ -380,7 +382,7 @@ if (result.IsValid())
 result.ThrowIfInvalid();
 ```
 
-Functional test with this scenario: [EndToEnd.cs](../tests/CoreValidation.FunctionalTests/Readme/EndToEnd.cs).
+Functional test with this scenario: [EndToEnd.cs](../test/CoreValidation.FunctionalTests/Readme/EndToEnd.cs).
 
 
 ## What's more

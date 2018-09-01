@@ -18,7 +18,7 @@ namespace CoreValidation.Results
 
         bool ContainsMergedErrors { get; }
 
-        IRulesOptions RulesOptions { get; }
+        IExecutionOptions ExecutionOptions { get; }
 
         ITranslationProxy TranslationProxy { get; }
 

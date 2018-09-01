@@ -1,6 +1,4 @@
 ﻿using System;
-
-using CoreValidation.Errors;
 using CoreValidation.Errors.Args;
 using CoreValidation.Specifications;
 using CoreValidation.Translations;
@@ -43,19 +41,19 @@ namespace CoreValidation
         public static IMemberSpecificationBuilder<TModel, DateTime> BeforeOrEqualTo<TModel>(this IMemberSpecificationBuilder<TModel, DateTime> @this, DateTime max, TimeComparison timeComparison = TimeComparison.All, string message = null)
             where TModel : class
         {
-            return @this.Valid(m => TimeComparer.Compare(m, max, timeComparison) <= 0, message ??Phrases.Keys.Times.BeforeOrEqualTo, new IMessageArg[] {new NumberArg(nameof(max), max), new EnumArg<TimeComparison>(nameof(timeComparison), timeComparison)});
+            return @this.Valid(m => TimeComparer.Compare(m, max, timeComparison) <= 0, message ?? Phrases.Keys.Times.BeforeOrEqualTo, new IMessageArg[] {new NumberArg(nameof(max), max), new EnumArg<TimeComparison>(nameof(timeComparison), timeComparison)});
         }
 
         public static IMemberSpecificationBuilder<TModel, DateTime> Between<TModel>(this IMemberSpecificationBuilder<TModel, DateTime> @this, DateTime min, DateTime max, TimeComparison timeComparison = TimeComparison.All, string message = null)
             where TModel : class
         {
-            return @this.Valid(m => TimeComparer.Compare(m, min, timeComparison) > 0 && TimeComparer.Compare(m, max, timeComparison) < 0, message ?? Phrases.Keys.Times.Between, new IMessageArg[] {new NumberArg(nameof(min), min), new NumberArg(nameof(max), max), new EnumArg<TimeComparison>(nameof(timeComparison), timeComparison)});
+            return @this.Valid(m => (TimeComparer.Compare(m, min, timeComparison) > 0) && (TimeComparer.Compare(m, max, timeComparison) < 0), message ?? Phrases.Keys.Times.Between, new IMessageArg[] {new NumberArg(nameof(min), min), new NumberArg(nameof(max), max), new EnumArg<TimeComparison>(nameof(timeComparison), timeComparison)});
         }
 
         public static IMemberSpecificationBuilder<TModel, DateTime> BetweenOrEqualTo<TModel>(this IMemberSpecificationBuilder<TModel, DateTime> @this, DateTime min, DateTime max, TimeComparison timeComparison = TimeComparison.All, string message = null)
             where TModel : class
         {
-            return @this.Valid(m => TimeComparer.Compare(m, min, timeComparison) >= 0 && TimeComparer.Compare(m, max, timeComparison) <= 0, message ?? Phrases.Keys.Times.BetweenOrEqualTo, new IMessageArg[] {new NumberArg(nameof(min), min), new NumberArg(nameof(max), max), new EnumArg<TimeComparison>(nameof(timeComparison), timeComparison)});
+            return @this.Valid(m => (TimeComparer.Compare(m, min, timeComparison) >= 0) && (TimeComparer.Compare(m, max, timeComparison) <= 0), message ?? Phrases.Keys.Times.BetweenOrEqualTo, new IMessageArg[] {new NumberArg(nameof(min), min), new NumberArg(nameof(max), max), new EnumArg<TimeComparison>(nameof(timeComparison), timeComparison)});
         }
 
         public static IMemberSpecificationBuilder<TModel, DateTime> AfterNow<TModel>(this IMemberSpecificationBuilder<TModel, DateTime> @this, TimeNowMode nowMode = TimeNowMode.Now, TimeComparison timeComparison = TimeComparison.All, string message = null)

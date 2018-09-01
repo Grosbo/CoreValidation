@@ -1,4 +1,4 @@
-﻿using CoreValidation.Errors;
+﻿using CoreValidation.Errors.Args;
 using CoreValidation.Options;
 
 // ReSharper disable once CheckNamespace
@@ -27,9 +27,9 @@ namespace CoreValidation
             return options;
         }
 
-        public static IValidationContextOptions SetValidationStategy(this IValidationContextOptions options, ValidationStrategy validationStrategy)
+        public static IValidationContextOptions SetValidationStrategy(this IValidationContextOptions options, ValidationStrategy validationStrategy)
         {
-            options.ValidationOptions.SetValidationStategy(validationStrategy);
+            options.ValidationOptions.SetValidationStrategy(validationStrategy);
 
             return options;
         }

@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using CoreValidation.Errors;
+using CoreValidation.Errors.Args;
+using CoreValidation.Specifications.Rules;
+using CoreValidation.Validators;
 
 namespace CoreValidation.Specifications
 {
-    internal sealed class MemberSpecificationBuilder<TModel, TMember> : IMemberSpecificationBuilder<TModel, TMember>, IMemberSpecification
+    internal sealed class MemberSpecificationBuilder<TModel, TMember> : IMemberSpecificationBuilder<TModel, TMember>, IMemberValidator
         where TModel : class
     {
-        private readonly List<IRule> _rules = new List<IRule>();
+        private List<IRule> _rules;
 
         public IMemberSpecificationBuilder<TModel, TMember> ValidRelative(Predicate<TModel> isValid, string message = null, IReadOnlyCollection<IMessageArg> args = null)
         {
@@ -72,10 +75,9 @@ namespace CoreValidation.Specifications
             return this;
         }
 
-        public IReadOnlyCollection<IRule> Rules
-        {
-            get => _rules;
-        }
+        public IReadOnlyCollection<IRule> Rules => _rules != null
+            ? (IReadOnlyCollection<IRule>)_rules
+            : Array.Empty<IRule>();
 
         public Error SummaryError { get; private set; }
 
@@ -90,6 +92,11 @@ namespace CoreValidation.Specifications
             if (rule == null)
             {
                 throw new ArgumentNullException(nameof(rule));
+            }
+
+            if (_rules == null)
+            {
+                _rules = new List<IRule>();
             }
 
             _rules.Add(rule);

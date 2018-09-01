@@ -2,7 +2,7 @@
 
 namespace CoreValidation.Factory.Translations
 {
-    public sealed class TranslationsPackage : Dictionary<string, IDictionary<string, string>>
+    public class TranslationsPackage : Dictionary<string, IDictionary<string, string>>
     {
     }
 }

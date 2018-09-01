@@ -10,13 +10,13 @@ namespace CoreValidation.Errors.Args
 
         private static readonly string _defaultFormat = "G";
 
+        private readonly T _value;
+
         public EnumArg(string name, T value)
         {
             Name = name ?? throw new ArgumentNullException(nameof(name));
             _value = value;
         }
-
-        private readonly T _value;
 
         public string Name { get; }
 

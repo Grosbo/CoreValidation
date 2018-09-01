@@ -7,13 +7,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{2BC2231D-9EC
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreValidation", "src\CoreValidation\CoreValidation.csproj", "{38E86043-B63B-4006-821C-A6CADE36B3BE}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{EA675F41-DC96-4E8B-B2F6-32B69169B210}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{EA675F41-DC96-4E8B-B2F6-32B69169B210}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreValidation.UnitTests", "tests\CoreValidation.UnitTests\CoreValidation.UnitTests.csproj", "{58097067-3C1D-440E-93BC-2D9D220FA181}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreValidation.UnitTests", "test\CoreValidation.UnitTests\CoreValidation.UnitTests.csproj", "{58097067-3C1D-440E-93BC-2D9D220FA181}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreValidation.FunctionalTests", "tests\CoreValidation.FunctionalTests\CoreValidation.FunctionalTests.csproj", "{C019B8C8-D1A8-4037-A354-FEAEC22E64CD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreValidation.FunctionalTests", "test\CoreValidation.FunctionalTests\CoreValidation.FunctionalTests.csproj", "{C019B8C8-D1A8-4037-A354-FEAEC22E64CD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreValidation.PerformanceTests", "tests\CoreValidation.PerformanceTests\CoreValidation.PerformanceTests.csproj", "{D10E70D3-8F19-43D5-97C0-04CE02F93C9B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreValidation.PerformanceTests", "test\CoreValidation.PerformanceTests\CoreValidation.PerformanceTests.csproj", "{D10E70D3-8F19-43D5-97C0-04CE02F93C9B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

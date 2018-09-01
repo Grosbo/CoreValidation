@@ -5,9 +5,9 @@ using CoreValidation.Translations;
 
 namespace CoreValidation.Options
 {
-    internal class OptionsUnwrapper
+    internal static class OptionsUnwrapper
     {
-        public IValidationContextOptions Unwrap(IValidationContextOptions wrapped, Func<ValidationContextOptions, ValidationContextOptions> processUnwrapped)
+        public static IValidationContextOptions Unwrap(IValidationContextOptions wrapped, Func<ValidationContextOptions, ValidationContextOptions> processUnwrapped)
         {
             if (wrapped == null)
             {
@@ -35,7 +35,7 @@ namespace CoreValidation.Options
         }
 
 
-        public IValidationContextOptions UnwrapValidationOptions(IValidationContextOptions wrapped, Action<ValidationOptions> processUnwrapped)
+        public static IValidationContextOptions UnwrapValidationOptions(IValidationContextOptions wrapped, Action<ValidationOptions> processUnwrapped)
         {
             if (processUnwrapped == null)
             {
@@ -44,13 +44,13 @@ namespace CoreValidation.Options
 
             return Unwrap(wrapped, options =>
             {
-                processUnwrapped((ValidationOptions) options.ValidationOptions);
+                processUnwrapped((ValidationOptions)options.ValidationOptions);
 
                 return options;
             });
         }
 
-        public IValidationOptions UnwrapValidationOptions(IValidationOptions wrapped, Action<ValidationOptions> processUnwrapped)
+        public static IValidationOptions UnwrapValidationOptions(IValidationOptions wrapped, Action<ValidationOptions> processUnwrapped)
         {
             if (wrapped == null)
             {
@@ -72,7 +72,7 @@ namespace CoreValidation.Options
             return unwrapped;
         }
 
-        public IValidationContextOptions UnwrapTranslations(IValidationContextOptions wrapped, Action<List<Translation>> processUnwrapped)
+        public static IValidationContextOptions UnwrapTranslations(IValidationContextOptions wrapped, Action<List<Translation>> processUnwrapped)
         {
             if (processUnwrapped == null)
             {
@@ -81,13 +81,13 @@ namespace CoreValidation.Options
 
             return Unwrap(wrapped, options =>
             {
-                processUnwrapped((List<Translation>) options.Translations);
+                processUnwrapped((List<Translation>)options.Translations);
 
                 return options;
             });
         }
 
-        public IValidationContextOptions UnwrapValidators(IValidationContextOptions wrapped, Action<Dictionary<Type, object>> processUnwrapped)
+        public static IValidationContextOptions UnwrapSpecifications(IValidationContextOptions wrapped, Action<Dictionary<Type, object>> processUnwrapped)
         {
             if (processUnwrapped == null)
             {
@@ -96,7 +96,7 @@ namespace CoreValidation.Options
 
             return Unwrap(wrapped, options =>
             {
-                processUnwrapped((Dictionary<Type, object>) options.Validators);
+                processUnwrapped((Dictionary<Type, object>)options.Specifications);
 
                 return options;
             });

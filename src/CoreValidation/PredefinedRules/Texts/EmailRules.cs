@@ -11,18 +11,18 @@ namespace CoreValidation
             where TModel : class
         {
             return @this.Valid(m =>
-            {
-                try
                 {
-                    var addr = new MailAddress(m);
+                    try
+                    {
+                        var addr = new MailAddress(m);
 
-                    return addr.Address == m;
-                }
-                catch
-                {
-                    return false;
-                }
-            }, message ?? Phrases.Keys.Texts.Email);
+                        return addr.Address == m;
+                    }
+                    catch
+                    {
+                        return false;
+                    }
+                }, message ?? Phrases.Keys.Texts.Email);
         }
     }
 }

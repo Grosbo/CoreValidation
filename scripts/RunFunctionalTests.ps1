@@ -14,7 +14,7 @@ if ($build) {
 }
 
 $rootPath = Convert-Path "$($scriptsPath)\..\"
-$testsPath = Convert-Path "$($rootPath)\tests"
+$testsPath = Convert-Path "$($rootPath)\test"
 
 Exec "Functional tests" {
   & dotnet test $testsPath\CoreValidation.FunctionalTests\CoreValidation.FunctionalTests.csproj -c Debug --no-build

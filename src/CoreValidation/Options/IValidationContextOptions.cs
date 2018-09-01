@@ -8,7 +8,7 @@ namespace CoreValidation.Options
     {
         IReadOnlyCollection<Translation> Translations { get; }
 
-        IReadOnlyDictionary<Type, object> Validators { get; }
+        IReadOnlyDictionary<Type, object> Specifications { get; }
 
         IValidationOptions ValidationOptions { get; }
     }

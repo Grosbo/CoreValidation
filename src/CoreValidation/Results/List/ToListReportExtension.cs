@@ -20,17 +20,17 @@ namespace CoreValidation
                 ? @this.TranslationProxy.DefaultTranslator
                 : @this.TranslationProxy.TranslatorsRepository.Get(translationName);
 
-            BuildListReport(listReport, string.Empty, @this.ErrorsCollection, translator, 0, @this.RulesOptions);
+            BuildListReport(listReport, string.Empty, @this.ErrorsCollection, translator, 0, @this.ExecutionOptions);
 
             return listReport;
         }
 
         // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
-        private static void BuildListReport(ListReport listReport, string path, IErrorsCollection errorsCollection, Translator translator, int depth, IRulesOptions rulesOptions)
+        private static void BuildListReport(ListReport listReport, string path, IErrorsCollection errorsCollection, Translator translator, int depth, IExecutionOptions executionOptions)
         {
-            if (depth > rulesOptions.MaxDepth)
+            if (depth > executionOptions.MaxDepth)
             {
-                throw new MaxDepthExceededException(rulesOptions.MaxDepth);
+                throw new MaxDepthExceededException(executionOptions.MaxDepth);
             }
 
             if (errorsCollection.IsEmpty)
@@ -45,7 +45,6 @@ namespace CoreValidation
                     return string.IsNullOrWhiteSpace(path)
                         ? translator(m)
                         : $"{path}: {translator(m)}";
-
                 }).ToList());
             }
 
@@ -53,7 +52,7 @@ namespace CoreValidation
             {
                 var currentPath = string.IsNullOrEmpty(path) ? string.Empty : $"{path}.";
 
-                BuildListReport(listReport, $"{currentPath}{memberPair.Key}", memberPair.Value, translator, depth + 1, rulesOptions);
+                BuildListReport(listReport, $"{currentPath}{memberPair.Key}", memberPair.Value, translator, depth + 1, executionOptions);
             }
         }
     }

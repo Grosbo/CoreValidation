@@ -16,19 +16,19 @@ namespace CoreValidation
         public ValidationContext(IValidationContextOptions options = null)
         {
             Id = Guid.NewGuid();
-            Options = OptionsService.GetVerifiedCoreValidatorOptions(options ?? new ValidationContextOptions());
-            ValidatorsRepository = new ValidatorsRepository(Options.Validators);
-            SpecificationsRepository = new SpecificationsRepository(ValidatorsRepository);
+            Options = OptionsService.GetVerifiedValidationContextOptions(options ?? new ValidationContextOptions());
+            SpecificationsRepository = new SpecificationsRepository(Options.Specifications);
+            ValidatorsFactory = new ValidatorsFactory(SpecificationsRepository);
             TranslatorsRepository = new TranslatorsRepository(Options.Translations.ToArray());
         }
 
-        internal IValidatorsRepository ValidatorsRepository { get; }
+        internal ISpecificationsRepository SpecificationsRepository { get; }
 
         public static IValidationContextFactory Factory { get; } = new ValidationContextFactory();
 
         public ITranslatorsRepository TranslatorsRepository { get; }
 
-        internal ISpecificationsRepository SpecificationsRepository { get; }
+        internal IValidatorsFactory ValidatorsFactory { get; }
 
         public IValidationContextOptions Options { get; }
 
@@ -37,7 +37,7 @@ namespace CoreValidation
         {
             if (!Types.Contains(typeof(T)))
             {
-                throw new ValidatorNotFoundException(typeof(T));
+                throw new SpecificationNotFoundException(typeof(T));
             }
 
             var validationOptions = setOptions != null
@@ -75,23 +75,23 @@ namespace CoreValidation
                 }
             }
 
-            var specification = SpecificationsRepository.GetOrInit<T>();
+            var specification = ValidatorsFactory.GetOrInit<T>();
 
-            var compilationContext = new RulesExecutionContext
+            var executionContext = new ExecutionContext
             {
-                RulesOptions = validationOptions,
-                SpecificationsRepository = SpecificationsRepository,
+                ExecutionOptions = validationOptions,
+                ValidatorsFactory = ValidatorsFactory,
                 ValidationStrategy = validationOptions.ValidationStrategy
             };
 
-            var errorsCollection = SpecificationRulesExecutor.ExecuteSpecificationRules(specification, model, compilationContext, 0);
+            var errorsCollection = ValidatorExecutor.Execute(specification, model, executionContext, 0);
 
             return new ValidationResult<T>(Id, translationProxy, Options.ValidationOptions, model, errorsCollection);
         }
 
         public Guid Id { get; }
 
-        public IReadOnlyCollection<Type> Types => ValidatorsRepository.Types;
+        public IReadOnlyCollection<Type> Types => SpecificationsRepository.Types;
 
         public IReadOnlyDictionary<string, IReadOnlyDictionary<string, string>> Translations => TranslatorsRepository.Translations;
 

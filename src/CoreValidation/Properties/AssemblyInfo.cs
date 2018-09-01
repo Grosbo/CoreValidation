@@ -1,1 +1,3 @@
-﻿[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("CoreValidation.UnitTests")]
+﻿using System.Runtime.CompilerServices;
+
+[assembly: InternalsVisibleTo("CoreValidation.UnitTests")]

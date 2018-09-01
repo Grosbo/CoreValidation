@@ -6,21 +6,15 @@ namespace CoreValidation.Errors
 {
     public sealed class ErrorsCollection : IErrorsCollection
     {
-        public static IErrorsCollection Empty { get; } = new ErrorsCollection();
-
         private readonly List<Error> _errors = new List<Error>();
 
         private readonly Dictionary<string, ErrorsCollection> _memberErrors = new Dictionary<string, ErrorsCollection>();
 
-        public bool IsEmpty
-        {
-            get => !Errors.Any() && !Members.Any();
-        }
+        public static IErrorsCollection Empty { get; } = new ErrorsCollection();
 
-        public IReadOnlyCollection<Error> Errors
-        {
-            get => _errors;
-        }
+        public bool IsEmpty => !Errors.Any() && !Members.Any();
+
+        public IReadOnlyCollection<Error> Errors => _errors;
 
         public IReadOnlyDictionary<string, IErrorsCollection> Members => _memberErrors.ToDictionary(pair => pair.Key, pair => pair.Value as IErrorsCollection);
 

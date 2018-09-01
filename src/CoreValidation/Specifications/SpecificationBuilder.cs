@@ -1,26 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Reflection;
 using CoreValidation.Errors;
+using CoreValidation.Errors.Args;
 using CoreValidation.Validators;
+using CoreValidation.Validators.Scopes;
 
 namespace CoreValidation.Specifications
 {
-    internal sealed class SpecificationBuilder<TModel> : ISpecificationBuilder<TModel>, ISpecification<TModel>
+    internal sealed class SpecificationBuilder<TModel> : ISpecificationBuilder<TModel>, IValidator<TModel>
         where TModel : class
     {
-        private readonly List<IExecutableRule<TModel>> _executableRules = new List<IExecutableRule<TModel>>();
+        private readonly List<IValidationScope<TModel>> _scopes = new List<IValidationScope<TModel>>();
 
-        public ISpecificationBuilder<TModel> For<TMember>(Expression<Func<TModel, TMember>> memberSelector, MemberValidator<TModel, TMember> memberValidator = null)
+        public ISpecificationBuilder<TModel> For<TMember>(Expression<Func<TModel, TMember>> memberSelector, MemberSpecification<TModel, TMember> memberSpecification = null)
         {
             if (memberSelector == null)
             {
                 throw new ArgumentNullException(nameof(memberSelector));
             }
 
-            var executableMemberRule = new ExecutableMemberRule<TModel, TMember>(memberSelector.GetPropertyInfo(), memberValidator);
+            var memberScope = new MemberScope<TModel, TMember>(GetPropertyInfo(memberSelector), memberSpecification);
 
-            _executableRules.Add(executableMemberRule);
+            _scopes.Add(memberScope);
 
             return this;
         }
@@ -32,9 +35,9 @@ namespace CoreValidation.Specifications
                 throw new ArgumentNullException(nameof(isValid));
             }
 
-            var executableSelfRule = new ExecutableSelfRule<TModel>(isValid, Error.CreateValidOrNull(message, args));
+            var modelScope = new ModelScope<TModel>(isValid, Error.CreateValidOrNull(message, args));
 
-            _executableRules.Add(executableSelfRule);
+            _scopes.Add(modelScope);
 
             return this;
         }
@@ -58,6 +61,30 @@ namespace CoreValidation.Specifications
 
         public Error SummaryError { get; private set; }
 
-        public IReadOnlyCollection<IExecutableRule<TModel>> ExecutableRules => _executableRules;
+        public IReadOnlyCollection<IValidationScope<TModel>> Scopes => _scopes;
+
+        private static PropertyInfo GetPropertyInfo<TSource, TProperty>(Expression<Func<TSource, TProperty>> memberSelector)
+        {
+            var type = typeof(TSource);
+
+            if (!(memberSelector.Body is MemberExpression member))
+            {
+                throw new ArgumentException($"Expression '{memberSelector}' refers to a method, not a property.");
+            }
+
+            var propInfo = member.Member as PropertyInfo;
+
+            if (propInfo == null)
+            {
+                throw new ArgumentException($"Expression '{memberSelector}' refers to a field, not a property.");
+            }
+
+            if ((type != propInfo.ReflectedType) && ((propInfo.ReflectedType == null) || !type.IsSubclassOf(propInfo.ReflectedType)))
+            {
+                throw new ArgumentException($"Expression '{memberSelector}' refers to a property that is not from type {type}.");
+            }
+
+            return propInfo;
+        }
     }
 }

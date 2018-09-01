@@ -1,12 +1,13 @@
-﻿using System.Collections.Generic;
-using CoreValidation.Validators;
+﻿using System;
+using System.Collections.Generic;
 
 namespace CoreValidation.Specifications
 {
-    internal interface ISpecificationsRepository
+    public interface ISpecificationsRepository
     {
-        IEnumerable<string> Keys { get; }
-        ISpecification<T> Get<T>(string key = null) where T : class;
-        ISpecification<T> GetOrInit<T>(Validator<T> validator = null, string key = null) where T : class;
+        IReadOnlyCollection<Type> Types { get; }
+
+        Specification<T> Get<T>()
+            where T : class;
     }
 }

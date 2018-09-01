@@ -1,5 +1,4 @@
 ﻿using System.Globalization;
-
 using CoreValidation.Errors.Args;
 using CoreValidation.Specifications;
 using CoreValidation.Translations;

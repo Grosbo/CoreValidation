@@ -8,9 +8,8 @@ namespace CoreValidation.Options
     {
         public IReadOnlyCollection<Translation> Translations { get; set; } = new List<Translation>();
 
-        public IReadOnlyDictionary<Type, object> Validators { get; set; } = new Dictionary<Type, object>();
+        public IReadOnlyDictionary<Type, object> Specifications { get; set; } = new Dictionary<Type, object>();
 
-        // todo: why when applying static immutable default options, it breaks when working parallely ?
         public IValidationOptions ValidationOptions { get; set; } = Options.ValidationOptions.CreateDefault();
     }
 }

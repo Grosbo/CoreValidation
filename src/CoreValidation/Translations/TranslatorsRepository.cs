@@ -37,15 +37,15 @@ namespace CoreValidation.Translations
             }
 
             return error => dictionary.TryGetValue(error.Message, out var translation)
-                ? new MessageStringifier().Stringify(translation, error.Arguments)
-                : error.StringifiedMessage;
+                ? MessageFormatter.Format(translation, error.Arguments)
+                : error.FormattedMessage;
         }
 
         public Translator GetOriginal()
         {
             return error => Phrases.English.TryGetValue(error.Message, out var translation)
-                ? new MessageStringifier().Stringify(translation, error.Arguments)
-                : error.StringifiedMessage;
+                ? MessageFormatter.Format(translation, error.Arguments)
+                : error.FormattedMessage;
         }
 
         public IReadOnlyDictionary<string, IReadOnlyDictionary<string, string>> Translations { get; }

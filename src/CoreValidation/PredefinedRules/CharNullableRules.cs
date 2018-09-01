@@ -1,5 +1,4 @@
-﻿
-using CoreValidation.Specifications;
+﻿using CoreValidation.Specifications;
 
 // ReSharper disable once CheckNamespace
 namespace CoreValidation

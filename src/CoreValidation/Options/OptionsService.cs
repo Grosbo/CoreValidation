@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using CoreValidation.Specifications;
 using CoreValidation.Translations;
-using CoreValidation.Validators;
 
 namespace CoreValidation.Options
 {
     internal static class OptionsService
     {
-        private static readonly OptionsUnwrapper _optionsUnwrapper = new OptionsUnwrapper();
-
         public static IValidationContextOptions GetMerged(IValidationContextOptions baseOptions, IValidationContextOptions newOptions)
         {
             if (baseOptions == null)
@@ -22,7 +20,7 @@ namespace CoreValidation.Options
                 throw new ArgumentNullException(nameof(newOptions));
             }
 
-            var compiledBase = GetVerifiedCoreValidatorOptions(baseOptions);
+            var compiledBase = GetVerifiedValidationContextOptions(baseOptions);
 
             var merged = new ValidationContextOptions();
 
@@ -36,34 +34,34 @@ namespace CoreValidation.Options
                 merged.AddTranslation(translation.Name, translation.Dictionary);
             }
 
-            _optionsUnwrapper.UnwrapValidators(merged, validators =>
+            OptionsUnwrapper.UnwrapSpecifications(merged, specifications =>
             {
-                foreach (var pair in compiledBase.Validators)
+                foreach (var pair in compiledBase.Specifications)
                 {
-                    validators.Add(pair.Key, pair.Value);
+                    specifications.Add(pair.Key, pair.Value);
                 }
 
-                foreach (var pair in newOptions.Validators)
+                foreach (var pair in newOptions.Specifications)
                 {
-                    if (validators.ContainsKey(pair.Key))
+                    if (specifications.ContainsKey(pair.Key))
                     {
-                        validators[pair.Key] = pair.Value;
+                        specifications[pair.Key] = pair.Value;
                     }
                     else
                     {
-                        validators.Add(pair.Key, pair.Value);
+                        specifications.Add(pair.Key, pair.Value);
                     }
                 }
             });
 
-            merged.Validators = GetVerifiedValidatorsDictionary(merged.Validators);
+            merged.Specifications = GetVerifiedSpecificationsDictionary(merged.Specifications);
 
             merged.ValidationOptions = GetVerifiedValidationOptions(newOptions.ValidationOptions);
 
-            return GetVerifiedCoreValidatorOptions(merged);
+            return GetVerifiedValidationContextOptions(merged);
         }
 
-        public static IValidationContextOptions GetVerifiedCoreValidatorOptions(IValidationContextOptions options)
+        public static IValidationContextOptions GetVerifiedValidationContextOptions(IValidationContextOptions options)
         {
             if (options == null)
             {
@@ -73,7 +71,7 @@ namespace CoreValidation.Options
             var compiledOptions = new ValidationContextOptions
             {
                 Translations = GetVerifiedTranslations(options.Translations.ToArray()),
-                Validators = GetVerifiedValidatorsDictionary(options.Validators),
+                Specifications = GetVerifiedSpecificationsDictionary(options.Specifications),
                 ValidationOptions = GetVerifiedValidationOptions(options.ValidationOptions ?? throw new InvalidOperationException($"Null {nameof(ValidationContextOptions.ValidationOptions)}"))
             };
 
@@ -94,17 +92,17 @@ namespace CoreValidation.Options
 
             if (options.CollectionForceKey == null)
             {
-                throw new InvalidOperationException($"Null {nameof(IRulesOptions.CollectionForceKey)}");
+                throw new InvalidOperationException($"Null {nameof(IExecutionOptions.CollectionForceKey)}");
             }
 
             if (options.RequiredError == null)
             {
-                throw new InvalidOperationException($"Null {nameof(IRulesOptions.RequiredError)}");
+                throw new InvalidOperationException($"Null {nameof(IExecutionOptions.RequiredError)}");
             }
 
             if (options.MaxDepth < 0)
             {
-                throw new InvalidOperationException($"{nameof(IRulesOptions.MaxDepth)} cannot be negative");
+                throw new InvalidOperationException($"{nameof(IExecutionOptions.MaxDepth)} cannot be negative");
             }
 
             return new ValidationOptions
@@ -153,29 +151,29 @@ namespace CoreValidation.Options
             return compiled;
         }
 
-        public static IReadOnlyDictionary<Type, object> GetVerifiedValidatorsDictionary(IReadOnlyDictionary<Type, object> validatorsDictionary)
+        public static IReadOnlyDictionary<Type, object> GetVerifiedSpecificationsDictionary(IReadOnlyDictionary<Type, object> specificationsDictionary)
         {
-            if (validatorsDictionary == null)
+            if (specificationsDictionary == null)
             {
-                throw new ArgumentNullException(nameof(validatorsDictionary));
+                throw new ArgumentNullException(nameof(specificationsDictionary));
             }
 
-            foreach (var pair in validatorsDictionary)
+            foreach (var pair in specificationsDictionary)
             {
                 if (pair.Value == null)
                 {
-                    throw new InvalidOperationException($"Null validator for type {pair.Key.FullName} in the collection");
+                    throw new InvalidOperationException($"Null specification for type {pair.Key.FullName} in the collection");
                 }
 
-                var validatorType = typeof(Validator<>).MakeGenericType(pair.Key);
+                var specificationType = typeof(Specification<>).MakeGenericType(pair.Key);
 
-                if (pair.Value.GetType() != validatorType)
+                if (pair.Value.GetType() != specificationType)
                 {
-                    throw new InvalidValidatorTypeException(pair.Key, pair.Value);
+                    throw new InvalidSpecificationTypeException(pair.Key, pair.Value);
                 }
             }
 
-            return validatorsDictionary.ToDictionary(i => i.Key, i => i.Value);
+            return specificationsDictionary.ToDictionary(i => i.Key, i => i.Value);
         }
 
         public static string VerifyTranslationName(IReadOnlyCollection<Translation> translations, string translationName)
