@@ -6,22 +6,19 @@ $scriptsPath = Convert-Path $PSScriptRoot
 $rootPath = Convert-Path "$($scriptsPath)\..\"
 $testsPath = Convert-Path "$($rootPath)\test"
 
-$artifactsPath = Convert-Path "$($rootPath)\artifacts"
-
 Exec "Building before performance tests" {
   & $scriptsPath\Build.ps1 -configuration Release
 }
 
-New-Item -ItemType Directory -Force -Path $artifactsPath
-
-$benchmarkPath = "$($artifactsPath)\benchmark"
+$benchmarkPath = "$($rootPath)\benchmarks\$([DateTime]::Now.ToString('yyyyMMdd-HHmmss'))"
 
 New-Item -ItemType Directory -Force -Path $benchmarkPath
 $benchmarkPath = Convert-Path $benchmarkPath
 
 $testNames = @(
     "MessagesBenchmark*"
-    "Readme.*"
+    "RulesBenchmark*"
+    "ReportsBenchmark*"
 )
 
 for ($i = 0; $i -lt $testNames.length; $i++) {

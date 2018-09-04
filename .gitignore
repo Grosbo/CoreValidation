@@ -299,8 +299,8 @@ __pycache__/
 # Visual Studio Code
 .vscode/
 
-# Benchmarkdotnet
-BenchmarkDotNet.Artifacts/
+# Benchmarkdotnet results
+benchmarks/
 
 # Tools
 tools/

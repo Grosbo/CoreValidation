@@ -9,8 +9,8 @@
 **Advanced model validation for the modern dotnet world** - indeed, this is the tagline, but what does the library really do?
 
 * Easily handles advanced validation scenarios for complex models within your app
-* Delivers friendly fluent api to validate reference and value types, nested models, nullables, collections and relations between all of them
-* Only 67KB, based on .NET Standard 2.0, no extra dependencies
+* Delivers friendly fluent api to specify a valid state of model with its reference and value types, nested models, nullables, collections and relations between all of them
+* Only 70KB, based on .NET Standard 2.0, no extra dependencies
 * Designed to work well with DDD\CQRS approaches
 * Supports variety of report types and translations out of the box
 * Extensibility points at every level for advanced behavior customization

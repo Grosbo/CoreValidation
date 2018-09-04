@@ -34,7 +34,7 @@ function ArchiveArtifactsIfAny {
 
     if ($null -ne $artifactsDirItem) {
         New-Item -ItemType Directory -Force -Path "$($rootPath)\artifacts_archive"
-        Move-Item -Path "$($rootPath)\artifacts" -Destination "$($rootPath)\artifacts_archive\$($artifactsDirItem.CreationTime.ToString('yyyy-MM-dd_HH-mm-ss'))"
+        Move-Item -Path "$($rootPath)\artifacts" -Destination "$($rootPath)\artifacts_archive\$($artifactsDirItem.CreationTime.ToString('yyyyMMdd-HHmmss'))"
     }
 }
 
