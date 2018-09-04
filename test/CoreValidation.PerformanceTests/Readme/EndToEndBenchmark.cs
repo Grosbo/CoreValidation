@@ -48,8 +48,8 @@ namespace CoreValidation.PerformanceTests.Readme
                     .ValidRelative(m => m.Password == m.PasswordConfirmation, "Confirmation doesn't match password"))
                 .For(m => m.Address, be => be.ValidModel(addressSpecification))
                 .For(m => m.Tags, be => be
-                    .NotEmpty("At least one tag is required")
-                    .MaxSize(5, "Max {max} tags allowed")
+                    .NotEmptyCollection("At least one tag is required")
+                    .MaxCollectionSize(5, "Max {max} tags allowed")
                     .ValidCollection(i => i
                         .NotWhiteSpace()
                         .MaxLength(10)

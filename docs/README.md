@@ -181,9 +181,9 @@ Specification<UserModel> userSpecification = specs => specs
     // Validate collection:
     .For(m => m.Tags, be => be
         // Override default message for predefine rule:
-        .NotEmpty(message: "At least one tag is required")
+        .NotEmptyCollection(message: "At least one tag is required")
         // All rule arguments can be inserted in the message using {argumentName} pattern:
-        .MaxSize(max: 5, message: "Max {max} tags allowed")
+        .MaxCollectionSize(max: 5, message: "Max {max} tags allowed")
         // Validate every item inside of the collection:
         .ValidCollection(i => i
             .NotWhiteSpace()

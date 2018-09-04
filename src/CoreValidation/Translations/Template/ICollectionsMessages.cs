@@ -2,11 +2,11 @@
 {
     public interface ICollectionsMessages
     {
-        string Empty { get; }
-        string NotEmpty { get; }
-        string ExactSize { get; }
-        string MaxSize { get; }
-        string MinSize { get; }
-        string SizeBetween { get; }
+        string EmptyCollection { get; }
+        string NotEmptyCollection { get; }
+        string ExactCollectionSize { get; }
+        string MaxCollectionSize { get; }
+        string MinCollectionSize { get; }
+        string CollectionSizeBetween { get; }
     }
 }

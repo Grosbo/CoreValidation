@@ -11,384 +11,384 @@ namespace CoreValidation.UnitTests.PredefinedRules.Collections
     {
         private static readonly Func<int[], Collection<int>> _convert = array => new Collection<int>(array);
 
-        public static IEnumerable<object[]> ExactSize_Should_CollectError_Data()
+        public static IEnumerable<object[]> ExactCollectionSize_Should_CollectError_Data()
         {
-            return CollectionDataHelper.ExactSize_Should_CollectError_Data(_convert);
+            return CollectionDataHelper.ExactCollectionSize_Should_CollectError_Data(_convert);
         }
 
         [Theory]
-        [MemberData(nameof(ExactSize_Should_CollectError_Data))]
-        public void ExactSize_Should_CollectError(Collection<int> items, int expectedSize, bool expectedIsValid)
+        [MemberData(nameof(ExactCollectionSize_Should_CollectError_Data))]
+        public void ExactCollectionSize_Should_CollectError(Collection<int> items, int expectedCollectionSize, bool expectedIsValid)
         {
             var builder = new MemberSpecificationBuilder<object, Collection<int>>();
 
-            builder.ExactSize(expectedSize);
+            builder.ExactCollectionSize(expectedCollectionSize);
 
-            RulesHelper.AssertErrorCompilation(items, builder.Rules, expectedIsValid, Phrases.Keys.Collections.ExactSize);
+            RulesHelper.AssertErrorCompilation(items, builder.Rules, expectedIsValid, Phrases.Keys.Collections.ExactCollectionSize);
         }
 
         [Theory]
-        [MemberData(nameof(ExactSize_Should_CollectError_Data))]
-        public void ExactSize_Should_CollectError_When_LongType(Collection<int> items, long expectedSize, bool expectedIsValid)
+        [MemberData(nameof(ExactCollectionSize_Should_CollectError_Data))]
+        public void ExactCollectionSize_Should_CollectError_When_LongType(Collection<int> items, long expectedCollectionSize, bool expectedIsValid)
         {
             var builder = new MemberSpecificationBuilder<object, Collection<int>>();
 
-            builder.ExactSize(expectedSize);
+            builder.ExactCollectionSize(expectedCollectionSize);
 
-            RulesHelper.AssertErrorCompilation(items, builder.Rules, expectedIsValid, Phrases.Keys.Collections.ExactSize);
-        }
-
-        [Theory]
-        [InlineData(-1)]
-        [InlineData(int.MinValue)]
-        public void ExactSize_Should_ThrowException_When_NegativeSize(int expectedSize)
-        {
-            var builder = new MemberSpecificationBuilder<object, Collection<int>>();
-
-            Assert.Throws<ArgumentOutOfRangeException>(() => { builder.ExactSize(expectedSize); });
-        }
-
-        [Theory]
-        [InlineData(-1)]
-        [InlineData(long.MinValue)]
-        public void ExactSize_Should_ThrowException_When_NegativeSize_And_LongType(long expectedSize)
-        {
-            var builder = new MemberSpecificationBuilder<object, Collection<int>>();
-
-            Assert.Throws<ArgumentOutOfRangeException>(() => { builder.ExactSize(expectedSize); });
-        }
-
-        public static IEnumerable<object[]> NotEmpty_Should_CollectError_Data()
-        {
-            return CollectionDataHelper.NotEmpty_Should_CollectError_Data(_convert);
-        }
-
-        [Theory]
-        [MemberData(nameof(NotEmpty_Should_CollectError_Data))]
-        public void NotEmpty_Should_CollectError(Collection<int> items, bool expectedIsValid)
-        {
-            var builder = new MemberSpecificationBuilder<object, Collection<int>>();
-
-            builder.NotEmpty();
-
-            RulesHelper.AssertErrorCompilation(items, builder.Rules, expectedIsValid, Phrases.Keys.Collections.NotEmpty);
-        }
-
-        public static IEnumerable<object[]> Empty_Should_CollectError_Data()
-        {
-            return CollectionDataHelper.Empty_Should_CollectError_Data(_convert);
-        }
-
-        [Theory]
-        [MemberData(nameof(Empty_Should_CollectError_Data))]
-        public void Empty_Should_CollectError(Collection<int> items, bool expectedIsValid)
-        {
-            var builder = new MemberSpecificationBuilder<object, Collection<int>>();
-
-            builder.Empty();
-
-            RulesHelper.AssertErrorCompilation(items, builder.Rules, expectedIsValid, Phrases.Keys.Collections.Empty);
-        }
-
-        public static IEnumerable<object[]> MaxSize_Should_CollectError_Data()
-        {
-            return CollectionDataHelper.MaxSize_Should_CollectError_Data(_convert);
-        }
-
-        [Theory]
-        [MemberData(nameof(MaxSize_Should_CollectError_Data))]
-        public void MaxSize_Should_CollectError(Collection<int> items, int maxSize, bool expectedIsValid)
-        {
-            var builder = new MemberSpecificationBuilder<object, Collection<int>>();
-
-            builder.MaxSize(maxSize);
-
-            RulesHelper.AssertErrorCompilation(items, builder.Rules, expectedIsValid, Phrases.Keys.Collections.MaxSize);
-        }
-
-        public static IEnumerable<object[]> MaxSize_Should_CollectError_When_LongSize_Data()
-        {
-            return CollectionDataHelper.MaxSize_Should_CollectError_When_LongSize_Data(_convert);
-        }
-
-        [Theory]
-        [MemberData(nameof(MaxSize_Should_CollectError_Data))]
-        [MemberData(nameof(MaxSize_Should_CollectError_When_LongSize_Data))]
-        public void MaxSize_Should_CollectError_When_LongSize(Collection<int> items, long maxSize, bool expectedIsValid)
-        {
-            var builder = new MemberSpecificationBuilder<object, Collection<int>>();
-
-            builder.MaxSize(maxSize);
-
-            RulesHelper.AssertErrorCompilation(items, builder.Rules, expectedIsValid, Phrases.Keys.Collections.MaxSize);
-        }
-
-        public static IEnumerable<object[]> MinSize_Should_CollectError_Data()
-        {
-            return CollectionDataHelper.MinSize_Should_CollectError_Data(_convert);
-        }
-
-        [Theory]
-        [MemberData(nameof(MinSize_Should_CollectError_Data))]
-        public void MinSize_Should_CollectError(Collection<int> items, int minSize, bool expectedIsValid)
-        {
-            var builder = new MemberSpecificationBuilder<object, Collection<int>>();
-
-            builder.MinSize(minSize);
-
-            RulesHelper.AssertErrorCompilation(items, builder.Rules, expectedIsValid, Phrases.Keys.Collections.MinSize);
-        }
-
-        public static IEnumerable<object[]> MinSize_Should_CollectError_When_LongSize_Data()
-        {
-            return CollectionDataHelper.MinSize_Should_CollectError_When_LongSize_Data(_convert);
-        }
-
-        [Theory]
-        [MemberData(nameof(MinSize_Should_CollectError_Data))]
-        [MemberData(nameof(MinSize_Should_CollectError_When_LongSize_Data))]
-        public void MinSize_Should_CollectError_When_LongSize(Collection<int> items, long minSize, bool expectedIsValid)
-        {
-            var builder = new MemberSpecificationBuilder<object, Collection<int>>();
-
-            builder.MinSize(minSize);
-
-            RulesHelper.AssertErrorCompilation(items, builder.Rules, expectedIsValid, Phrases.Keys.Collections.MinSize);
+            RulesHelper.AssertErrorCompilation(items, builder.Rules, expectedIsValid, Phrases.Keys.Collections.ExactCollectionSize);
         }
 
         [Theory]
         [InlineData(-1)]
         [InlineData(int.MinValue)]
-        public void MinSize_Should_ThrowException_When_NegativeSize(int minSize)
+        public void ExactCollectionSize_Should_ThrowException_When_NegativeCollectionSize(int expectedCollectionSize)
         {
             var builder = new MemberSpecificationBuilder<object, Collection<int>>();
 
-            Assert.Throws<ArgumentOutOfRangeException>(() => { builder.MinSize(minSize); });
+            Assert.Throws<ArgumentOutOfRangeException>(() => { builder.ExactCollectionSize(expectedCollectionSize); });
         }
 
         [Theory]
         [InlineData(-1)]
         [InlineData(long.MinValue)]
-        public void MinSize_Should_ThrowException_When_NegativeSize_And_LongSize(long minSize)
+        public void ExactCollectionSize_Should_ThrowException_When_NegativeCollectionSize_And_LongType(long expectedCollectionSize)
         {
             var builder = new MemberSpecificationBuilder<object, Collection<int>>();
 
-            Assert.Throws<ArgumentOutOfRangeException>(() => { builder.MinSize(minSize); });
+            Assert.Throws<ArgumentOutOfRangeException>(() => { builder.ExactCollectionSize(expectedCollectionSize); });
+        }
+
+        public static IEnumerable<object[]> NotEmptyCollection_Should_CollectError_Data()
+        {
+            return CollectionDataHelper.NotEmptyCollection_Should_CollectError_Data(_convert);
+        }
+
+        [Theory]
+        [MemberData(nameof(NotEmptyCollection_Should_CollectError_Data))]
+        public void NotEmptyCollection_Should_CollectError(Collection<int> items, bool expectedIsValid)
+        {
+            var builder = new MemberSpecificationBuilder<object, Collection<int>>();
+
+            builder.NotEmptyCollection();
+
+            RulesHelper.AssertErrorCompilation(items, builder.Rules, expectedIsValid, Phrases.Keys.Collections.NotEmptyCollection);
+        }
+
+        public static IEnumerable<object[]> EmptyCollection_Should_CollectError_Data()
+        {
+            return CollectionDataHelper.EmptyCollection_Should_CollectError_Data(_convert);
+        }
+
+        [Theory]
+        [MemberData(nameof(EmptyCollection_Should_CollectError_Data))]
+        public void EmptyCollection_Should_CollectError(Collection<int> items, bool expectedIsValid)
+        {
+            var builder = new MemberSpecificationBuilder<object, Collection<int>>();
+
+            builder.EmptyCollection();
+
+            RulesHelper.AssertErrorCompilation(items, builder.Rules, expectedIsValid, Phrases.Keys.Collections.EmptyCollection);
+        }
+
+        public static IEnumerable<object[]> MaxCollectionSize_Should_CollectError_Data()
+        {
+            return CollectionDataHelper.MaxCollectionSize_Should_CollectError_Data(_convert);
+        }
+
+        [Theory]
+        [MemberData(nameof(MaxCollectionSize_Should_CollectError_Data))]
+        public void MaxCollectionSize_Should_CollectError(Collection<int> items, int maxCollectionSize, bool expectedIsValid)
+        {
+            var builder = new MemberSpecificationBuilder<object, Collection<int>>();
+
+            builder.MaxCollectionSize(maxCollectionSize);
+
+            RulesHelper.AssertErrorCompilation(items, builder.Rules, expectedIsValid, Phrases.Keys.Collections.MaxCollectionSize);
+        }
+
+        public static IEnumerable<object[]> MaxCollectionSize_Should_CollectError_When_LongCollectionSize_Data()
+        {
+            return CollectionDataHelper.MaxCollectionSize_Should_CollectError_When_LongCollectionSize_Data(_convert);
+        }
+
+        [Theory]
+        [MemberData(nameof(MaxCollectionSize_Should_CollectError_Data))]
+        [MemberData(nameof(MaxCollectionSize_Should_CollectError_When_LongCollectionSize_Data))]
+        public void MaxCollectionSize_Should_CollectError_When_LongCollectionSize(Collection<int> items, long maxCollectionSize, bool expectedIsValid)
+        {
+            var builder = new MemberSpecificationBuilder<object, Collection<int>>();
+
+            builder.MaxCollectionSize(maxCollectionSize);
+
+            RulesHelper.AssertErrorCompilation(items, builder.Rules, expectedIsValid, Phrases.Keys.Collections.MaxCollectionSize);
+        }
+
+        public static IEnumerable<object[]> MinCollectionSize_Should_CollectError_Data()
+        {
+            return CollectionDataHelper.MinCollectionSize_Should_CollectError_Data(_convert);
+        }
+
+        [Theory]
+        [MemberData(nameof(MinCollectionSize_Should_CollectError_Data))]
+        public void MinCollectionSize_Should_CollectError(Collection<int> items, int minCollectionSize, bool expectedIsValid)
+        {
+            var builder = new MemberSpecificationBuilder<object, Collection<int>>();
+
+            builder.MinCollectionSize(minCollectionSize);
+
+            RulesHelper.AssertErrorCompilation(items, builder.Rules, expectedIsValid, Phrases.Keys.Collections.MinCollectionSize);
+        }
+
+        public static IEnumerable<object[]> MinCollectionSize_Should_CollectError_When_LongCollectionSize_Data()
+        {
+            return CollectionDataHelper.MinCollectionSize_Should_CollectError_When_LongCollectionSize_Data(_convert);
+        }
+
+        [Theory]
+        [MemberData(nameof(MinCollectionSize_Should_CollectError_Data))]
+        [MemberData(nameof(MinCollectionSize_Should_CollectError_When_LongCollectionSize_Data))]
+        public void MinCollectionSize_Should_CollectError_When_LongCollectionSize(Collection<int> items, long minCollectionSize, bool expectedIsValid)
+        {
+            var builder = new MemberSpecificationBuilder<object, Collection<int>>();
+
+            builder.MinCollectionSize(minCollectionSize);
+
+            RulesHelper.AssertErrorCompilation(items, builder.Rules, expectedIsValid, Phrases.Keys.Collections.MinCollectionSize);
         }
 
         [Theory]
         [InlineData(-1)]
         [InlineData(int.MinValue)]
-        public void MaxSize_Should_ThrowException_When_NegativeSize(int maxSize)
+        public void MinCollectionSize_Should_ThrowException_When_NegativeCollectionSize(int minCollectionSize)
         {
             var builder = new MemberSpecificationBuilder<object, Collection<int>>();
 
-            Assert.Throws<ArgumentOutOfRangeException>(() => { builder.MaxSize(maxSize); });
+            Assert.Throws<ArgumentOutOfRangeException>(() => { builder.MinCollectionSize(minCollectionSize); });
         }
 
         [Theory]
         [InlineData(-1)]
         [InlineData(long.MinValue)]
-        public void MaxSize_Should_ThrowException_When_NegativeSize_And_LongSize(long maxSize)
+        public void MinCollectionSize_Should_ThrowException_When_NegativeCollectionSize_And_LongCollectionSize(long minCollectionSize)
         {
             var builder = new MemberSpecificationBuilder<object, Collection<int>>();
 
-            Assert.Throws<ArgumentOutOfRangeException>(() => { builder.MaxSize(maxSize); });
-        }
-
-        public static IEnumerable<object[]> SizeBetween_Should_CollectError_Data()
-        {
-            return CollectionDataHelper.SizeBetween_Should_CollectError_Data(_convert);
-        }
-
-        [Theory]
-        [MemberData(nameof(SizeBetween_Should_CollectError_Data))]
-        public void SizeBetween_Should_CollectError(Collection<int> items, int minSize, int maxSize, bool expectedIsValid)
-        {
-            var builder = new MemberSpecificationBuilder<object, Collection<int>>();
-
-            builder.SizeBetween(minSize, maxSize);
-
-            RulesHelper.AssertErrorCompilation(items, builder.Rules, expectedIsValid, Phrases.Keys.Collections.SizeBetween);
-        }
-
-        public static IEnumerable<object[]> SizeBetween_Should_CollectError_When_LongSize_Data()
-        {
-            return CollectionDataHelper.SizeBetween_Should_CollectError_When_LongSize_Data(_convert);
-        }
-
-        [Theory]
-        [MemberData(nameof(SizeBetween_Should_CollectError_Data))]
-        [MemberData(nameof(SizeBetween_Should_CollectError_When_LongSize_Data))]
-        public void SizeBetween_Should_CollectError_When_LongSize(Collection<int> items, long minSize, long maxSize, bool expectedIsValid)
-        {
-            var builder = new MemberSpecificationBuilder<object, Collection<int>>();
-
-            builder.SizeBetween(minSize, maxSize);
-
-            RulesHelper.AssertErrorCompilation(items, builder.Rules, expectedIsValid, Phrases.Keys.Collections.SizeBetween);
+            Assert.Throws<ArgumentOutOfRangeException>(() => { builder.MinCollectionSize(minCollectionSize); });
         }
 
         [Theory]
         [InlineData(-1)]
         [InlineData(int.MinValue)]
-        public void SizeBetween_Should_ThrowException_When_MaxSizeIsNegative(int maxSize)
+        public void MaxCollectionSize_Should_ThrowException_When_NegativeCollectionSize(int maxCollectionSize)
         {
             var builder = new MemberSpecificationBuilder<object, Collection<int>>();
 
-            Assert.Throws<ArgumentOutOfRangeException>(() => { builder.SizeBetween(0, maxSize); });
+            Assert.Throws<ArgumentOutOfRangeException>(() => { builder.MaxCollectionSize(maxCollectionSize); });
         }
 
         [Theory]
         [InlineData(-1)]
         [InlineData(long.MinValue)]
-        public void SizeBetween_Should_ThrowException_When_MaxSizeIsLongNegative(long maxSize)
+        public void MaxCollectionSize_Should_ThrowException_When_NegativeCollectionSize_And_LongCollectionSize(long maxCollectionSize)
         {
             var builder = new MemberSpecificationBuilder<object, Collection<int>>();
 
-            Assert.Throws<ArgumentOutOfRangeException>(() => { builder.SizeBetween(0, maxSize); });
+            Assert.Throws<ArgumentOutOfRangeException>(() => { builder.MaxCollectionSize(maxCollectionSize); });
+        }
+
+        public static IEnumerable<object[]> CollectionSizeBetween_Should_CollectError_Data()
+        {
+            return CollectionDataHelper.CollectionSizeBetween_Should_CollectError_Data(_convert);
+        }
+
+        [Theory]
+        [MemberData(nameof(CollectionSizeBetween_Should_CollectError_Data))]
+        public void CollectionSizeBetween_Should_CollectError(Collection<int> items, int minCollectionSize, int maxCollectionSize, bool expectedIsValid)
+        {
+            var builder = new MemberSpecificationBuilder<object, Collection<int>>();
+
+            builder.CollectionSizeBetween(minCollectionSize, maxCollectionSize);
+
+            RulesHelper.AssertErrorCompilation(items, builder.Rules, expectedIsValid, Phrases.Keys.Collections.CollectionSizeBetween);
+        }
+
+        public static IEnumerable<object[]> CollectionSizeBetween_Should_CollectError_When_LongCollectionSize_Data()
+        {
+            return CollectionDataHelper.CollectionSizeBetween_Should_CollectError_When_LongCollectionSize_Data(_convert);
+        }
+
+        [Theory]
+        [MemberData(nameof(CollectionSizeBetween_Should_CollectError_Data))]
+        [MemberData(nameof(CollectionSizeBetween_Should_CollectError_When_LongCollectionSize_Data))]
+        public void CollectionSizeBetween_Should_CollectError_When_LongCollectionSize(Collection<int> items, long minCollectionSize, long maxCollectionSize, bool expectedIsValid)
+        {
+            var builder = new MemberSpecificationBuilder<object, Collection<int>>();
+
+            builder.CollectionSizeBetween(minCollectionSize, maxCollectionSize);
+
+            RulesHelper.AssertErrorCompilation(items, builder.Rules, expectedIsValid, Phrases.Keys.Collections.CollectionSizeBetween);
         }
 
         [Theory]
         [InlineData(-1)]
         [InlineData(int.MinValue)]
-        public void SizeBetween_Should_ThrowException_When_MinSizeIsNegative(int minSize)
+        public void CollectionSizeBetween_Should_ThrowException_When_MaxCollectionSizeIsNegative(int maxCollectionSize)
         {
             var builder = new MemberSpecificationBuilder<object, Collection<int>>();
 
-            Assert.Throws<ArgumentOutOfRangeException>(() => { builder.SizeBetween(minSize, 10); });
+            Assert.Throws<ArgumentOutOfRangeException>(() => { builder.CollectionSizeBetween(0, maxCollectionSize); });
         }
 
         [Theory]
         [InlineData(-1)]
         [InlineData(long.MinValue)]
-        public void SizeBetween_Should_ThrowException_When_MinSizeIsLongNegative(long minSize)
+        public void CollectionSizeBetween_Should_ThrowException_When_MaxCollectionSizeIsLongNegative(long maxCollectionSize)
         {
             var builder = new MemberSpecificationBuilder<object, Collection<int>>();
 
-            Assert.Throws<ArgumentOutOfRangeException>(() => { builder.SizeBetween(minSize, 10L); });
+            Assert.Throws<ArgumentOutOfRangeException>(() => { builder.CollectionSizeBetween(0, maxCollectionSize); });
+        }
+
+        [Theory]
+        [InlineData(-1)]
+        [InlineData(int.MinValue)]
+        public void CollectionSizeBetween_Should_ThrowException_When_MinCollectionSizeIsNegative(int minCollectionSize)
+        {
+            var builder = new MemberSpecificationBuilder<object, Collection<int>>();
+
+            Assert.Throws<ArgumentOutOfRangeException>(() => { builder.CollectionSizeBetween(minCollectionSize, 10); });
+        }
+
+        [Theory]
+        [InlineData(-1)]
+        [InlineData(long.MinValue)]
+        public void CollectionSizeBetween_Should_ThrowException_When_MinCollectionSizeIsLongNegative(long minCollectionSize)
+        {
+            var builder = new MemberSpecificationBuilder<object, Collection<int>>();
+
+            Assert.Throws<ArgumentOutOfRangeException>(() => { builder.CollectionSizeBetween(minCollectionSize, 10L); });
         }
 
         [Theory]
         [InlineData(1, 0)]
         [InlineData(20, 0)]
         [InlineData(int.MaxValue, 1)]
-        public void SizeBetween_Should_ThrowException_When_MinLargerThanMax(int minSize, int maxSize)
+        public void CollectionSizeBetween_Should_ThrowException_When_MinLargerThanMax(int minCollectionSize, int maxCollectionSize)
         {
             var builder = new MemberSpecificationBuilder<object, Collection<int>>();
 
-            Assert.Throws<ArgumentOutOfRangeException>(() => { builder.SizeBetween(minSize, maxSize); });
+            Assert.Throws<ArgumentOutOfRangeException>(() => { builder.CollectionSizeBetween(minCollectionSize, maxCollectionSize); });
         }
 
         [Theory]
         [InlineData(1, 0)]
         [InlineData(20, 0)]
         [InlineData(long.MaxValue, 1)]
-        public void SizeBetween_Should_ThrowException_When_MinLargerThanMax_And_LongMinAndMax(long minSize, long maxSize)
+        public void CollectionSizeBetween_Should_ThrowException_When_MinLargerThanMax_And_LongMinAndMax(long minCollectionSize, long maxCollectionSize)
         {
             var builder = new MemberSpecificationBuilder<object, Collection<int>>();
 
-            Assert.Throws<ArgumentOutOfRangeException>(() => { builder.SizeBetween(minSize, maxSize); });
+            Assert.Throws<ArgumentOutOfRangeException>(() => { builder.CollectionSizeBetween(minCollectionSize, maxCollectionSize); });
         }
 
         public class MessageTests
         {
             [Fact]
-            public void Empty_Should_SetCustomMessage()
+            public void EmptyCollection_Should_SetCustomMessage()
             {
                 var builder = new MemberSpecificationBuilder<object, Collection<int>>();
 
-                builder.Empty("Overriden error message");
+                builder.EmptyCollection("Overriden error message");
 
                 RulesHelper.AssertErrorMessage(_convert(new[] {1}), builder.Rules, "Overriden error message", "Overriden error message");
             }
 
             [Fact]
-            public void ExactSize_Should_SetCustomMessage()
+            public void ExactCollectionSize_Should_SetCustomMessage()
             {
                 var builder = new MemberSpecificationBuilder<object, Collection<int>>();
 
-                builder.ExactSize(10, "{size} Overriden error message");
+                builder.ExactCollectionSize(10, "{size} Overriden error message");
 
                 RulesHelper.AssertErrorMessage(_convert(new[] {1}), builder.Rules, "{size} Overriden error message", "10 Overriden error message");
             }
 
             [Fact]
-            public void ExactSize_Should_SetCustomMessage_When_LongType()
+            public void ExactCollectionSize_Should_SetCustomMessage_When_LongType()
             {
                 var builder = new MemberSpecificationBuilder<object, Collection<int>>();
 
-                builder.ExactSize((long)10, "{size} Overriden error message");
+                builder.ExactCollectionSize((long)10, "{size} Overriden error message");
 
                 RulesHelper.AssertErrorMessage(_convert(new[] {1}), builder.Rules, "{size} Overriden error message", "10 Overriden error message");
             }
 
             [Fact]
-            public void MaxSize_Should_SetCustomMessage()
+            public void MaxCollectionSize_Should_SetCustomMessage()
             {
                 var builder = new MemberSpecificationBuilder<object, Collection<int>>();
 
-                builder.MaxSize(3, "{max} Overriden error message");
+                builder.MaxCollectionSize(3, "{max} Overriden error message");
 
                 RulesHelper.AssertErrorMessage(_convert(new[] {1, 2, 3, 4}), builder.Rules, "{max} Overriden error message", "3 Overriden error message");
             }
 
             [Fact]
-            public void MaxSize_Should_SetCustomMessage_When_LongType()
+            public void MaxCollectionSize_Should_SetCustomMessage_When_LongType()
             {
                 var builder = new MemberSpecificationBuilder<object, Collection<int>>();
 
-                builder.MaxSize((long)3, "{max} Overriden error message");
+                builder.MaxCollectionSize((long)3, "{max} Overriden error message");
 
                 RulesHelper.AssertErrorMessage(_convert(new[] {1, 2, 3, 4}), builder.Rules, "{max} Overriden error message", "3 Overriden error message");
             }
 
             [Fact]
-            public void MinSize_Should_SetCustomMessage()
+            public void MinCollectionSize_Should_SetCustomMessage()
             {
                 var builder = new MemberSpecificationBuilder<object, Collection<int>>();
 
-                builder.MinSize(3, "{min} Overriden error message");
+                builder.MinCollectionSize(3, "{min} Overriden error message");
 
                 RulesHelper.AssertErrorMessage(_convert(new[] {1}), builder.Rules, "{min} Overriden error message", "3 Overriden error message");
             }
 
             [Fact]
-            public void MinSize_Should_SetCustomMessage_When_LongType()
+            public void MinCollectionSize_Should_SetCustomMessage_When_LongType()
             {
                 var builder = new MemberSpecificationBuilder<object, Collection<int>>();
 
-                builder.MinSize((long)3, "{min} Overriden error message");
+                builder.MinCollectionSize((long)3, "{min} Overriden error message");
 
                 RulesHelper.AssertErrorMessage(_convert(new[] {1}), builder.Rules, "{min} Overriden error message", "3 Overriden error message");
             }
 
             [Fact]
-            public void NotEmpty_Should_SetCustomMessage()
+            public void NotEmptyCollection_Should_SetCustomMessage()
             {
                 var builder = new MemberSpecificationBuilder<object, Collection<int>>();
 
-                builder.NotEmpty("Overriden error message");
+                builder.NotEmptyCollection("Overriden error message");
 
                 RulesHelper.AssertErrorMessage(_convert(Array.Empty<int>()), builder.Rules, "Overriden error message", "Overriden error message");
             }
 
             [Fact]
-            public void SizeBetween_Should_SetCustomMessage()
+            public void CollectionSizeBetween_Should_SetCustomMessage()
             {
                 var builder = new MemberSpecificationBuilder<object, Collection<int>>();
 
-                builder.SizeBetween(3, 4, "{min} {max} Overriden error message");
+                builder.CollectionSizeBetween(3, 4, "{min} {max} Overriden error message");
 
                 RulesHelper.AssertErrorMessage(_convert(new[] {1}), builder.Rules, "{min} {max} Overriden error message", "3 4 Overriden error message");
             }
 
             [Fact]
-            public void SizeBetween_Should_SetCustomMessage_When_LongType()
+            public void CollectionSizeBetween_Should_SetCustomMessage_When_LongType()
             {
                 var builder = new MemberSpecificationBuilder<object, Collection<int>>();
 
-                builder.SizeBetween(3, (long)4, "{min} {max} Overriden error message");
+                builder.CollectionSizeBetween(3, (long)4, "{min} {max} Overriden error message");
 
                 RulesHelper.AssertErrorMessage(_convert(new[] {1}), builder.Rules, "{min} {max} Overriden error message", "3 4 Overriden error message");
             }

@@ -6,12 +6,12 @@ namespace CoreValidation.PredefinedTranslations
     {
         public ICollectionsMessages Collections { get; } = new CollectionsMessages
         {
-            Empty = "Collection should be empty",
-            NotEmpty = "Collection cannot be empty",
-            ExactSize = "Collection should have exactly {size} elements",
-            MaxSize = "Collection should have maximum {max} elements",
-            MinSize = "Collection should have minimum {min} elements",
-            SizeBetween = "Collection size should be between {min} and {max} elements"
+            EmptyCollection = "Collection should be empty",
+            NotEmptyCollection = "Collection cannot be empty",
+            ExactCollectionSize = "Collection should have exactly {size} elements",
+            MaxCollectionSize = "Collection should have maximum {max} elements",
+            MinCollectionSize = "Collection should have minimum {min} elements",
+            CollectionSizeBetween = "Collection size should be between {min} and {max} elements"
         };
 
         public IBoolMessages Bool { get; } = new BoolMessages
