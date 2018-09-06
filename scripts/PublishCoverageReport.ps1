@@ -14,11 +14,11 @@ $toolsPath = "$($rootPath)\tools"
 New-Item -ItemType Directory -Force -Path $toolsPath
 $toolsPath = Convert-Path $toolsPath
 
-$coverallsPublisherToolItem = TryGetToolExecutableItem $toolsPath "coveralls.net" "1.0.0" "csmacnz.Coveralls.dll"
+$coverallsPublisherToolItem = TryGetToolExecutableItem $toolsPath "1.0.0" "csmacnz.Coveralls.dll"
 
 if (($null -eq $executableItem)) {
     & dotnet tool install "coveralls.net" --tool-path $toolsPath --version "1.0.0"
-    $coverallsPublisherToolItem = TryGetToolExecutableItem $toolsPath "coveralls.net" "1.0.0" "csmacnz.Coveralls.dll"
+    $coverallsPublisherToolItem = TryGetToolExecutableItem $toolsPath "1.0.0" "csmacnz.Coveralls.dll"
 }
 
 Exec "Publishing code coverage report: $($path)" {

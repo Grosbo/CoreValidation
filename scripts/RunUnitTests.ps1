@@ -39,11 +39,11 @@ if ($generateReport) {
     New-Item -ItemType Directory -Force -Path $coverageReportPath
     $coverageReportPath = Convert-Path $coverageReportPath
 
-    $reportGeneratorToolItem = TryGetToolExecutableItem $toolsPath "dotnet-reportgenerator-globaltool" "4.0.0-rc4" "ReportGenerator.dll"
+    $reportGeneratorToolItem = TryGetToolExecutableItem $toolsPath "4.0.0-rc4" "ReportGenerator.dll"
 
     if (($null -eq $reportGeneratorToolItem)) {
         & dotnet tool install "dotnet-reportgenerator-globaltool" --tool-path $toolsPath --version "4.0.0-rc4"
-        $reportGeneratorToolItem = TryGetToolExecutableItem $toolsPath "dotnet-reportgenerator-globaltool" "4.0.0-rc4" "ReportGenerator.dll"
+        $reportGeneratorToolItem = TryGetToolExecutableItem $toolsPath "4.0.0-rc4" "ReportGenerator.dll"
     }
 
     Exec "Generating report" {

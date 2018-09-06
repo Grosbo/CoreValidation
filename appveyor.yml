@@ -13,6 +13,7 @@ skip_commits:
     - .github/*
     - '**/*.md'
     - test/CoreValidation.PerformanceTests/*
+    - test/CoreValidation.WorkloadTests/*
 
 environment:
   NUGET_API_KEY:

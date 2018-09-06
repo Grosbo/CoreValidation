@@ -58,7 +58,6 @@ function CheckAllConditions {
 
 function TryGetToolExecutableItem {
     param([string]$toolsDir,
-        [string]$name,
         [string]$version,
         [string]$executable)
 
