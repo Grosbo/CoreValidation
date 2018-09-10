@@ -1,6 +1,5 @@
 ﻿using System.Net.Mail;
 using CoreValidation.Specifications;
-using CoreValidation.Translations;
 
 // ReSharper disable once CheckNamespace
 namespace CoreValidation

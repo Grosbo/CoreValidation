@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using CoreValidation.Specifications;
-using CoreValidation.Translations;
 using Xunit;
 
 namespace CoreValidation.UnitTests.PredefinedRules.Collections
@@ -294,6 +293,26 @@ namespace CoreValidation.UnitTests.PredefinedRules.Collections
         public class MessageTests
         {
             [Fact]
+            public void CollectionSizeBetween_Should_SetCustomMessage()
+            {
+                var builder = new MemberSpecificationBuilder<object, ReadOnlyCollection<int>>();
+
+                builder.CollectionSizeBetween(3, 4, "{min} {max} Overriden error message");
+
+                RulesHelper.AssertErrorMessage(_convert(new[] {1}), builder.Rules, "{min} {max} Overriden error message", "3 4 Overriden error message");
+            }
+
+            [Fact]
+            public void CollectionSizeBetween_Should_SetCustomMessage_When_LongType()
+            {
+                var builder = new MemberSpecificationBuilder<object, ReadOnlyCollection<int>>();
+
+                builder.CollectionSizeBetween(3, (long)4, "{min} {max} Overriden error message");
+
+                RulesHelper.AssertErrorMessage(_convert(new[] {1}), builder.Rules, "{min} {max} Overriden error message", "3 4 Overriden error message");
+            }
+
+            [Fact]
             public void EmptyCollection_Should_SetCustomMessage()
             {
                 var builder = new MemberSpecificationBuilder<object, ReadOnlyCollection<int>>();
@@ -371,26 +390,6 @@ namespace CoreValidation.UnitTests.PredefinedRules.Collections
                 builder.NotEmptyCollection("Overriden error message");
 
                 RulesHelper.AssertErrorMessage(_convert(Array.Empty<int>()), builder.Rules, "Overriden error message", "Overriden error message");
-            }
-
-            [Fact]
-            public void CollectionSizeBetween_Should_SetCustomMessage()
-            {
-                var builder = new MemberSpecificationBuilder<object, ReadOnlyCollection<int>>();
-
-                builder.CollectionSizeBetween(3, 4, "{min} {max} Overriden error message");
-
-                RulesHelper.AssertErrorMessage(_convert(new[] {1}), builder.Rules, "{min} {max} Overriden error message", "3 4 Overriden error message");
-            }
-
-            [Fact]
-            public void CollectionSizeBetween_Should_SetCustomMessage_When_LongType()
-            {
-                var builder = new MemberSpecificationBuilder<object, ReadOnlyCollection<int>>();
-
-                builder.CollectionSizeBetween(3, (long)4, "{min} {max} Overriden error message");
-
-                RulesHelper.AssertErrorMessage(_convert(new[] {1}), builder.Rules, "{min} {max} Overriden error message", "3 4 Overriden error message");
             }
         }
     }

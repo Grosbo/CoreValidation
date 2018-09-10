@@ -179,7 +179,9 @@ namespace CoreValidation.UnitTests.Translations
 
             var translatorsRepository = new TranslatorsRepository(translations);
 
-            Assert.Throws<TranslationNotFoundException>(() => { translatorsRepository.Get("some_another"); });
+            var exception = Assert.Throws<TranslationNotFoundException>(() => { translatorsRepository.Get("some_another"); });
+
+            Assert.Equal("some_another", exception.Name);
         }
     }
 }

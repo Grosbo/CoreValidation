@@ -1,5 +1,4 @@
 ﻿using CoreValidation.Specifications;
-using CoreValidation.Translations;
 using Xunit;
 
 namespace CoreValidation.UnitTests.PredefinedRules

@@ -4,7 +4,6 @@ using System.Linq;
 using CoreValidation.Factory.Specifications;
 using CoreValidation.Factory.Translations;
 using CoreValidation.Specifications;
-using CoreValidation.Translations;
 
 namespace CoreValidation.WorkloadTests.Models
 {

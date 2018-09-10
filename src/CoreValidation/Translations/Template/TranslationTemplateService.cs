@@ -2,9 +2,11 @@
 
 namespace CoreValidation.Translations.Template
 {
-    internal class TranslationTemplateService
+    internal static class TranslationTemplateService
     {
-        public IDictionary<string, string> CreateDictionary(ITranslationTemplate source)
+        public static ITranslationTemplate Keys { get; } = new KeysTemplate();
+
+        public static IDictionary<string, string> CreateDictionary(ITranslationTemplate source)
         {
             var dictionary = new Dictionary<string, string>();
 
@@ -32,11 +34,6 @@ namespace CoreValidation.Translations.Template
             }
 
             return dictionary;
-        }
-
-        public ITranslationTemplate CreateKeysTemplate()
-        {
-            return new KeysTemplate();
         }
 
         private class KeysTemplate : ITranslationTemplate

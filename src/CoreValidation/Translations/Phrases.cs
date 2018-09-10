@@ -1,15 +1,10 @@
-﻿using System.Collections.Generic;
-using CoreValidation.PredefinedTranslations;
-using CoreValidation.Translations.Template;
+﻿using CoreValidation.Translations.Template;
 
-namespace CoreValidation.Translations
+// ReSharper disable once CheckNamespace
+namespace CoreValidation
 {
-    public static class Phrases
+    public static partial class Phrases
     {
-        private static readonly TranslationTemplateService _translationTemplateService = new TranslationTemplateService();
-
-        public static ITranslationTemplate Keys { get; } = _translationTemplateService.CreateKeysTemplate();
-
-        public static IDictionary<string, string> English { get; } = _translationTemplateService.CreateDictionary(new EnglishTranslation());
+        public static ITranslationTemplate Keys { get; } = TranslationTemplateService.Keys;
     }
 }

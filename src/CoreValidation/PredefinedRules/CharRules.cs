@@ -1,7 +1,6 @@
 ﻿using System.Globalization;
 using CoreValidation.Errors.Args;
 using CoreValidation.Specifications;
-using CoreValidation.Translations;
 
 // ReSharper disable once CheckNamespace
 namespace CoreValidation

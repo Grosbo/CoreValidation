@@ -4,7 +4,6 @@ using System.Linq;
 using CoreValidation.Factory.Specifications;
 using CoreValidation.Results;
 using CoreValidation.Specifications;
-using CoreValidation.Translations;
 using Newtonsoft.Json.Linq;
 using Xunit;
 

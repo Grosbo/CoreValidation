@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 namespace CoreValidation.Errors.Args
 {
-
     public sealed class EnumArg<T> : IMessageArg
         where T : struct
     {

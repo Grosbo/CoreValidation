@@ -1,5 +1,4 @@
 ﻿using CoreValidation.Errors;
-using CoreValidation.Translations;
 
 namespace CoreValidation.Options
 {

@@ -14,10 +14,12 @@ namespace CoreValidation.WorkloadTests
             BuildWebHost(args, configuration).Run();
         }
 
-        public static IWebHost BuildWebHost(string[] args, IConfiguration configuration) =>
-            WebHost.CreateDefaultBuilder(args)
+        public static IWebHost BuildWebHost(string[] args, IConfiguration configuration)
+        {
+            return WebHost.CreateDefaultBuilder(args)
                 .UseConfiguration(configuration)
                 .UseStartup<Startup>()
                 .Build();
+        }
     }
 }
