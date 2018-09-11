@@ -11,6 +11,11 @@ namespace CoreValidation.Factory.Specifications
         public static IValidationContextOptions AddSpecification<T>(this IValidationContextOptions options, Specification<T> specification)
             where T : class
         {
+            if (options == null)
+            {
+                throw new ArgumentNullException(nameof(options));
+            }
+
             if (specification == null)
             {
                 throw new ArgumentNullException(nameof(specification));

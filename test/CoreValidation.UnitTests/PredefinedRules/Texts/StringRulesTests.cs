@@ -382,8 +382,10 @@ namespace CoreValidation.UnitTests.PredefinedRules.Texts
 
         [Theory]
         [InlineData(-1, 1)]
+        [InlineData(1, -1)]
         [InlineData(int.MinValue, 1)]
         [InlineData(int.MinValue, int.MaxValue)]
+        [InlineData(int.MinValue, int.MinValue)]
         public void LengthBetween_Should_ThrowException_When_NegativeLength(int min, int max)
         {
             var builder = new MemberSpecificationBuilder<object, string>();

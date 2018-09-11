@@ -2,8 +2,8 @@
 {
     public enum NullRootStrategy
     {
-        ArgumentNullException,
-        RequiredError,
-        NoErrors
+        ArgumentNullException = 0,
+        RequiredError = 1,
+        NoErrors = 2
     }
 }

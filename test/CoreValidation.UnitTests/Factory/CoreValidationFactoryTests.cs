@@ -351,6 +351,14 @@ namespace CoreValidation.UnitTests.Factory
             }
 
             [Fact]
+            public void Create_Should_ThrowException_When_NullThis()
+            {
+                Assert.Throws<ArgumentNullException>(() => new ValidationContextFactory().Create(o => (null as IValidationContextOptions)
+                    .AddTranslation(null, new Dictionary<string, string> {{"a", "A"}})
+                ));
+            }
+
+            [Fact]
             public void Create_Should_ThrowException_When_NullTranslationName()
             {
                 Assert.Throws<ArgumentNullException>(() => new ValidationContextFactory().Create(o => o
@@ -361,6 +369,15 @@ namespace CoreValidation.UnitTests.Factory
 
         public class Specifications
         {
+            private class InvalidEmptySpecificationHolder : ISpecificationHolder
+            {
+            }
+
+            private class InvalidNullSpecificationHolder : ISpecificationHolder<User>
+            {
+                public Specification<User> Specification { get; } = null;
+            }
+
             private class UserSpecificationHolder : ISpecificationHolder<User>
             {
                 public UserSpecificationHolder(Specification<User> specification)
@@ -515,9 +532,27 @@ namespace CoreValidation.UnitTests.Factory
             }
 
             [Fact]
+            public void Create_Should_ThrowException_When_AddHolderWithNoSpecifications()
+            {
+                Assert.Throws<InvalidOperationException>(() => new ValidationContextFactory().Create(o => o.AddSpecificationsFromHolder(new InvalidEmptySpecificationHolder())));
+            }
+
+            [Fact]
+            public void Create_Should_ThrowException_When_AddHolderWithNullSpecification()
+            {
+                Assert.Throws<InvalidOperationException>(() => new ValidationContextFactory().Create(o => o.AddSpecificationsFromHolder(new InvalidNullSpecificationHolder())));
+            }
+
+            [Fact]
             public void Create_Should_ThrowException_When_AddNullSpecification()
             {
                 Assert.Throws<ArgumentNullException>(() => new ValidationContextFactory().Create(o => o.AddSpecification<User>(null)));
+            }
+
+            [Fact]
+            public void Create_Should_ThrowException_When_AddNullSpecificationHolder()
+            {
+                Assert.Throws<ArgumentNullException>(() => new ValidationContextFactory().Create(o => o.AddSpecificationsFromHolder(null)));
             }
         }
 
@@ -913,7 +948,9 @@ namespace CoreValidation.UnitTests.Factory
         [Fact]
         public void Create_Should_ThrowException_When_ReturningNewInstance()
         {
-            Assert.Throws<InvalidProcessedReferenceException>(() => new ValidationContextFactory().Create(o => new ValidationContextOptions()));
+            var exception = Assert.Throws<InvalidProcessedReferenceException>(() => new ValidationContextFactory().Create(o => new ValidationContextOptions()));
+
+            Assert.Equal(typeof(IValidationContextOptions), exception.Type);
         }
     }
 }

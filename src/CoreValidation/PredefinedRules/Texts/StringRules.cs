@@ -128,11 +128,5 @@ namespace CoreValidation
                 }, message ?? Phrases.Keys.Texts.LengthBetween,
                 new[] {new NumberArg(nameof(min), min), new NumberArg(nameof(max), max)});
         }
-
-        public static IMemberSpecificationBuilder<TModel, string> IsGuid<TModel>(this IMemberSpecificationBuilder<TModel, string> @this, string message = null)
-            where TModel : class
-        {
-            return @this.Valid(m => Guid.TryParse(m, out _), Phrases.Keys.Texts.IsGuid);
-        }
     }
 }

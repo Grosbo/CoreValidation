@@ -2,8 +2,8 @@
 {
     public enum ValidationStrategy
     {
-        FailFast,
-        Complete,
-        Force
+        Complete = 0,
+        FailFast = 1,
+        Force = 2
     }
 }

@@ -318,7 +318,9 @@ namespace CoreValidation.UnitTests
                     Specifications = new Dictionary<Type, object> {{typeof(User), new Specification<User>(c => c.For(m => m.Address, m => m.ValidModel()))}}
                 });
 
-                Assert.Throws<SpecificationNotFoundException>(() => { validationContext.Validate(new User()); });
+                var exception = Assert.Throws<SpecificationNotFoundException>(() => { validationContext.Validate(new User()); });
+
+                Assert.Equal(typeof(Address), exception.Type);
             }
 
             [Fact]
@@ -326,7 +328,9 @@ namespace CoreValidation.UnitTests
             {
                 var validationContext = new ValidationContext();
 
-                Assert.Throws<SpecificationNotFoundException>(() => { validationContext.Validate(new User()); });
+                var exception = Assert.Throws<SpecificationNotFoundException>(() => { validationContext.Validate(new User()); });
+
+                Assert.Equal(typeof(User), exception.Type);
             }
 
             [Fact]
@@ -337,7 +341,9 @@ namespace CoreValidation.UnitTests
                     Specifications = new Dictionary<Type, object> {{typeof(Address), new Specification<Address>(c => c)}}
                 });
 
-                Assert.Throws<SpecificationNotFoundException>(() => { validationContext.Validate(new User()); });
+                var exception = Assert.Throws<SpecificationNotFoundException>(() => { validationContext.Validate(new User()); });
+
+                Assert.Equal(typeof(User), exception.Type);
             }
 
             [Fact]
@@ -751,7 +757,6 @@ namespace CoreValidation.UnitTests
                 Assert.Equal("error 3", result.ErrorsCollection.Errors.ElementAt(2).FormattedMessage);
             }
         }
-
 
         public class UsingRequiredError
         {

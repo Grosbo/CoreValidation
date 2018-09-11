@@ -110,29 +110,40 @@ namespace CoreValidation.UnitTests.Options
 
             public static IEnumerable<object[]> GetVerifiedSpecificationsDictionary_Should_ThrowException_When_InvalidSpecificationTypeForKeyType_Data()
             {
-                yield return new object[]
-                {
-                    new Dictionary<Type, object>
-                    {
-                        {typeof(User), new Specification<Address>(c => c)}
-                    }
-                };
+                var spec1 = new Specification<Address>(c => c);
 
                 yield return new object[]
                 {
+                    typeof(User),
+                    spec1,
+                    new Dictionary<Type, object>
+                    {
+                        {typeof(User), spec1}
+                    }
+                };
+
+                var spec2 = new Specification<User>(c => c);
+
+                yield return new object[]
+                {
+                    typeof(Address),
+                    spec2,
                     new Dictionary<Type, object>
                     {
                         {typeof(User), new Specification<User>(c => c)},
-                        {typeof(Address), new Specification<User>(c => c)}
+                        {typeof(Address), spec2}
                     }
                 };
             }
 
             [Theory]
             [MemberData(nameof(GetVerifiedSpecificationsDictionary_Should_ThrowException_When_InvalidSpecificationTypeForKeyType_Data))]
-            public void GetVerifiedSpecificationsDictionary_Should_ThrowException_When_InvalidSpecificationTypeForKeyType(IReadOnlyDictionary<Type, object> specificationsDictionary)
+            public void GetVerifiedSpecificationsDictionary_Should_ThrowException_When_InvalidSpecificationTypeForKeyType(Type type, object specification, IReadOnlyDictionary<Type, object> specificationsDictionary)
             {
-                Assert.Throws<InvalidSpecificationTypeException>(() => { OptionsService.GetVerifiedSpecificationsDictionary(specificationsDictionary); });
+                var exception = Assert.Throws<InvalidSpecificationTypeException>(() => { OptionsService.GetVerifiedSpecificationsDictionary(specificationsDictionary); });
+
+                Assert.Same(specification, exception.Specification);
+                Assert.Equal(type, exception.Type);
             }
 
             [Fact]

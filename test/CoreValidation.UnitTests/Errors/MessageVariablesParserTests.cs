@@ -32,6 +32,17 @@ namespace CoreValidation.UnitTests.Errors
             Assert.Empty(variables);
         }
 
+
+        [Theory]
+        [InlineData("abc  {|param1=value1} def")]
+        [InlineData("abc  {  |param1=value1} def")]
+        public void Should_NotParse_When_EmptyName(string message)
+        {
+            var variables = MessageVariablesParser.Parse(message);
+
+            Assert.Empty(variables);
+        }
+
         [Fact]
         public void Should_NotParse_When_DuplicateParameter()
         {

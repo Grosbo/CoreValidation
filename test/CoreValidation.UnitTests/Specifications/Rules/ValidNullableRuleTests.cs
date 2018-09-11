@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using CoreValidation.Errors;
 using CoreValidation.Errors.Args;
+using CoreValidation.Exceptions;
 using CoreValidation.Specifications;
 using CoreValidation.Specifications.Rules;
 using CoreValidation.Validators;
@@ -14,9 +15,9 @@ namespace CoreValidation.UnitTests.Specifications.Rules
     {
         public enum ValidateType
         {
-            Validate,
+            Validate = 0,
 
-            ValidateRelation
+            ValidateRelation = 1
         }
 
         public static IEnumerable<object[]> OptionsData(ValidationStrategy[] strategies, ValidateType[] types)
@@ -830,6 +831,16 @@ namespace CoreValidation.UnitTests.Specifications.Rules
 
                 Assert.False(executed);
             }
+        }
+
+        [Fact]
+        public void Should_ThrowException_When_ReturningNewInstanceOfSpecification()
+        {
+            Assert.Throws<InvalidProcessedReferenceException>(() =>
+            {
+                // ReSharper disable once ObjectCreationAsStatement
+                new ValidNullableRule<object, int>(be => new MemberSpecificationBuilder<object, int>());
+            });
         }
 
         [Fact]

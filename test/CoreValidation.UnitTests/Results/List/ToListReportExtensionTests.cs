@@ -59,7 +59,6 @@ namespace CoreValidation.UnitTests.Results.List
             }
         }
 
-
         [Theory]
         [InlineData(0, true)]
         [InlineData(1, true)]
@@ -222,6 +221,19 @@ namespace CoreValidation.UnitTests.Results.List
             ExpectMessagesInReport(report, "test", new[] {"test123", "test321"});
 
             ExpectMessagesInReport(report, "", new[] {"foo", "bar"});
+        }
+
+
+        [Fact]
+        public void ToListReport_Should_ReturnEmptyReport_When_NoErrors()
+        {
+            var errorsCollection = new ErrorsCollection();
+
+            var result = ResultsTestHelpers.MockValidationResult(errorsCollection);
+
+            var report = result.ToListReport();
+
+            Assert.Empty(report);
         }
     }
 }

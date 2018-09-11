@@ -1,8 +1,8 @@
-﻿using CoreValidation.Exceptions;
+﻿using System;
 
 namespace CoreValidation.Translations
 {
-    public sealed class TranslationNotFoundException : CoreValidationException
+    public sealed class TranslationNotFoundException : ArgumentException
     {
         public TranslationNotFoundException(string name)
             : base($"Translation '{name}' not found.")

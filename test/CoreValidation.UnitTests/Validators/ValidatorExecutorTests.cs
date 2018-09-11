@@ -1949,6 +1949,7 @@ namespace CoreValidation.UnitTests.Validators
             }
         }
 
+
         private class User
         {
             public string Email { get; set; }

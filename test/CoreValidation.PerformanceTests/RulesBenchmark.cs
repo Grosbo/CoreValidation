@@ -10,17 +10,17 @@ namespace CoreValidation.PerformanceTests
     [Config(typeof(CoreValidationDefaultConfig))]
     public class RulesBenchmark
     {
-        private MasterModel[] _models;
-
-        private IValidationContext _selfValidationContext;
         private IValidationContext _collectionValidationContext;
         private IValidationContext _memberValidationContext;
+        private MasterModel[] _models;
         private IValidationContext _modelsCollectionValidationContext;
         private IValidationContext _modelValidationContext;
         private IValidationContext _nullableValidationContext;
         private IValidationContext _relativeValidationContext;
 
         private IValidationResult<MasterModel>[] _results;
+
+        private IValidationContext _selfValidationContext;
 
         [Params(1, 10000, 100000)]
         public int N { get; set; }

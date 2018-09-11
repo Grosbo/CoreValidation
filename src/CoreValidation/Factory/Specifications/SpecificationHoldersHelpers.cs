@@ -14,7 +14,19 @@ namespace CoreValidation.Factory.Specifications
 
             var method = methods.First(m => m.Name == nameof(AddSpecificationFromHolder)).MakeGenericMethod(specifiedType);
 
-            method.Invoke(null, new[] {options, holderInstance});
+            try
+            {
+                method.Invoke(null, new[] {options, holderInstance});
+            }
+            catch (Exception ex)
+            {
+                if (ex.InnerException is InvalidOperationException)
+                {
+                    throw ex.InnerException;
+                }
+
+                throw;
+            }
         }
 
         private static void AddSpecificationFromHolder<T>(IValidationContextOptions options, ISpecificationHolder<T> specificationHolder)
@@ -22,7 +34,7 @@ namespace CoreValidation.Factory.Specifications
         {
             if (specificationHolder?.Specification == null)
             {
-                throw new InvalidOperationException("Invalid (null?) validator from holders");
+                throw new InvalidOperationException("Invalid (null?) specification from holders");
             }
 
             options.AddSpecification(specificationHolder.Specification);

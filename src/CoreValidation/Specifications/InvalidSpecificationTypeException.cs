@@ -1,19 +1,18 @@
 ﻿using System;
-using CoreValidation.Exceptions;
 
 namespace CoreValidation.Specifications
 {
-    public sealed class InvalidSpecificationTypeException : CoreValidationException
+    public sealed class InvalidSpecificationTypeException : InvalidOperationException
     {
-        public InvalidSpecificationTypeException(Type type, object validator)
-            : base($"Invalid specification for type {type?.FullName}: {validator?.GetType().FullName}")
+        public InvalidSpecificationTypeException(Type type, object specification)
+            : base($"Invalid specification for type {type.FullName}: {specification.GetType().FullName}")
         {
             Type = type;
-            Validator = validator;
+            Specification = specification;
         }
 
         public Type Type { get; }
 
-        public object Validator { get; }
+        public object Specification { get; }
     }
 }

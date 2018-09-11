@@ -62,6 +62,12 @@ namespace CoreValidation.UnitTests.Errors
                 new Error("message {arg} {arg2}", new IMessageArg[] {new MessageArg("arg", "value"), new MessageArg("arg2", "value2")}),
                 new Error("message {arg} VALUE", new IMessageArg[] {new MessageArg("arg", "value")})
             };
+
+            yield return new object[]
+            {
+                new Error("message"),
+                null
+            };
         }
 
         [Theory]

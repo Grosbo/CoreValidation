@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using CoreValidation.Errors;
 using CoreValidation.Exceptions;
+using CoreValidation.Results;
 using CoreValidation.Results.Model;
 using CoreValidation.Translations;
 using Xunit;
@@ -206,6 +208,24 @@ namespace CoreValidation.UnitTests.Results.Model
 
             // ReSharper disable once PossibleNullReferenceException
             ExpectMessagesInList((report["test"] as ModelReport)["inner"] as ModelReportErrorsList, new[] {"test123", "test321"});
+        }
+
+        [Fact]
+        public void ToModelReport_Should_ReturnEmptyReport_When_NoErrors()
+        {
+            var errorsCollection = new ErrorsCollection();
+
+            var result = ResultsTestHelpers.MockValidationResult(errorsCollection);
+
+            Assert.Same(ModelReport.Empty, result.ToModelReport());
+        }
+
+        [Fact]
+        public void ToModelReport_Should_ThrowException_When_NullThis()
+        {
+            IValidationResult<object> result = null;
+
+            Assert.Throws<ArgumentNullException>(() => { result.ToModelReport(); });
         }
     }
 }

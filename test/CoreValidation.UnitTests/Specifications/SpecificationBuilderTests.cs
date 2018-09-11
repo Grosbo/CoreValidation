@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using CoreValidation.Errors.Args;
 using CoreValidation.Specifications;
@@ -170,6 +171,15 @@ namespace CoreValidation.UnitTests.Specifications
                 }
             }
 
+            [Theory]
+            [MemberData(nameof(ValidErrorAndArgsCombinations_Data), MemberType = typeof(SpecificationBuilderTests))]
+            public void Should_ThrowException_When_NullPredicate(string message, IMessageArg[] args)
+            {
+                var builder = new SpecificationBuilder<User>();
+
+                Assert.Throws<ArgumentNullException>(() => { builder.Valid(null, message, args); });
+            }
+
             [Fact]
             public void Should_ExecutableSelfRule_BeAdded_MultipleTimes()
             {
@@ -262,6 +272,37 @@ namespace CoreValidation.UnitTests.Specifications
                 Assert.Equal(nameof(User.Email), executableMemberRule.Name);
 
                 Assert.Equal(typeof(User).GetProperty(nameof(User.Email)), executableMemberRule.MemberPropertyInfo);
+
+                Assert.Empty(executableMemberRule.MemberValidator.Rules);
+                Assert.Null(executableMemberRule.MemberValidator.Name);
+
+                Assert.Equal("message", executableMemberRule.MemberValidator.RequiredError.Message);
+                Assert.Equal(args, executableMemberRule.MemberValidator.RequiredError.Arguments);
+
+                Assert.Null(executableMemberRule.MemberValidator.SummaryError);
+                Assert.False(executableMemberRule.MemberValidator.IsOptional);
+            }
+
+            [Theory]
+            [MemberData(nameof(ArgsCombinations_Data), MemberType = typeof(SpecificationBuilderTests))]
+            public void Should_MemberRule_BeAdded_WithRequiredError_When_Nullable(IMessageArg[] args)
+            {
+                var builder = new SpecificationBuilder<User>();
+
+                builder.For(m => m.FirstLogin, be => be.WithRequiredError("message", args));
+
+                Assert.NotNull(builder.Scopes);
+                Assert.Single(builder.Scopes);
+
+                var rule = builder.Scopes.Single();
+
+                Assert.IsType<MemberScope<User, DateTime?>>(rule);
+
+                var executableMemberRule = (MemberScope<User, DateTime?>)rule;
+
+                Assert.Equal(nameof(User.FirstLogin), executableMemberRule.Name);
+
+                Assert.Equal(typeof(User).GetProperty(nameof(User.FirstLogin)), executableMemberRule.MemberPropertyInfo);
 
                 Assert.Empty(executableMemberRule.MemberValidator.Rules);
                 Assert.Null(executableMemberRule.MemberValidator.Name);
@@ -451,6 +492,33 @@ namespace CoreValidation.UnitTests.Specifications
             }
 
             [Fact]
+            public void Should_MemberRule_BeAdded_Optional_When_Nullable()
+            {
+                var builder = new SpecificationBuilder<User>();
+
+                builder.For(m => m.FirstLogin, be => be.Optional());
+
+                Assert.NotNull(builder.Scopes);
+                Assert.Single(builder.Scopes);
+
+                var rule = builder.Scopes.Single();
+
+                Assert.IsType<MemberScope<User, DateTime?>>(rule);
+
+                var executableMemberRule = (MemberScope<User, DateTime?>)rule;
+
+                Assert.Equal(nameof(User.FirstLogin), executableMemberRule.Name);
+
+                Assert.Equal(typeof(User).GetProperty(nameof(User.FirstLogin)), executableMemberRule.MemberPropertyInfo);
+
+                Assert.Empty(executableMemberRule.MemberValidator.Rules);
+                Assert.Null(executableMemberRule.MemberValidator.Name);
+                Assert.Null(executableMemberRule.MemberValidator.RequiredError);
+                Assert.Null(executableMemberRule.MemberValidator.SummaryError);
+                Assert.True(executableMemberRule.MemberValidator.IsOptional);
+            }
+
+            [Fact]
             public void Should_MemberRule_BeAdded_WithName()
             {
                 var builder = new SpecificationBuilder<User>();
@@ -475,6 +543,14 @@ namespace CoreValidation.UnitTests.Specifications
                 Assert.Null(executableMemberRule.MemberValidator.RequiredError);
                 Assert.Null(executableMemberRule.MemberValidator.SummaryError);
                 Assert.False(executableMemberRule.MemberValidator.IsOptional);
+            }
+
+            [Fact]
+            public void Should_ThrowException_When_FieldMember()
+            {
+                var builder = new SpecificationBuilder<InvalidMemberModels>();
+
+                Assert.Throws<ArgumentException>(() => { builder.For(m => m.Field); });
             }
 
             [Fact]
@@ -530,6 +606,22 @@ namespace CoreValidation.UnitTests.Specifications
                         .WithSummaryError("error1")
                         .WithSummaryError("error2"));
                 });
+            }
+
+            [Fact]
+            public void Should_ThrowException_When_MethodMember()
+            {
+                var builder = new SpecificationBuilder<InvalidMemberModels>();
+
+                Assert.Throws<ArgumentException>(() => { builder.For(m => m.Method()); });
+            }
+
+            [Fact]
+            public void Should_ThrowException_When_NullMemberSelector()
+            {
+                var builder = new SpecificationBuilder<InvalidMemberModels>();
+
+                Assert.Throws<ArgumentNullException>(() => { builder.For<object>(null); });
             }
         }
 
@@ -761,7 +853,7 @@ namespace CoreValidation.UnitTests.Specifications
                 var builder = new SpecificationBuilder<User>();
 
                 var executed = 0;
-                builder.For(m => m.PastAddresses, be => be.ValidCollection(c => c.Valid(m =>
+                builder.For(m => m.PastAddresses, be => be.ValidCollection<User, IEnumerable<Address>, Address>(c => c.Valid(m =>
                 {
                     Assert.Equal(user.PastAddresses.Single(), m);
                     executed++;
@@ -816,7 +908,7 @@ namespace CoreValidation.UnitTests.Specifications
                 var builder = new SpecificationBuilder<User>();
 
                 var executed = 0;
-                builder.For(m => m.PastAddresses, be => be.ValidModelsCollection(c => c.Valid(m =>
+                builder.For(m => m.PastAddresses, be => be.ValidModelsCollection<User, IEnumerable<Address>, Address>(c => c.Valid(m =>
                 {
                     Assert.Equal(user.PastAddresses.Single(), m);
                     executed++;
@@ -860,6 +952,440 @@ namespace CoreValidation.UnitTests.Specifications
             }
         }
 
+        public class CollectionRules
+        {
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
+            private void TestCollection<T>(CollectionHolder<T> collectionHolder, SpecificationBuilder<CollectionHolder<T>> builder, ref int executed, bool isValid, string message, IMessageArg[] args)
+            {
+                var executableMemberRule = (MemberScope<CollectionHolder<T>, T>)builder.Scopes.Single();
+
+                var specificationsRepositoryMock = new Mock<ISpecificationsRepository>();
+
+                var executionOptions = new ExecutionOptionsStub();
+
+                var errorAdded = executableMemberRule.TryGetErrors(collectionHolder, new ExecutionContext
+                    {
+                        ExecutionOptions = executionOptions,
+                        ValidationStrategy = ValidationStrategy.Complete,
+                        ValidatorsFactory = new ValidatorsFactory(specificationsRepositoryMock.Object)
+                    },
+                    0,
+                    out var errorsCollection);
+
+                Assert.Equal(1, executed);
+                Assert.Equal(!isValid, errorAdded);
+                Assert.NotNull(errorsCollection);
+                Assert.Empty(errorsCollection.Errors);
+
+                // ReSharper disable once UnusedVariable
+                var justForReSharperAnalysis = args?.Select(s => s).ToArray();
+
+                if (isValid)
+                {
+                    Assert.Empty(errorsCollection.Members);
+                }
+                else if (message != null)
+                {
+                    Assert.Equal(message, errorsCollection.Members["0"].Errors.Single().Message);
+                    Assert.Same(args, errorsCollection.Members["0"].Errors.Single().Arguments);
+                }
+                else
+                {
+                    Assert.Equal(executionOptions.DefaultError, errorsCollection.Members["0"].Errors.Single());
+                }
+            }
+
+            [Theory]
+            [MemberData(nameof(TrueFalse_ValidErrorAndArgsCombinations_Data), MemberType = typeof(SpecificationBuilderTests))]
+            public void Should_ValidCollectionRule_BeAdded_When_ValidCollection_Array(bool isValid, string message, IMessageArg[] args)
+            {
+                var collectionsGroup = new CollectionHolder<object[]>
+                {
+                    Items = new[] {new object()}
+                };
+
+                var builder = new SpecificationBuilder<CollectionHolder<object[]>>();
+
+                var executed = 0;
+                builder.For(m => m.Items, be => be.ValidCollection(c => c.Valid(m =>
+                {
+                    Assert.Equal(collectionsGroup.Items.Single(), m);
+                    // ReSharper disable once AccessToModifiedClosure
+                    executed++;
+
+                    return isValid;
+                }, message, args)));
+
+                TestCollection(collectionsGroup, builder, ref executed, isValid, message, args);
+            }
+
+            [Theory]
+            [MemberData(nameof(TrueFalse_ValidErrorAndArgsCombinations_Data), MemberType = typeof(SpecificationBuilderTests))]
+            public void Should_ValidCollectionRule_BeAdded_When_ValidCollection_IEnumerable(bool isValid, string message, IMessageArg[] args)
+            {
+                var collectionsGroup = new CollectionHolder<IEnumerable<object>>
+                {
+                    Items = new[] {new object()}
+                };
+
+                var builder = new SpecificationBuilder<CollectionHolder<IEnumerable<object>>>();
+
+                var executed = 0;
+                builder.For(m => m.Items, be => be.ValidCollection(c => c.Valid(m =>
+                {
+                    Assert.Equal(collectionsGroup.Items.Single(), m);
+                    // ReSharper disable once AccessToModifiedClosure
+                    executed++;
+
+                    return isValid;
+                }, message, args)));
+
+                TestCollection(collectionsGroup, builder, ref executed, isValid, message, args);
+            }
+
+            [Theory]
+            [MemberData(nameof(TrueFalse_ValidErrorAndArgsCombinations_Data), MemberType = typeof(SpecificationBuilderTests))]
+            public void Should_ValidCollectionRule_BeAdded_When_ValidCollection_Collection(bool isValid, string message, IMessageArg[] args)
+            {
+                var collectionsGroup = new CollectionHolder<Collection<object>>
+                {
+                    Items = new Collection<object>(new List<object> {new object()})
+                };
+
+                var builder = new SpecificationBuilder<CollectionHolder<Collection<object>>>();
+
+                var executed = 0;
+                builder.For(m => m.Items, be => be.ValidCollection(c => c.Valid(m =>
+                {
+                    Assert.Equal(collectionsGroup.Items.Single(), m);
+                    // ReSharper disable once AccessToModifiedClosure
+                    executed++;
+
+                    return isValid;
+                }, message, args)));
+
+                TestCollection(collectionsGroup, builder, ref executed, isValid, message, args);
+            }
+
+            [Theory]
+            [MemberData(nameof(TrueFalse_ValidErrorAndArgsCombinations_Data), MemberType = typeof(SpecificationBuilderTests))]
+            public void Should_ValidCollectionRule_BeAdded_When_ValidCollection_ICollection(bool isValid, string message, IMessageArg[] args)
+            {
+                var collectionsGroup = new CollectionHolder<ICollection<object>>
+                {
+                    Items = new Collection<object>(new List<object> {new object()})
+                };
+
+                var builder = new SpecificationBuilder<CollectionHolder<ICollection<object>>>();
+
+                var executed = 0;
+                builder.For(m => m.Items, be => be.ValidCollection(c => c.Valid(m =>
+                {
+                    Assert.Equal(collectionsGroup.Items.Single(), m);
+                    // ReSharper disable once AccessToModifiedClosure
+                    executed++;
+
+                    return isValid;
+                }, message, args)));
+
+                TestCollection(collectionsGroup, builder, ref executed, isValid, message, args);
+            }
+
+            [Theory]
+            [MemberData(nameof(TrueFalse_ValidErrorAndArgsCombinations_Data), MemberType = typeof(SpecificationBuilderTests))]
+            public void Should_ValidCollectionRule_BeAdded_When_ValidCollection_ReadOnlyCollection(bool isValid, string message, IMessageArg[] args)
+            {
+                var collectionsGroup = new CollectionHolder<ReadOnlyCollection<object>>
+                {
+                    Items = new ReadOnlyCollection<object>(new List<object> {new object()})
+                };
+
+                var builder = new SpecificationBuilder<CollectionHolder<ReadOnlyCollection<object>>>();
+
+                var executed = 0;
+                builder.For(m => m.Items, be => be.ValidCollection(c => c.Valid(m =>
+                {
+                    Assert.Equal(collectionsGroup.Items.Single(), m);
+                    // ReSharper disable once AccessToModifiedClosure
+                    executed++;
+
+                    return isValid;
+                }, message, args)));
+
+                TestCollection(collectionsGroup, builder, ref executed, isValid, message, args);
+            }
+
+            [Theory]
+            [MemberData(nameof(TrueFalse_ValidErrorAndArgsCombinations_Data), MemberType = typeof(SpecificationBuilderTests))]
+            public void Should_ValidCollectionRule_BeAdded_When_ValidCollection_IReadOnlyCollection(bool isValid, string message, IMessageArg[] args)
+            {
+                var collectionsGroup = new CollectionHolder<IReadOnlyCollection<object>>
+                {
+                    Items = new ReadOnlyCollection<object>(new List<object> {new object()})
+                };
+
+                var builder = new SpecificationBuilder<CollectionHolder<IReadOnlyCollection<object>>>();
+
+                var executed = 0;
+                builder.For(m => m.Items, be => be.ValidCollection(c => c.Valid(m =>
+                {
+                    Assert.Equal(collectionsGroup.Items.Single(), m);
+                    // ReSharper disable once AccessToModifiedClosure
+                    executed++;
+
+                    return isValid;
+                }, message, args)));
+
+                TestCollection(collectionsGroup, builder, ref executed, isValid, message, args);
+            }
+
+            [Theory]
+            [MemberData(nameof(TrueFalse_ValidErrorAndArgsCombinations_Data), MemberType = typeof(SpecificationBuilderTests))]
+            public void Should_ValidCollectionRule_BeAdded_When_ValidCollection_List(bool isValid, string message, IMessageArg[] args)
+            {
+                var collectionsGroup = new CollectionHolder<List<object>>
+                {
+                    Items = new List<object> {new object()}
+                };
+
+                var builder = new SpecificationBuilder<CollectionHolder<List<object>>>();
+
+                var executed = 0;
+                builder.For(m => m.Items, be => be.ValidCollection(c => c.Valid(m =>
+                {
+                    Assert.Equal(collectionsGroup.Items.Single(), m);
+                    // ReSharper disable once AccessToModifiedClosure
+                    executed++;
+
+                    return isValid;
+                }, message, args)));
+
+                TestCollection(collectionsGroup, builder, ref executed, isValid, message, args);
+            }
+
+            [Theory]
+            [MemberData(nameof(TrueFalse_ValidErrorAndArgsCombinations_Data), MemberType = typeof(SpecificationBuilderTests))]
+            public void Should_ValidCollectionRule_BeAdded_When_ValidCollection_IList(bool isValid, string message, IMessageArg[] args)
+            {
+                var collectionsGroup = new CollectionHolder<IList<object>>
+                {
+                    Items = new List<object> {new object()}
+                };
+
+                var builder = new SpecificationBuilder<CollectionHolder<IList<object>>>();
+
+                var executed = 0;
+                builder.For(m => m.Items, be => be.ValidCollection(c => c.Valid(m =>
+                {
+                    Assert.Equal(collectionsGroup.Items.Single(), m);
+                    // ReSharper disable once AccessToModifiedClosure
+                    executed++;
+
+                    return isValid;
+                }, message, args)));
+
+                TestCollection(collectionsGroup, builder, ref executed, isValid, message, args);
+            }
+
+            [Theory]
+            [MemberData(nameof(TrueFalse_ValidErrorAndArgsCombinations_Data), MemberType = typeof(SpecificationBuilderTests))]
+            public void Should_ValidCollectionRule_BeAdded_When_ValidModelsCollection_Array(bool isValid, string message, IMessageArg[] args)
+            {
+                var collectionsGroup = new CollectionHolder<object[]>
+                {
+                    Items = new[] {new object()}
+                };
+
+                var builder = new SpecificationBuilder<CollectionHolder<object[]>>();
+
+                var executed = 0;
+                builder.For(m => m.Items, be => be.ValidModelsCollection(c => c.Valid(m =>
+                {
+                    Assert.Equal(collectionsGroup.Items.Single(), m);
+                    // ReSharper disable once AccessToModifiedClosure
+                    executed++;
+
+                    return isValid;
+                }, message, args)));
+
+                TestCollection(collectionsGroup, builder, ref executed, isValid, message, args);
+            }
+
+            [Theory]
+            [MemberData(nameof(TrueFalse_ValidErrorAndArgsCombinations_Data), MemberType = typeof(SpecificationBuilderTests))]
+            public void Should_ValidCollectionRule_BeAdded_When_ValidModelsCollection_IEnumerable(bool isValid, string message, IMessageArg[] args)
+            {
+                var collectionsGroup = new CollectionHolder<IEnumerable<object>>
+                {
+                    Items = new[] {new object()}
+                };
+
+                var builder = new SpecificationBuilder<CollectionHolder<IEnumerable<object>>>();
+
+                var executed = 0;
+                builder.For(m => m.Items, be => be.ValidModelsCollection(c => c.Valid(m =>
+                {
+                    Assert.Equal(collectionsGroup.Items.Single(), m);
+                    // ReSharper disable once AccessToModifiedClosure
+                    executed++;
+
+                    return isValid;
+                }, message, args)));
+
+                TestCollection(collectionsGroup, builder, ref executed, isValid, message, args);
+            }
+
+            [Theory]
+            [MemberData(nameof(TrueFalse_ValidErrorAndArgsCombinations_Data), MemberType = typeof(SpecificationBuilderTests))]
+            public void Should_ValidCollectionRule_BeAdded_When_ValidModelsCollection_Collection(bool isValid, string message, IMessageArg[] args)
+            {
+                var collectionsGroup = new CollectionHolder<Collection<object>>
+                {
+                    Items = new Collection<object>(new List<object> {new object()})
+                };
+
+                var builder = new SpecificationBuilder<CollectionHolder<Collection<object>>>();
+
+                var executed = 0;
+                builder.For(m => m.Items, be => be.ValidModelsCollection(c => c.Valid(m =>
+                {
+                    Assert.Equal(collectionsGroup.Items.Single(), m);
+                    // ReSharper disable once AccessToModifiedClosure
+                    executed++;
+
+                    return isValid;
+                }, message, args)));
+
+                TestCollection(collectionsGroup, builder, ref executed, isValid, message, args);
+            }
+
+            [Theory]
+            [MemberData(nameof(TrueFalse_ValidErrorAndArgsCombinations_Data), MemberType = typeof(SpecificationBuilderTests))]
+            public void Should_ValidCollectionRule_BeAdded_When_ValidModelsCollection_ICollection(bool isValid, string message, IMessageArg[] args)
+            {
+                var collectionsGroup = new CollectionHolder<ICollection<object>>
+                {
+                    Items = new Collection<object>(new List<object> {new object()})
+                };
+
+                var builder = new SpecificationBuilder<CollectionHolder<ICollection<object>>>();
+
+                var executed = 0;
+                builder.For(m => m.Items, be => be.ValidModelsCollection(c => c.Valid(m =>
+                {
+                    Assert.Equal(collectionsGroup.Items.Single(), m);
+                    // ReSharper disable once AccessToModifiedClosure
+                    executed++;
+
+                    return isValid;
+                }, message, args)));
+
+                TestCollection(collectionsGroup, builder, ref executed, isValid, message, args);
+            }
+
+            [Theory]
+            [MemberData(nameof(TrueFalse_ValidErrorAndArgsCombinations_Data), MemberType = typeof(SpecificationBuilderTests))]
+            public void Should_ValidCollectionRule_BeAdded_When_ValidModelsCollection_ReadOnlyCollection(bool isValid, string message, IMessageArg[] args)
+            {
+                var collectionsGroup = new CollectionHolder<ReadOnlyCollection<object>>
+                {
+                    Items = new ReadOnlyCollection<object>(new List<object> {new object()})
+                };
+
+                var builder = new SpecificationBuilder<CollectionHolder<ReadOnlyCollection<object>>>();
+
+                var executed = 0;
+                builder.For(m => m.Items, be => be.ValidModelsCollection(c => c.Valid(m =>
+                {
+                    Assert.Equal(collectionsGroup.Items.Single(), m);
+                    // ReSharper disable once AccessToModifiedClosure
+                    executed++;
+
+                    return isValid;
+                }, message, args)));
+
+                TestCollection(collectionsGroup, builder, ref executed, isValid, message, args);
+            }
+
+            [Theory]
+            [MemberData(nameof(TrueFalse_ValidErrorAndArgsCombinations_Data), MemberType = typeof(SpecificationBuilderTests))]
+            public void Should_ValidCollectionRule_BeAdded_When_ValidModelsCollection_IReadOnlyCollection(bool isValid, string message, IMessageArg[] args)
+            {
+                var collectionsGroup = new CollectionHolder<IReadOnlyCollection<object>>
+                {
+                    Items = new ReadOnlyCollection<object>(new List<object> {new object()})
+                };
+
+                var builder = new SpecificationBuilder<CollectionHolder<IReadOnlyCollection<object>>>();
+
+                var executed = 0;
+                builder.For(m => m.Items, be => be.ValidModelsCollection(c => c.Valid(m =>
+                {
+                    Assert.Equal(collectionsGroup.Items.Single(), m);
+                    // ReSharper disable once AccessToModifiedClosure
+                    executed++;
+
+                    return isValid;
+                }, message, args)));
+
+                TestCollection(collectionsGroup, builder, ref executed, isValid, message, args);
+            }
+
+            [Theory]
+            [MemberData(nameof(TrueFalse_ValidErrorAndArgsCombinations_Data), MemberType = typeof(SpecificationBuilderTests))]
+            public void Should_ValidCollectionRule_BeAdded_When_ValidModelsCollection_List(bool isValid, string message, IMessageArg[] args)
+            {
+                var collectionsGroup = new CollectionHolder<List<object>>
+                {
+                    Items = new List<object> {new object()}
+                };
+
+                var builder = new SpecificationBuilder<CollectionHolder<List<object>>>();
+
+                var executed = 0;
+                builder.For(m => m.Items, be => be.ValidModelsCollection(c => c.Valid(m =>
+                {
+                    Assert.Equal(collectionsGroup.Items.Single(), m);
+                    // ReSharper disable once AccessToModifiedClosure
+                    executed++;
+
+                    return isValid;
+                }, message, args)));
+
+                TestCollection(collectionsGroup, builder, ref executed, isValid, message, args);
+            }
+
+            [Theory]
+            [MemberData(nameof(TrueFalse_ValidErrorAndArgsCombinations_Data), MemberType = typeof(SpecificationBuilderTests))]
+            public void Should_ValidCollectionRule_BeAdded_When_ValidModelsCollection_IList(bool isValid, string message, IMessageArg[] args)
+            {
+                var collectionsGroup = new CollectionHolder<IList<object>>
+                {
+                    Items = new List<object> {new object()}
+                };
+
+                var builder = new SpecificationBuilder<CollectionHolder<IList<object>>>();
+
+                var executed = 0;
+                builder.For(m => m.Items, be => be.ValidModelsCollection(c => c.Valid(m =>
+                {
+                    Assert.Equal(collectionsGroup.Items.Single(), m);
+                    // ReSharper disable once AccessToModifiedClosure
+                    executed++;
+
+                    return isValid;
+                }, message, args)));
+
+                TestCollection(collectionsGroup, builder, ref executed, isValid, message, args);
+            }
+
+
+            private class CollectionHolder<T>
+            {
+                public T Items { get; set; }
+            }
+        }
+
         private class User
         {
             public string Email { get; set; }
@@ -875,6 +1401,16 @@ namespace CoreValidation.UnitTests.Specifications
 
         private class Address
         {
+        }
+
+        private class InvalidMemberModels
+        {
+            public readonly int Field = 0;
+
+            public string Method()
+            {
+                return null;
+            }
         }
     }
 }

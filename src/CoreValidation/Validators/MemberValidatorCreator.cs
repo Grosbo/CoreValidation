@@ -1,5 +1,4 @@
-﻿using System;
-using CoreValidation.Exceptions;
+﻿using CoreValidation.Exceptions;
 using CoreValidation.Specifications;
 
 namespace CoreValidation.Validators
@@ -9,11 +8,6 @@ namespace CoreValidation.Validators
         public static IMemberValidator Create<TModel, TMember>(MemberSpecification<TModel, TMember> memberSpecification)
             where TModel : class
         {
-            if (memberSpecification == null)
-            {
-                throw new ArgumentNullException(nameof(memberSpecification));
-            }
-
             var builder = new MemberSpecificationBuilder<TModel, TMember>();
 
             var processedBuilder = memberSpecification(builder);

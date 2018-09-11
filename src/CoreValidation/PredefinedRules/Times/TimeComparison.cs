@@ -4,10 +4,10 @@ namespace CoreValidation
 {
     public enum TimeComparison
     {
-        All,
+        All = 0,
 
-        JustDate,
+        JustDate = 1,
 
-        JustTime
+        JustTime = 2
     }
 }

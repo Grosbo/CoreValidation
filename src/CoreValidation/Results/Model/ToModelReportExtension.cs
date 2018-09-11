@@ -37,7 +37,7 @@ namespace CoreValidation
 
             if (errorsCollection.IsEmpty)
             {
-                return new ModelReport();
+                return ModelReport.Empty;
             }
 
             var errorsList = new ModelReportErrorsList();

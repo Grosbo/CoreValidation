@@ -85,13 +85,13 @@ namespace CoreValidation.Errors.Args
         public NumberArg(string name, DateTime value)
             : this(name, (format, cultureInfo) => value.ToString(format, cultureInfo))
         {
-            _defaultFormat = DateTimeFormats.AllFormat;
+            _defaultFormat = DateTimeFormats.DateAndTimeFormat;
         }
 
         public NumberArg(string name, DateTimeOffset value)
             : this(name, (format, cultureInfo) => value.ToString(format, cultureInfo))
         {
-            _defaultFormat = DateTimeFormats.AllFormat;
+            _defaultFormat = DateTimeFormats.DateAndTimeFormat;
         }
 
         public NumberArg(string name, TimeSpan value)

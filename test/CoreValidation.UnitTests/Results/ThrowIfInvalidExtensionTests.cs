@@ -46,6 +46,7 @@ namespace CoreValidation.UnitTests.Results
                 {
                     Assert.Same(model, exception.Model);
                     Assert.Same(result, exception.ValidationResult);
+                    Assert.Equal(typeof(Item), exception.Type);
 
                     var general = exception as InvalidModelException;
 

@@ -1,24 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using CoreValidation.Exceptions;
 using CoreValidation.Translations;
 
 namespace CoreValidation.Options
 {
     internal static class OptionsUnwrapper
     {
-        public static IValidationContextOptions Unwrap(IValidationContextOptions wrapped, Func<ValidationContextOptions, ValidationContextOptions> processUnwrapped)
+        private static IValidationContextOptions Unwrap(IValidationContextOptions wrapped, Func<ValidationContextOptions, ValidationContextOptions> processUnwrapped)
         {
-            if (wrapped == null)
-            {
-                throw new ArgumentNullException(nameof(wrapped));
-            }
-
-            if (processUnwrapped == null)
-            {
-                throw new ArgumentNullException(nameof(processUnwrapped));
-            }
-
             if (!(wrapped is ValidationContextOptions unwrapped))
             {
                 throw new InvalidOperationException($"Invalid reference of {nameof(IValidationContextOptions)}");
@@ -26,28 +15,7 @@ namespace CoreValidation.Options
 
             var processedUnwrapped = processUnwrapped(unwrapped);
 
-            if (processedUnwrapped != wrapped)
-            {
-                throw new InvalidProcessedReferenceException(typeof(IValidationContextOptions));
-            }
-
             return processedUnwrapped;
-        }
-
-
-        public static IValidationContextOptions UnwrapValidationOptions(IValidationContextOptions wrapped, Action<ValidationOptions> processUnwrapped)
-        {
-            if (processUnwrapped == null)
-            {
-                throw new ArgumentNullException(nameof(processUnwrapped));
-            }
-
-            return Unwrap(wrapped, options =>
-            {
-                processUnwrapped((ValidationOptions)options.ValidationOptions);
-
-                return options;
-            });
         }
 
         public static IValidationOptions UnwrapValidationOptions(IValidationOptions wrapped, Action<ValidationOptions> processUnwrapped)
@@ -55,11 +23,6 @@ namespace CoreValidation.Options
             if (wrapped == null)
             {
                 throw new ArgumentNullException(nameof(wrapped));
-            }
-
-            if (processUnwrapped == null)
-            {
-                throw new ArgumentNullException(nameof(processUnwrapped));
             }
 
             if (!(wrapped is ValidationOptions unwrapped))
@@ -74,11 +37,6 @@ namespace CoreValidation.Options
 
         public static IValidationContextOptions UnwrapTranslations(IValidationContextOptions wrapped, Action<List<Translation>> processUnwrapped)
         {
-            if (processUnwrapped == null)
-            {
-                throw new ArgumentNullException(nameof(processUnwrapped));
-            }
-
             return Unwrap(wrapped, options =>
             {
                 processUnwrapped((List<Translation>)options.Translations);

@@ -53,23 +53,5 @@ namespace CoreValidation
         {
             return @this.ValidNullable(m => m.BetweenOrEqualTo(min, max, timeComparison, message));
         }
-
-        public static IMemberSpecificationBuilder<TModel, DateTime?> AfterNow<TModel>(this IMemberSpecificationBuilder<TModel, DateTime?> @this, TimeNowMode nowMode = TimeNowMode.Now, TimeComparison timeComparison = TimeComparison.All, string message = null)
-            where TModel : class
-        {
-            return @this.ValidNullable(m => m.AfterNow(nowMode, timeComparison, message));
-        }
-
-        public static IMemberSpecificationBuilder<TModel, DateTime?> BeforeNow<TModel>(this IMemberSpecificationBuilder<TModel, DateTime?> @this, TimeNowMode nowMode = TimeNowMode.Now, TimeComparison timeComparison = TimeComparison.All, string message = null)
-            where TModel : class
-        {
-            return @this.ValidNullable(m => m.BeforeNow(nowMode, timeComparison, message));
-        }
-
-        public static IMemberSpecificationBuilder<TModel, DateTime?> FromNow<TModel>(this IMemberSpecificationBuilder<TModel, DateTime?> @this, TimeSpan timeSpan, TimeNowMode nowMode = TimeNowMode.Now, string message = null)
-            where TModel : class
-        {
-            return @this.ValidNullable(m => m.FromNow(timeSpan, nowMode));
-        }
     }
 }

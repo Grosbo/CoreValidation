@@ -54,28 +54,5 @@ namespace CoreValidation
         {
             return @this.Valid(m => (TimeComparer.Compare(m, min, timeComparison) >= 0) && (TimeComparer.Compare(m, max, timeComparison) <= 0), message ?? Phrases.Keys.Times.BetweenOrEqualTo, new IMessageArg[] {new NumberArg(nameof(min), min), new NumberArg(nameof(max), max), new EnumArg<TimeComparison>(nameof(timeComparison), timeComparison)});
         }
-
-        public static IMemberSpecificationBuilder<TModel, DateTimeOffset> AfterNow<TModel>(this IMemberSpecificationBuilder<TModel, DateTimeOffset> @this, TimeNowMode nowMode = TimeNowMode.Now, TimeComparison timeComparison = TimeComparison.All, string message = null)
-            where TModel : class
-        {
-            return @this.ParametrizedAfterNow(GetNow(nowMode), timeComparison, message);
-        }
-
-        public static IMemberSpecificationBuilder<TModel, DateTimeOffset> BeforeNow<TModel>(this IMemberSpecificationBuilder<TModel, DateTimeOffset> @this, TimeNowMode nowMode = TimeNowMode.Now, TimeComparison timeComparison = TimeComparison.All, string message = null)
-            where TModel : class
-        {
-            return @this.ParametrizedBeforeNow(GetNow(nowMode), timeComparison, message);
-        }
-
-        public static IMemberSpecificationBuilder<TModel, DateTimeOffset> FromNow<TModel>(this IMemberSpecificationBuilder<TModel, DateTimeOffset> @this, TimeSpan timeSpan, TimeNowMode nowMode = TimeNowMode.Now, string message = null)
-            where TModel : class
-        {
-            return @this.ParametrizedFromNow(GetNow(nowMode), timeSpan, message);
-        }
-
-        private static DateTimeOffset GetNow(TimeNowMode nowMode)
-        {
-            return nowMode == TimeNowMode.Now ? DateTimeOffset.Now : DateTimeOffset.UtcNow;
-        }
     }
 }
