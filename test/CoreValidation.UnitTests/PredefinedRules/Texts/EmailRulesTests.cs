@@ -1,4 +1,4 @@
-﻿using CoreValidation.Specifications;
+﻿using CoreValidation.Tests;
 using Xunit;
 
 namespace CoreValidation.UnitTests.PredefinedRules.Texts
@@ -31,24 +31,11 @@ namespace CoreValidation.UnitTests.PredefinedRules.Texts
         [InlineData(@"email@example.com ", false)]
         public void Email_Should_CollectError(string value, bool expectedIsValid)
         {
-            var builder = new MemberSpecificationBuilder<object, string>();
-
-            builder.Email();
-
-            RulesHelper.AssertErrorCompilation(value, builder.Rules, expectedIsValid, Phrases.Keys.Texts.Email);
-        }
-
-        public class MessageTests
-        {
-            [Fact]
-            public void Email_Should_SetCustomMessage()
-            {
-                var builder = new MemberSpecificationBuilder<object, string>();
-
-                builder.Email("Overriden error message");
-
-                RulesHelper.AssertErrorMessage("", builder.Rules, "Overriden error message", "Overriden error message");
-            }
+            Tester.TestSingleMemberRule(
+                m => m.Email(),
+                value,
+                expectedIsValid,
+                Phrases.Keys.Texts.Email);
         }
     }
 }

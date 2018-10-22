@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using CoreValidation.Factory.Specifications;
@@ -40,24 +40,23 @@ namespace CoreValidation.FunctionalTests.Readme
         {
             Specification<AddressModel> addressSpecification = specs => specs
                 // Validate members in their scope (error attached to the selected member):
-                .For(m => m.Street, be => be.NotWhiteSpace())
-                .For(m => m.PostCode, be => be.MaxLength(10))
-                .For(m => m.CountryId, be => be.GreaterThan(0))
+                .Member(m => m.Street, be => be.NotWhiteSpace())
+                .Member(m => m.PostCode, be => be.MaxLength(10))
+                .Member(m => m.CountryId, be => be.GreaterThan(0))
 
                 // Validate model in its global scope (error attached to the model instead of its member):
                 .Valid(m => (m.Street != null) &&
                             (m.PostCode != null) &&
-                            !m.Street.Contains(m.PostCode),
-                    "Both street and postcode are required and need to put separate");
+                            !m.Street.Contains(m.PostCode)).WithMessage("Both street and postcode are required and need to put separate");
 
             Specification<UserModel> userSpecification = specs => specs
                 // Validate members with the predefined rules:
-                .For(m => m.Email, be => be.Email())
+                .Member(m => m.Email, be => be.Email())
 
                 // Apply many rules along with custom predicates:
-                .For(m => m.Name, be => be
+                .Member(m => m.Name, be => be
                     // By default, everything specified is required, so marking the selected member as optional:
-                    .Optional()
+                    .SetOptional()
                     // If present, proceed with validation:
                     .LengthBetween(6, 15)
                     // The value is always guaranteed to be non-null inside the predicate:
@@ -65,42 +64,40 @@ namespace CoreValidation.FunctionalTests.Readme
                     .Valid(v => v.All(char.IsLetterOrDigit), "Must contains only letters and digits"))
 
                 // Replace all errors with a single one:
-                .For(m => m.Password, be => be
+                .Member(m => m.Password, be => be
                     .MinLength(6)
                     .NotWhiteSpace()
                     .Valid(v => v.Any(char.IsUpper) && v.Any(char.IsDigit))
-                    // If any rule in the chain fails, only the SummaryError is recorded:
-                    .WithSummaryError("Minimum 6 characters, at least one upper case and one digit"))
+                    // If any rule in the chain fails, only the SingleError is recorded:
+                    .SetSingleError("Minimum 6 characters, at least one upper case and one digit"))
 
                 // Validate relations with other members:
-                .For(m => m.PasswordConfirmation, be => be
-                    // Override the name of the selected member:
-                    .WithName("Confirmation")
+                .Member(m => m.PasswordConfirmation, be => be
                     // Argument in predicate is the parent model, but error will be attached in the selected member scope:
-                    .ValidRelative(m => m.Password == m.PasswordConfirmation,
-                        "Confirmation doesn't match password"))
+                    .AsRelative(m => m.Password == m.PasswordConfirmation).WithMessage("Confirmation doesn't match password")
+                )
 
                 // Validate nested model:
-                .For(m => m.Address, be => be.ValidModel(addressSpecification))
+                .Member(m => m.Address, be => be.AsModel(addressSpecification))
 
                 // Validate collection:
-                .For(m => m.Tags, be => be
+                .Member(m => m.Tags, be => be
                     // Override default message for predefine rule:
-                    .NotEmptyCollection(message: "At least one tag is required")
+                    .NotEmptyCollection().WithMessage("At least one tag is required")
                     // All rule arguments can be inserted in the message using {argumentName} pattern:
-                    .MaxCollectionSize(max: 5, message: "Max {max} tags allowed")
+                    .MaxCollectionSize(max: 5).WithMessage("Max {max} tags allowed")
                     // Validate every item inside of the collection:
-                    .ValidCollection(i => i
+                    .AsCollection(i => i
                         .NotWhiteSpace()
                         .MaxLength(10)
                         .Valid(v => v.All(char.IsLetter), "Tag can contains only letters")))
 
                 // Validate nullables:
-                .For(m => m.DateOfBirth, be => be
+                .Member(m => m.DateOfBirth, be => be
                     // Override default RequiredError for selected member:
-                    .WithRequiredError("Date of birth is required")
+                    .SetRequired("Date of birth is required")
                     // Arguments could be parametrized:
-                    .After(min: new DateTime(1900, 1, 1), message: "Earliest allowed date is {min|format=yyyy-MM-dd}"));
+                    .After(min: new DateTime(1900, 1, 1)).WithMessage("Earliest allowed date is {min|format=yyyy-MM-dd}"));
 
             var validationContext = ValidationContext.Factory.Create(options => options
                 // Add specifications for all models to validate (including nested ones)
@@ -178,7 +175,7 @@ namespace CoreValidation.FunctionalTests.Readme
             var expectedReportJson = @"{
                 'Email': ['Text value should be a valid email'],
                 'Password': ['Minimum 6 characters, at least one upper case and one digit'],
-                'Confirmation': ['Confirmation doesn\'t match password'],
+                'PasswordConfirmation': ['Confirmation doesn\'t match password'],
                 'Address': {
                     '': ['Both street and postcode are required and need to put separate'],
                     'Street': ['Required'],
@@ -204,7 +201,7 @@ namespace CoreValidation.FunctionalTests.Readme
             var expectedListReport =
                 @"Email: Text value should be a valid email
 Password: Minimum 6 characters, at least one upper case and one digit
-Confirmation: Confirmation doesn't match password
+PasswordConfirmation: Confirmation doesn't match password
 Address: Both street and postcode are required and need to put separate
 Address.Street: Required
 Address.PostCode: Text value should have maximum 10 characters
@@ -244,7 +241,7 @@ DateOfBirth: Date of birth is required
 
             Assert.Equal(expectedPolishFailFastListReport, listReportInPolish.ToString());
 
-            Assert.False(result.IsValid());
+            Assert.False(result.IsValid);
 
             Assert.Throws<InvalidModelException<UserModel>>(() => { result.ThrowIfInvalid(); });
         }

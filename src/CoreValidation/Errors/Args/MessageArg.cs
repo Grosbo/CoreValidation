@@ -3,13 +3,16 @@ using System.Collections.Generic;
 
 namespace CoreValidation.Errors.Args
 {
-    public class MessageArg<T> : IMessageArg
+    public class MessageArg<T> : IMessageArg<T>
     {
-        private readonly string _value;
-
         public MessageArg(string name, T value)
         {
-            _value = value?.ToString() ?? throw new ArgumentNullException(nameof(name));
+            if (value == null)
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
+
+            Value = value;
             Name = name ?? throw new ArgumentNullException(nameof(name));
         }
 
@@ -19,8 +22,10 @@ namespace CoreValidation.Errors.Args
 
         public string ToString(IReadOnlyDictionary<string, string> parameters)
         {
-            return _value;
+            return Value.ToString();
         }
+
+        public T Value { get; }
     }
 
     public sealed class MessageArg : MessageArg<string>

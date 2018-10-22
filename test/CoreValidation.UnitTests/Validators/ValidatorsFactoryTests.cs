@@ -33,7 +33,7 @@ namespace CoreValidation.UnitTests.Validators
         {
             var validatorsFactoryMock = new Mock<ISpecificationsRepository>();
 
-            Specification<User> userSpecification = m => m.WithSummaryError("user");
+            Specification<User> userSpecification = m => m.SetSingleError("user");
 
             var userSpecificationExecuted = false;
 
@@ -46,7 +46,7 @@ namespace CoreValidation.UnitTests.Validators
                     return userSpecification;
                 });
 
-            Specification<Address> addressSpecification = m => m.WithSummaryError("address");
+            Specification<Address> addressSpecification = m => m.SetSingleError("address");
 
             var addressSpecificationExecuted = false;
 
@@ -69,7 +69,7 @@ namespace CoreValidation.UnitTests.Validators
 
             Assert.Equal(typeof(User).FullName, validatorsFactory.Keys.Single());
 
-            Assert.Equal("user", validator.SummaryError.Message);
+            Assert.Equal("user", validator.SingleError.Message);
         }
 
         [Fact]
@@ -77,7 +77,7 @@ namespace CoreValidation.UnitTests.Validators
         {
             var validatorsFactoryMock = new Mock<ISpecificationsRepository>();
 
-            Specification<User> userSpecification = m => m.WithSummaryError("user");
+            Specification<User> userSpecification = m => m.SetSingleError("user");
 
             var userSpecificationExecuted = 0;
 
@@ -101,7 +101,7 @@ namespace CoreValidation.UnitTests.Validators
 
             Assert.Equal(typeof(User).FullName, validatorsFactory.Keys.Single());
 
-            Assert.Equal("user", validator.SummaryError.Message);
+            Assert.Equal("user", validator.SingleError.Message);
         }
 
         [Fact]
@@ -109,7 +109,7 @@ namespace CoreValidation.UnitTests.Validators
         {
             var validatorsFactoryMock = new Mock<ISpecificationsRepository>();
 
-            Specification<User> userSpecification = m => m.WithSummaryError("user");
+            Specification<User> userSpecification = m => m.SetSingleError("user");
 
             var userSpecificationExecuted = false;
 
@@ -122,7 +122,7 @@ namespace CoreValidation.UnitTests.Validators
                     return userSpecification;
                 });
 
-            Specification<Address> addressSpecification = m => m.WithSummaryError("address");
+            Specification<Address> addressSpecification = m => m.SetSingleError("address");
 
             var addressSpecificationExecuted = false;
 
@@ -145,7 +145,7 @@ namespace CoreValidation.UnitTests.Validators
 
             Assert.Equal("key", validatorsFactory.Keys.Single());
 
-            Assert.Equal("user", validator.SummaryError.Message);
+            Assert.Equal("user", validator.SingleError.Message);
         }
 
         [Fact]
@@ -153,7 +153,7 @@ namespace CoreValidation.UnitTests.Validators
         {
             var validatorsFactoryMock = new Mock<ISpecificationsRepository>();
 
-            Specification<User> userSpecification = m => m.WithSummaryError("user");
+            Specification<User> userSpecification = m => m.SetSingleError("user");
 
             var userSpecificationExecuted = false;
 
@@ -166,7 +166,7 @@ namespace CoreValidation.UnitTests.Validators
                     return userSpecification;
                 });
 
-            Specification<Address> addressSpecification = m => m.WithSummaryError("address");
+            Specification<Address> addressSpecification = m => m.SetSingleError("address");
 
             var addressSpecificationExecuted = false;
 
@@ -181,7 +181,7 @@ namespace CoreValidation.UnitTests.Validators
 
             var validatorsFactory = new ValidatorsFactory(validatorsFactoryMock.Object);
 
-            Specification<User> userDefinedSpecification = m => m.WithSummaryError("user_defined");
+            Specification<User> userDefinedSpecification = m => m.SetSingleError("user_defined");
 
             var validator = validatorsFactory.GetOrInit(userDefinedSpecification);
 
@@ -191,7 +191,7 @@ namespace CoreValidation.UnitTests.Validators
 
             Assert.Equal(typeof(User).FullName, validatorsFactory.Keys.Single());
 
-            Assert.Equal("user_defined", validator.SummaryError.Message);
+            Assert.Equal("user_defined", validator.SingleError.Message);
         }
 
         [Fact]
@@ -199,7 +199,7 @@ namespace CoreValidation.UnitTests.Validators
         {
             var validatorsFactoryMock = new Mock<ISpecificationsRepository>();
 
-            Specification<User> userSpecification = m => m.WithSummaryError("user");
+            Specification<User> userSpecification = m => m.SetSingleError("user");
 
             var userSpecificationExecuted = false;
 
@@ -212,7 +212,7 @@ namespace CoreValidation.UnitTests.Validators
                     return userSpecification;
                 });
 
-            Specification<Address> addressSpecification = m => m.WithSummaryError("address");
+            Specification<Address> addressSpecification = m => m.SetSingleError("address");
 
             var addressSpecificationExecuted = false;
 
@@ -227,7 +227,7 @@ namespace CoreValidation.UnitTests.Validators
 
             var validatorsFactory = new ValidatorsFactory(validatorsFactoryMock.Object);
 
-            Specification<User> userDefinedSpecification = m => m.WithSummaryError("user_defined");
+            Specification<User> userDefinedSpecification = m => m.SetSingleError("user_defined");
 
             var validator = validatorsFactory.GetOrInit(userDefinedSpecification, "key");
 
@@ -237,7 +237,7 @@ namespace CoreValidation.UnitTests.Validators
 
             Assert.Equal("key", validatorsFactory.Keys.Single());
 
-            Assert.Equal("user_defined", validator.SummaryError.Message);
+            Assert.Equal("user_defined", validator.SingleError.Message);
         }
 
         [Fact]

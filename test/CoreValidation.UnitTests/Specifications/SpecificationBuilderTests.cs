@@ -1,1416 +1,193 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System;
 using System.Linq;
 using CoreValidation.Errors.Args;
 using CoreValidation.Specifications;
-using CoreValidation.Validators;
-using CoreValidation.Validators.Scopes;
-using Moq;
+using CoreValidation.Specifications.Commands;
 using Xunit;
 
 namespace CoreValidation.UnitTests.Specifications
 {
     public class SpecificationBuilderTests
     {
-        public static IEnumerable<object[]> TrueFalse_ValidErrorAndArgsCombinations_Data()
+        public class SetSingleError
         {
-            var args = new IMessageArg[] {new NumberArg("test1", 1), new TextArg("test2", "two")};
-
-            yield return new object[] {true, "message", args};
-            yield return new object[] {true, "message", null};
-            yield return new object[] {true, null, null};
-            yield return new object[] {false, "message", args};
-            yield return new object[] {false, "message", null};
-            yield return new object[] {false, null, null};
-        }
-
-        public static IEnumerable<object[]> ValidErrorAndArgsCombinations_Data()
-        {
-            var args = new IMessageArg[] {new NumberArg("test1", 1), new TextArg("test2", "two")};
-
-            yield return new object[] {"message", args};
-            yield return new object[] {"message", null};
-            yield return new object[] {null, null};
-        }
-
-        public static IEnumerable<object[]> ArgsCombinations_Data()
-        {
-            var args = new IMessageArg[] {new NumberArg("test1", 1), new TextArg("test2", "two")};
-
-            yield return new object[] {args};
-            yield return new object[] {null};
-        }
-
-        public class SummaryError
-        {
-            [Theory]
-            [MemberData(nameof(ArgsCombinations_Data), MemberType = typeof(SpecificationBuilderTests))]
-            public void Should_SummaryError_BeAdded(IMessageArg[] args)
+            [Fact]
+            public void Should_Add_SetSingleErrorCommand_When_SetSingleError()
             {
-                var builder = new SpecificationBuilder<User>();
+                var builder = new SpecificationBuilder<object>();
 
-                builder.WithSummaryError("message", args);
+                builder.SetSingleError("message");
 
-                Assert.NotNull(builder.Scopes);
-                Assert.Empty(builder.Scopes);
+                Assert.Single(builder.Commands);
+                Assert.IsType<SetSingleErrorCommand>(builder.Commands.Single());
 
-                Assert.Equal("message", builder.SummaryError.Message);
-                Assert.Same(args, builder.SummaryError.Arguments);
-            }
+                var command = (SetSingleErrorCommand)builder.Commands.Single();
 
-            [Theory]
-            [MemberData(nameof(ArgsCombinations_Data), MemberType = typeof(SpecificationBuilderTests))]
-            public void Should_ThrowException_When_SummaryError_Added_With_NullMessage(IMessageArg[] args)
-            {
-                var builder = new SpecificationBuilder<User>();
-
-                Assert.Throws<ArgumentNullException>(() => { builder.WithSummaryError(null, args); });
+                Assert.Equal("message", command.Message);
+                Assert.Equal("SetSingleError", command.Name);
             }
 
             [Fact]
-            public void Should_SummaryError_NotBeAdded_When_NoMethod()
+            public void Should_ThrowException_When_SetSingleError_With_NullMessage()
             {
-                var builder = new SpecificationBuilder<User>();
+                var builder = new SpecificationBuilder<object>();
 
-                Assert.NotNull(builder.Scopes);
-                Assert.Empty(builder.Scopes);
-
-                Assert.Null(builder.SummaryError);
-            }
-
-
-            [Fact]
-            public void Should_ThrowException_When_SummaryError_Added_MultipleTimes()
-            {
-                var builder = new SpecificationBuilder<User>();
-
-                Assert.Throws<InvalidOperationException>(() =>
-                {
-                    builder
-                        .WithSummaryError("message1")
-                        .WithSummaryError("message2");
-                });
+                Assert.Throws<ArgumentNullException>(() => { builder.SetSingleError(null); });
             }
         }
 
-        public class SelfRule
+        public class WithMessage
         {
-            [Theory]
-            [MemberData(nameof(ValidErrorAndArgsCombinations_Data), MemberType = typeof(SpecificationBuilderTests))]
-            public void Should_ExecutableSelfRule_BeAdded(string message, IMessageArg[] args)
+            [Fact]
+            public void Should_Add_WithMessageCommand_When_WithMessage()
             {
-                var builder = new SpecificationBuilder<User>();
+                var builder = new SpecificationBuilder<object>();
 
-                builder.Valid(m => true, message, args);
+                builder.WithMessage("message");
 
-                Assert.NotNull(builder.Scopes);
-                Assert.Single(builder.Scopes);
+                Assert.Single(builder.Commands);
+                Assert.IsType<WithMessageCommand>(builder.Commands.Single());
 
-                var rule = builder.Scopes.Single();
+                var command = (WithMessageCommand)builder.Commands.Single();
 
-                Assert.IsType<ModelScope<User>>(rule);
-
-                var executableSelfRule = (ModelScope<User>)rule;
-
-                if (message != null)
-                {
-                    Assert.Equal(message, executableSelfRule.Rule.Error.Message);
-                    Assert.Same(args, executableSelfRule.Rule.Error.Arguments);
-                }
-                else
-                {
-                    Assert.Null(executableSelfRule.Rule.Error);
-                }
-            }
-
-            [Theory]
-            [InlineData(true)]
-            [InlineData(false)]
-            public void Should_ExecutableSelfRule_AddErrorIfInvalid(bool isValid)
-            {
-                var user = new User();
-                var executed = false;
-
-                var args = new IMessageArg[] {new NumberArg("test1", 1), new TextArg("test2", "two")};
-
-                var builder = new SpecificationBuilder<User>();
-
-                builder.Valid(m =>
-                {
-                    executed = true;
-
-                    return isValid;
-                }, "message", args);
-
-                Assert.NotNull(builder.Scopes);
-                Assert.Single(builder.Scopes);
-
-                var rule = builder.Scopes.Single();
-
-                Assert.IsType<ModelScope<User>>(rule);
-
-                var executableSelfRule = (ModelScope<User>)rule;
-
-                var errorAdded = executableSelfRule.TryGetErrors(user, new ExecutionContext
-                    {
-                        ExecutionOptions = new ExecutionOptionsStub(),
-                        ValidationStrategy = ValidationStrategy.Complete
-                    },
-                    0,
-                    out var errorsCollection);
-
-                Assert.True(executed);
-                Assert.Equal(!isValid, errorAdded);
-
-                if (errorAdded)
-                {
-                    var error = errorsCollection.Errors.Single();
-                    Assert.Equal("message", error.Message);
-                    Assert.Equal(args, error.Arguments);
-                }
-            }
-
-            [Theory]
-            [MemberData(nameof(ValidErrorAndArgsCombinations_Data), MemberType = typeof(SpecificationBuilderTests))]
-            public void Should_ThrowException_When_NullPredicate(string message, IMessageArg[] args)
-            {
-                var builder = new SpecificationBuilder<User>();
-
-                Assert.Throws<ArgumentNullException>(() => { builder.Valid(null, message, args); });
+                Assert.Equal("WithMessage", command.Name);
+                Assert.Equal("message", command.Message);
             }
 
             [Fact]
-            public void Should_ExecutableSelfRule_BeAdded_MultipleTimes()
+            public void Should_ThrowException_When_WithMessage_And_NullMessage()
             {
-                var builder = new SpecificationBuilder<User>();
+                var builder = new SpecificationBuilder<object>();
 
-                var args = new[]
-                {
-                    new IMessageArg[] { },
-                    new IMessageArg[] { },
-                    new IMessageArg[] { }
-                };
-
-                builder
-                    .Valid(m => true, "message1", args[0])
-                    .Valid(m => true, "message2", args[1])
-                    .Valid(m => true, "message3", args[2]);
-
-                Assert.NotNull(builder.Scopes);
-                Assert.Equal(3, builder.Scopes.Count);
-
-                for (var i = 0; i < 3; ++i)
-                {
-                    var rule = builder.Scopes.ElementAt(i);
-
-                    Assert.IsType<ModelScope<User>>(rule);
-
-                    var executableSelfRule = (ModelScope<User>)rule;
-
-                    Assert.Equal($"message{i + 1}", executableSelfRule.Rule.Error.Message);
-                    Assert.Same(args[i], executableSelfRule.Rule.Error.Arguments);
-                }
-            }
-
-            [Fact]
-            public void Should_ExecutableSelfRule_Receive_ModelReference()
-            {
-                var user = new User();
-                var compared = false;
-
-                var builder = new SpecificationBuilder<User>();
-
-                builder.Valid(m =>
-                {
-                    Assert.Same(user, m);
-                    compared = true;
-
-                    return false;
-                });
-
-                Assert.NotNull(builder.Scopes);
-                Assert.Single(builder.Scopes);
-
-                var rule = builder.Scopes.Single();
-
-                Assert.IsType<ModelScope<User>>(rule);
-
-                var executableSelfRule = (ModelScope<User>)rule;
-
-                executableSelfRule.TryGetErrors(user, new ExecutionContext
-                    {
-                        ExecutionOptions = new ExecutionOptionsStub(),
-                        ValidationStrategy = ValidationStrategy.Complete
-                    },
-                    0,
-                    out _);
-
-                Assert.True(compared);
+                Assert.Throws<ArgumentNullException>(() => { builder.WithMessage(null); });
             }
         }
 
-        public class GeneralMemberRule
+        public class Valid
         {
-            [Theory]
-            [MemberData(nameof(ArgsCombinations_Data), MemberType = typeof(SpecificationBuilderTests))]
-            public void Should_MemberRule_BeAdded_WithRequiredError(IMessageArg[] args)
+            [Fact]
+            public void Should_Add_ModelScope_When_Valid()
             {
-                var builder = new SpecificationBuilder<User>();
+                var builder = new SpecificationBuilder<MemberClass>();
 
-                builder.For(m => m.Email, be => be.WithRequiredError("message", args));
+                Predicate<MemberClass> isValid = c => true;
 
-                Assert.NotNull(builder.Scopes);
-                Assert.Single(builder.Scopes);
+                builder.Valid(isValid);
 
-                var rule = builder.Scopes.Single();
+                Assert.Single(builder.Commands);
+                Assert.IsType<ModelScope<MemberClass>>(builder.Commands.Single());
 
-                Assert.IsType<MemberScope<User, string>>(rule);
+                var command = (ModelScope<MemberClass>)builder.Commands.Single();
 
-                var executableMemberRule = (MemberScope<User, string>)rule;
-
-                Assert.Equal(nameof(User.Email), executableMemberRule.Name);
-
-                Assert.Equal(typeof(User).GetProperty(nameof(User.Email)), executableMemberRule.MemberPropertyInfo);
-
-                Assert.Empty(executableMemberRule.MemberValidator.Rules);
-                Assert.Null(executableMemberRule.MemberValidator.Name);
-
-                Assert.Equal("message", executableMemberRule.MemberValidator.RequiredError.Message);
-                Assert.Equal(args, executableMemberRule.MemberValidator.RequiredError.Arguments);
-
-                Assert.Null(executableMemberRule.MemberValidator.SummaryError);
-                Assert.False(executableMemberRule.MemberValidator.IsOptional);
-            }
-
-            [Theory]
-            [MemberData(nameof(ArgsCombinations_Data), MemberType = typeof(SpecificationBuilderTests))]
-            public void Should_MemberRule_BeAdded_WithRequiredError_When_Nullable(IMessageArg[] args)
-            {
-                var builder = new SpecificationBuilder<User>();
-
-                builder.For(m => m.FirstLogin, be => be.WithRequiredError("message", args));
-
-                Assert.NotNull(builder.Scopes);
-                Assert.Single(builder.Scopes);
-
-                var rule = builder.Scopes.Single();
-
-                Assert.IsType<MemberScope<User, DateTime?>>(rule);
-
-                var executableMemberRule = (MemberScope<User, DateTime?>)rule;
-
-                Assert.Equal(nameof(User.FirstLogin), executableMemberRule.Name);
-
-                Assert.Equal(typeof(User).GetProperty(nameof(User.FirstLogin)), executableMemberRule.MemberPropertyInfo);
-
-                Assert.Empty(executableMemberRule.MemberValidator.Rules);
-                Assert.Null(executableMemberRule.MemberValidator.Name);
-
-                Assert.Equal("message", executableMemberRule.MemberValidator.RequiredError.Message);
-                Assert.Equal(args, executableMemberRule.MemberValidator.RequiredError.Arguments);
-
-                Assert.Null(executableMemberRule.MemberValidator.SummaryError);
-                Assert.False(executableMemberRule.MemberValidator.IsOptional);
-            }
-
-            [Theory]
-            [MemberData(nameof(ArgsCombinations_Data), MemberType = typeof(SpecificationBuilderTests))]
-            public void Should_MemberRule_BeAdded_WithSummaryError(IMessageArg[] args)
-            {
-                var builder = new SpecificationBuilder<User>();
-
-                builder.For(m => m.Email, be => be.WithSummaryError("message", args));
-
-                Assert.NotNull(builder.Scopes);
-                Assert.Single(builder.Scopes);
-
-                var rule = builder.Scopes.Single();
-
-                Assert.IsType<MemberScope<User, string>>(rule);
-
-                var executableMemberRule = (MemberScope<User, string>)rule;
-
-                Assert.Equal(nameof(User.Email), executableMemberRule.Name);
-
-                Assert.Equal(typeof(User).GetProperty(nameof(User.Email)), executableMemberRule.MemberPropertyInfo);
-
-                Assert.Empty(executableMemberRule.MemberValidator.Rules);
-                Assert.Null(executableMemberRule.MemberValidator.Name);
-                Assert.Null(executableMemberRule.MemberValidator.RequiredError);
-
-                Assert.Equal("message", executableMemberRule.MemberValidator.SummaryError.Message);
-                Assert.Equal(args, executableMemberRule.MemberValidator.SummaryError.Arguments);
-
-                Assert.False(executableMemberRule.MemberValidator.IsOptional);
-            }
-
-            [Theory]
-            [MemberData(nameof(ArgsCombinations_Data), MemberType = typeof(SpecificationBuilderTests))]
-            public void Should_ThrowException_When_MemberRule_Added_WithRequiredError_And_NullMessage(IMessageArg[] args)
-            {
-                var builder = new SpecificationBuilder<User>();
-
-                Assert.Throws<ArgumentNullException>(() => { builder.For(m => m.Email, be => be.WithRequiredError(null, args)); });
-            }
-
-            [Theory]
-            [MemberData(nameof(ArgsCombinations_Data), MemberType = typeof(SpecificationBuilderTests))]
-            public void Should_ThrowException_When_MemberRule_Added_WithSummaryError_And_NullMessage(IMessageArg[] args)
-            {
-                var builder = new SpecificationBuilder<User>();
-
-                Assert.Throws<ArgumentNullException>(() => { builder.For(m => m.Email, be => be.WithSummaryError(null, args)); });
+                Assert.Equal("Valid", command.Name);
+                Assert.Null(command.RuleSingleError);
+                Assert.Same(isValid, command.Rule.IsValid);
+                Assert.Null(command.Rule.RuleSingleError);
+                Assert.Null(command.Rule.Error);
             }
 
             [Fact]
-            public void Should_MemberRule_BeAdded()
+            public void Should_ThrowException_When_Valid_And_NullPredicate()
             {
-                var builder = new SpecificationBuilder<User>();
+                var builder = new SpecificationBuilder<MemberClass>();
 
-                builder.For(m => m.Email);
-
-                Assert.NotNull(builder.Scopes);
-                Assert.Single(builder.Scopes);
-
-                var rule = builder.Scopes.Single();
-
-                Assert.IsType<MemberScope<User, string>>(rule);
-
-                var executableMemberRule = (MemberScope<User, string>)rule;
-
-                Assert.Equal(nameof(User.Email), executableMemberRule.Name);
-
-                Assert.Equal(typeof(User).GetProperty(nameof(User.Email)), executableMemberRule.MemberPropertyInfo);
-
-                Assert.Empty(executableMemberRule.MemberValidator.Rules);
-                Assert.Null(executableMemberRule.MemberValidator.Name);
-                Assert.Null(executableMemberRule.MemberValidator.RequiredError);
-                Assert.Null(executableMemberRule.MemberValidator.SummaryError);
-                Assert.False(executableMemberRule.MemberValidator.IsOptional);
-            }
-
-            [Fact]
-            public void Should_MemberRule_BeAdded_MultipleTimes()
-            {
-                var builder = new SpecificationBuilder<User>();
-
-                builder
-                    .For(m => m.Email)
-                    .For(m => m.Email)
-                    .For(m => m.Email);
-
-                Assert.NotNull(builder.Scopes);
-                Assert.Equal(3, builder.Scopes.Count);
-
-                for (var i = 0; i < 3; ++i)
-                {
-                    var rule = builder.Scopes.ElementAt(i);
-
-                    Assert.IsType<MemberScope<User, string>>(rule);
-
-                    var executableMemberRule = (MemberScope<User, string>)rule;
-
-                    Assert.Equal(nameof(User.Email), executableMemberRule.Name);
-
-                    Assert.Equal(typeof(User).GetProperty(nameof(User.Email)), executableMemberRule.MemberPropertyInfo);
-
-                    Assert.Empty(executableMemberRule.MemberValidator.Rules);
-                    Assert.Null(executableMemberRule.MemberValidator.Name);
-                    Assert.Null(executableMemberRule.MemberValidator.RequiredError);
-                    Assert.Null(executableMemberRule.MemberValidator.SummaryError);
-                    Assert.False(executableMemberRule.MemberValidator.IsOptional);
-                }
-            }
-
-            [Fact]
-            public void Should_MemberRule_BeAdded_MultipleTimes_DifferentMembers()
-            {
-                var builder = new SpecificationBuilder<User>();
-
-                builder
-                    .For(m => m.Email)
-                    .For(m => m.Address)
-                    .For(m => m.PastAddresses)
-                    .For(m => m.FirstLogin)
-                    .For(m => m.IsAdmin);
-
-                Assert.NotNull(builder.Scopes);
-                Assert.Equal(5, builder.Scopes.Count);
-
-                var rule1 = builder.Scopes.ElementAt(0);
-                Assert.IsType<MemberScope<User, string>>(rule1);
-                Assert.Equal(nameof(User.Email), ((MemberScope<User, string>)rule1).Name);
-                Assert.Equal(typeof(User).GetProperty(nameof(User.Email)), ((MemberScope<User, string>)rule1).MemberPropertyInfo);
-
-                var rule2 = builder.Scopes.ElementAt(1);
-                Assert.IsType<MemberScope<User, Address>>(rule2);
-                Assert.Equal(nameof(User.Address), ((MemberScope<User, Address>)rule2).Name);
-                Assert.Equal(typeof(User).GetProperty(nameof(User.Address)), ((MemberScope<User, Address>)rule2).MemberPropertyInfo);
-
-                var rule3 = builder.Scopes.ElementAt(2);
-                Assert.IsType<MemberScope<User, IEnumerable<Address>>>(rule3);
-                Assert.Equal(nameof(User.PastAddresses), ((MemberScope<User, IEnumerable<Address>>)rule3).Name);
-                Assert.Equal(typeof(User).GetProperty(nameof(User.PastAddresses)), ((MemberScope<User, IEnumerable<Address>>)rule3).MemberPropertyInfo);
-
-                var rule4 = builder.Scopes.ElementAt(3);
-                Assert.IsType<MemberScope<User, DateTime?>>(rule4);
-                Assert.Equal(nameof(User.FirstLogin), ((MemberScope<User, DateTime?>)rule4).Name);
-                Assert.Equal(typeof(User).GetProperty(nameof(User.FirstLogin)), ((MemberScope<User, DateTime?>)rule4).MemberPropertyInfo);
-
-                var rule5 = builder.Scopes.ElementAt(4);
-                Assert.IsType<MemberScope<User, bool>>(rule5);
-                Assert.Equal(nameof(User.IsAdmin), ((MemberScope<User, bool>)rule5).Name);
-                Assert.Equal(typeof(User).GetProperty(nameof(User.IsAdmin)), ((MemberScope<User, bool>)rule5).MemberPropertyInfo);
-            }
-
-            [Fact]
-            public void Should_MemberRule_BeAdded_Optional()
-            {
-                var builder = new SpecificationBuilder<User>();
-
-                builder.For(m => m.Email, be => be.Optional());
-
-                Assert.NotNull(builder.Scopes);
-                Assert.Single(builder.Scopes);
-
-                var rule = builder.Scopes.Single();
-
-                Assert.IsType<MemberScope<User, string>>(rule);
-
-                var executableMemberRule = (MemberScope<User, string>)rule;
-
-                Assert.Equal(nameof(User.Email), executableMemberRule.Name);
-
-                Assert.Equal(typeof(User).GetProperty(nameof(User.Email)), executableMemberRule.MemberPropertyInfo);
-
-                Assert.Empty(executableMemberRule.MemberValidator.Rules);
-                Assert.Null(executableMemberRule.MemberValidator.Name);
-                Assert.Null(executableMemberRule.MemberValidator.RequiredError);
-                Assert.Null(executableMemberRule.MemberValidator.SummaryError);
-                Assert.True(executableMemberRule.MemberValidator.IsOptional);
-            }
-
-            [Fact]
-            public void Should_MemberRule_BeAdded_Optional_When_Nullable()
-            {
-                var builder = new SpecificationBuilder<User>();
-
-                builder.For(m => m.FirstLogin, be => be.Optional());
-
-                Assert.NotNull(builder.Scopes);
-                Assert.Single(builder.Scopes);
-
-                var rule = builder.Scopes.Single();
-
-                Assert.IsType<MemberScope<User, DateTime?>>(rule);
-
-                var executableMemberRule = (MemberScope<User, DateTime?>)rule;
-
-                Assert.Equal(nameof(User.FirstLogin), executableMemberRule.Name);
-
-                Assert.Equal(typeof(User).GetProperty(nameof(User.FirstLogin)), executableMemberRule.MemberPropertyInfo);
-
-                Assert.Empty(executableMemberRule.MemberValidator.Rules);
-                Assert.Null(executableMemberRule.MemberValidator.Name);
-                Assert.Null(executableMemberRule.MemberValidator.RequiredError);
-                Assert.Null(executableMemberRule.MemberValidator.SummaryError);
-                Assert.True(executableMemberRule.MemberValidator.IsOptional);
-            }
-
-            [Fact]
-            public void Should_MemberRule_BeAdded_WithName()
-            {
-                var builder = new SpecificationBuilder<User>();
-
-                builder.For(m => m.Email, be => be.WithName("new_name"));
-
-                Assert.NotNull(builder.Scopes);
-                Assert.Single(builder.Scopes);
-
-                var rule = builder.Scopes.Single();
-
-                Assert.IsType<MemberScope<User, string>>(rule);
-
-                var executableMemberRule = (MemberScope<User, string>)rule;
-
-                Assert.Equal("new_name", executableMemberRule.Name);
-
-                Assert.Equal(typeof(User).GetProperty(nameof(User.Email)), executableMemberRule.MemberPropertyInfo);
-
-                Assert.Empty(executableMemberRule.MemberValidator.Rules);
-                Assert.Equal("new_name", executableMemberRule.MemberValidator.Name);
-                Assert.Null(executableMemberRule.MemberValidator.RequiredError);
-                Assert.Null(executableMemberRule.MemberValidator.SummaryError);
-                Assert.False(executableMemberRule.MemberValidator.IsOptional);
-            }
-
-            [Fact]
-            public void Should_ThrowException_When_FieldMember()
-            {
-                var builder = new SpecificationBuilder<InvalidMemberModels>();
-
-                Assert.Throws<ArgumentException>(() => { builder.For(m => m.Field); });
-            }
-
-            [Fact]
-            public void Should_ThrowException_When_MemberRule_Added_Optional_MultipleTimes()
-            {
-                var builder = new SpecificationBuilder<User>();
-
-                Assert.Throws<InvalidOperationException>(() =>
-                {
-                    builder.For(m => m.Email, be => be
-                        .Optional()
-                        .Optional()
-                    );
-                });
-            }
-
-            [Fact]
-            public void Should_ThrowException_When_MemberRule_Added_WithName_MultipleTimes()
-            {
-                var builder = new SpecificationBuilder<User>();
-
-                Assert.Throws<InvalidOperationException>(() =>
-                {
-                    builder.For(m => m.Email, be => be
-                        .WithName("name1")
-                        .WithName("name2")
-                    );
-                });
-            }
-
-            [Fact]
-            public void Should_ThrowException_When_MemberRule_Added_WithRequiredError_MultipleTimes()
-            {
-                var builder = new SpecificationBuilder<User>();
-
-                Assert.Throws<InvalidOperationException>(() =>
-                {
-                    builder.For(m => m.Email, be => be
-                        .WithRequiredError("error1")
-                        .WithRequiredError("error2")
-                    );
-                });
-            }
-
-            [Fact]
-            public void Should_ThrowException_When_MemberRule_Added_WithSummaryError_And_MultipleTimes()
-            {
-                var builder = new SpecificationBuilder<User>();
-
-                Assert.Throws<InvalidOperationException>(() =>
-                {
-                    builder.For(m => m.Email, be => be
-                        .WithSummaryError("error1")
-                        .WithSummaryError("error2"));
-                });
-            }
-
-            [Fact]
-            public void Should_ThrowException_When_MethodMember()
-            {
-                var builder = new SpecificationBuilder<InvalidMemberModels>();
-
-                Assert.Throws<ArgumentException>(() => { builder.For(m => m.Method()); });
-            }
-
-            [Fact]
-            public void Should_ThrowException_When_NullMemberSelector()
-            {
-                var builder = new SpecificationBuilder<InvalidMemberModels>();
-
-                Assert.Throws<ArgumentNullException>(() => { builder.For<object>(null); });
+                Assert.Throws<ArgumentNullException>(() => { builder.Valid(null); });
             }
         }
 
-        public class MemberRules
+        public class Member
         {
-            [Theory]
-            [MemberData(nameof(TrueFalse_ValidErrorAndArgsCombinations_Data), MemberType = typeof(SpecificationBuilderTests))]
-            public void Should_ValidRule_BeAdded_When_Valid(bool isValid, string message, IMessageArg[] args)
+            [Fact]
+            public void Should_Add_MemberScope_When_Member()
             {
-                var user = new User
-                {
-                    Address = new Address()
-                };
+                var builder = new SpecificationBuilder<MemberClass>();
 
-                var builder = new SpecificationBuilder<User>();
+                Predicate<string> isValid = c => true;
 
-                var executed = 0;
-                builder.For(m => m.Address, be => be.Valid(v =>
-                {
-                    Assert.Same(user.Address, v);
-                    executed++;
+                var args = new IMessageArg[] {new MessageArg("test", "test123")};
 
-                    return isValid;
-                }, message, args));
+                builder.Member(m => m.Property, m => m.Valid(isValid, "message", args));
 
-                var executableMemberRule = (MemberScope<User, Address>)builder.Scopes.Single();
+                Assert.Single(builder.Commands);
+                Assert.IsType<MemberScope<MemberClass, string>>(builder.Commands.Single());
 
-                var executionOptions = new ExecutionOptionsStub();
+                var memberScope = (MemberScope<MemberClass, string>)builder.Commands.Single();
+                Assert.Null(memberScope.RuleSingleError);
 
-                var errorAdded = executableMemberRule.TryGetErrors(user, new ExecutionContext
-                    {
-                        ExecutionOptions = executionOptions,
-                        ValidationStrategy = ValidationStrategy.Complete
-                    },
-                    0,
-                    out var errorsCollection);
+                Assert.Equal("Property", memberScope.MemberPropertyInfo.Name);
+                Assert.Equal(typeof(string), memberScope.MemberPropertyInfo.PropertyType);
 
-                Assert.Equal(1, executed);
-                Assert.Equal(!isValid, errorAdded);
-                Assert.NotNull(errorsCollection);
-                Assert.Empty(errorsCollection.Members);
+                Assert.IsType<ValidRule<string>>(memberScope.MemberValidator.Rules.Single());
 
-                if (isValid)
-                {
-                    Assert.Empty(errorsCollection.Errors);
-                }
-                else if (message != null)
-                {
-                    Assert.Equal(message, errorsCollection.Errors.Single().Message);
-                    Assert.Same(args, errorsCollection.Errors.Single().Arguments);
-                }
-                else
-                {
-                    Assert.Equal(executionOptions.DefaultError, errorsCollection.Errors.Single());
-                }
+                var memberRule = (ValidRule<string>)memberScope.MemberValidator.Rules.Single();
+
+                Assert.Same(isValid, memberRule.IsValid);
+                Assert.Equal("message", memberRule.Error.Message);
+                Assert.Same(args, memberRule.Error.Arguments);
+                Assert.Null(memberRule.RuleSingleError);
             }
 
-            [Theory]
-            [MemberData(nameof(TrueFalse_ValidErrorAndArgsCombinations_Data), MemberType = typeof(SpecificationBuilderTests))]
-            public void Should_ValidRelativeRule_BeAdded_When_ValidRelative(bool isValid, string message, IMessageArg[] args)
+            [Fact]
+            public void Should_AddMemberScope_When_Member_WithoutSpecification()
             {
-                var user = new User
-                {
-                    Address = new Address()
-                };
+                var builder = new SpecificationBuilder<MemberClass>();
 
-                var builder = new SpecificationBuilder<User>();
+                builder.Member(m => m.Property);
 
-                var executed = 0;
-                builder.For(m => m.Address, be => be.ValidRelative(v =>
-                {
-                    Assert.Same(user, v);
-                    executed++;
+                Assert.IsType<MemberScope<MemberClass, string>>(builder.Commands.Single());
 
-                    return isValid;
-                }, message, args));
+                var memberScope = (MemberScope<MemberClass, string>)builder.Commands.Single();
 
-                var executableMemberRule = (MemberScope<User, Address>)builder.Scopes.Single();
+                Assert.Null(memberScope.RuleSingleError);
 
-                var executionOptions = new ExecutionOptionsStub();
+                Assert.Equal("Property", memberScope.MemberPropertyInfo.Name);
+                Assert.Equal(typeof(string), memberScope.MemberPropertyInfo.PropertyType);
 
-                var errorAdded = executableMemberRule.TryGetErrors(user, new ExecutionContext
-                    {
-                        ExecutionOptions = executionOptions,
-                        ValidationStrategy = ValidationStrategy.Complete
-                    },
-                    0,
-                    out var errorsCollection);
-
-                Assert.Equal(1, executed);
-                Assert.Equal(!isValid, errorAdded);
-                Assert.NotNull(errorsCollection);
-                Assert.Empty(errorsCollection.Members);
-
-                if (isValid)
-                {
-                    Assert.Empty(errorsCollection.Errors);
-                }
-                else if (message != null)
-                {
-                    Assert.Equal(message, errorsCollection.Errors.Single().Message);
-                    Assert.Same(args, errorsCollection.Errors.Single().Arguments);
-                }
-                else
-                {
-                    Assert.Equal(executionOptions.DefaultError, errorsCollection.Errors.Single());
-                }
+                Assert.False(memberScope.MemberValidator.IsOptional);
+                Assert.Null(memberScope.MemberValidator.RequiredError);
+                Assert.Empty(memberScope.MemberValidator.Rules);
             }
 
-            [Theory]
-            [MemberData(nameof(TrueFalse_ValidErrorAndArgsCombinations_Data), MemberType = typeof(SpecificationBuilderTests))]
-            public void Should_ValidNullableRule_BeAdded_When_ValidNullable(bool isValid, string message, IMessageArg[] args)
+            [Fact]
+            public void Should_ThrowException_When_Member_And_NullMemberSelector()
             {
-                var user = new User
-                {
-                    FirstLogin = DateTime.Today
-                };
+                var builder = new SpecificationBuilder<MemberClass>();
 
-                var builder = new SpecificationBuilder<User>();
-
-                var executed = 0;
-                builder.For(m => m.FirstLogin, be => be.ValidNullable(v => v
-                    .Valid(m =>
-                    {
-                        Assert.Equal(user.FirstLogin, m);
-                        executed++;
-
-                        return isValid;
-                    }, message, args)
-                ));
-
-                var executableMemberRule = (MemberScope<User, DateTime?>)builder.Scopes.Single();
-
-                var executionOptions = new ExecutionOptionsStub();
-
-                var errorAdded = executableMemberRule.TryGetErrors(user, new ExecutionContext
-                    {
-                        ExecutionOptions = executionOptions,
-                        ValidationStrategy = ValidationStrategy.Complete
-                    },
-                    0,
-                    out var errorsCollection);
-
-                Assert.Equal(1, executed);
-                Assert.Equal(!isValid, errorAdded);
-                Assert.NotNull(errorsCollection);
-                Assert.Empty(errorsCollection.Members);
-
-                if (isValid)
-                {
-                    Assert.Empty(errorsCollection.Errors);
-                }
-                else if (message != null)
-                {
-                    Assert.Equal(message, errorsCollection.Errors.Single().Message);
-                    Assert.Same(args, errorsCollection.Errors.Single().Arguments);
-                }
-                else
-                {
-                    Assert.Equal(executionOptions.DefaultError, errorsCollection.Errors.Single());
-                }
-            }
-
-            [Theory]
-            [MemberData(nameof(TrueFalse_ValidErrorAndArgsCombinations_Data), MemberType = typeof(SpecificationBuilderTests))]
-            public void Should_ValidModelRule_BeAdded_When_ValidModel(bool isValid, string message, IMessageArg[] args)
-            {
-                var user = new User
-                {
-                    Address = new Address()
-                };
-
-                var builder = new SpecificationBuilder<User>();
-
-                var executed = 0;
-                builder.For(m => m.Address, be => be.ValidModel(v => v
-                    .Valid(m =>
-                    {
-                        Assert.Equal(user.Address, m);
-                        executed++;
-
-                        return isValid;
-                    }, message, args)));
-
-                var executableMemberRule = (MemberScope<User, Address>)builder.Scopes.Single();
-
-                var specificationsRepositoryMock = new Mock<ISpecificationsRepository>();
-
-                var executionOptions = new ExecutionOptionsStub();
-
-                var errorAdded = executableMemberRule.TryGetErrors(user, new ExecutionContext
-                    {
-                        ExecutionOptions = executionOptions,
-                        ValidationStrategy = ValidationStrategy.Complete,
-                        ValidatorsFactory = new ValidatorsFactory(specificationsRepositoryMock.Object)
-                    },
-                    0,
-                    out var errorsCollection);
-
-                Assert.Equal(1, executed);
-                Assert.Equal(!isValid, errorAdded);
-                Assert.NotNull(errorsCollection);
-                Assert.Empty(errorsCollection.Members);
-
-                if (isValid)
-                {
-                    Assert.Empty(errorsCollection.Errors);
-                }
-                else if (message != null)
-                {
-                    Assert.Equal(message, errorsCollection.Errors.Single().Message);
-                    Assert.Same(args, errorsCollection.Errors.Single().Arguments);
-                }
-                else
-                {
-                    Assert.Equal(executionOptions.DefaultError, errorsCollection.Errors.Single());
-                }
-            }
-
-            [Theory]
-            [MemberData(nameof(TrueFalse_ValidErrorAndArgsCombinations_Data), MemberType = typeof(SpecificationBuilderTests))]
-            public void Should_ValidCollectionRule_BeAdded_When_ValidCollection(bool isValid, string message, IMessageArg[] args)
-            {
-                var user = new User
-                {
-                    PastAddresses = new[] {new Address()}
-                };
-
-                var builder = new SpecificationBuilder<User>();
-
-                var executed = 0;
-                builder.For(m => m.PastAddresses, be => be.ValidCollection<User, IEnumerable<Address>, Address>(c => c.Valid(m =>
-                {
-                    Assert.Equal(user.PastAddresses.Single(), m);
-                    executed++;
-
-                    return isValid;
-                }, message, args)));
-
-                var executableMemberRule = (MemberScope<User, IEnumerable<Address>>)builder.Scopes.Single();
-
-                var specificationsRepositoryMock = new Mock<ISpecificationsRepository>();
-
-                var executionOptions = new ExecutionOptionsStub();
-
-                var errorAdded = executableMemberRule.TryGetErrors(user, new ExecutionContext
-                    {
-                        ExecutionOptions = executionOptions,
-                        ValidationStrategy = ValidationStrategy.Complete,
-                        ValidatorsFactory = new ValidatorsFactory(specificationsRepositoryMock.Object)
-                    },
-                    0,
-                    out var errorsCollection);
-
-                Assert.Equal(1, executed);
-                Assert.Equal(!isValid, errorAdded);
-                Assert.NotNull(errorsCollection);
-                Assert.Empty(errorsCollection.Errors);
-
-                if (isValid)
-                {
-                    Assert.Empty(errorsCollection.Members);
-                }
-                else if (message != null)
-                {
-                    Assert.Equal(message, errorsCollection.Members["0"].Errors.Single().Message);
-                    Assert.Same(args, errorsCollection.Members["0"].Errors.Single().Arguments);
-                }
-                else
-                {
-                    Assert.Equal(executionOptions.DefaultError, errorsCollection.Members["0"].Errors.Single());
-                }
-            }
-
-            [Theory]
-            [MemberData(nameof(TrueFalse_ValidErrorAndArgsCombinations_Data), MemberType = typeof(SpecificationBuilderTests))]
-            public void Should_ValidCollectionRule_BeAdded_When_ValidModelsCollection(bool isValid, string message, IMessageArg[] args)
-            {
-                var user = new User
-                {
-                    PastAddresses = new[] {new Address()}
-                };
-
-                var builder = new SpecificationBuilder<User>();
-
-                var executed = 0;
-                builder.For(m => m.PastAddresses, be => be.ValidModelsCollection<User, IEnumerable<Address>, Address>(c => c.Valid(m =>
-                {
-                    Assert.Equal(user.PastAddresses.Single(), m);
-                    executed++;
-
-                    return isValid;
-                }, message, args)));
-
-                var executableMemberRule = (MemberScope<User, IEnumerable<Address>>)builder.Scopes.Single();
-
-                var specificationsRepositoryMock = new Mock<ISpecificationsRepository>();
-
-                var executionOptions = new ExecutionOptionsStub();
-
-                var errorAdded = executableMemberRule.TryGetErrors(user, new ExecutionContext
-                    {
-                        ExecutionOptions = executionOptions,
-                        ValidationStrategy = ValidationStrategy.Complete,
-                        ValidatorsFactory = new ValidatorsFactory(specificationsRepositoryMock.Object)
-                    },
-                    0,
-                    out var errorsCollection);
-
-                Assert.Equal(1, executed);
-                Assert.Equal(!isValid, errorAdded);
-                Assert.NotNull(errorsCollection);
-                Assert.Empty(errorsCollection.Errors);
-
-                if (isValid)
-                {
-                    Assert.Empty(errorsCollection.Members);
-                }
-                else if (message != null)
-                {
-                    Assert.Equal(message, errorsCollection.Members["0"].Errors.Single().Message);
-                    Assert.Same(args, errorsCollection.Members["0"].Errors.Single().Arguments);
-                }
-                else
-                {
-                    Assert.Equal(executionOptions.DefaultError, errorsCollection.Members["0"].Errors.Single());
-                }
+                Assert.Throws<ArgumentNullException>(() => { builder.Member<string>(null); });
             }
         }
 
-        public class CollectionRules
+        public class MemberClass
         {
-            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
-            private void TestCollection<T>(CollectionHolder<T> collectionHolder, SpecificationBuilder<CollectionHolder<T>> builder, ref int executed, bool isValid, string message, IMessageArg[] args)
-            {
-                var executableMemberRule = (MemberScope<CollectionHolder<T>, T>)builder.Scopes.Single();
-
-                var specificationsRepositoryMock = new Mock<ISpecificationsRepository>();
-
-                var executionOptions = new ExecutionOptionsStub();
-
-                var errorAdded = executableMemberRule.TryGetErrors(collectionHolder, new ExecutionContext
-                    {
-                        ExecutionOptions = executionOptions,
-                        ValidationStrategy = ValidationStrategy.Complete,
-                        ValidatorsFactory = new ValidatorsFactory(specificationsRepositoryMock.Object)
-                    },
-                    0,
-                    out var errorsCollection);
-
-                Assert.Equal(1, executed);
-                Assert.Equal(!isValid, errorAdded);
-                Assert.NotNull(errorsCollection);
-                Assert.Empty(errorsCollection.Errors);
-
-                // ReSharper disable once UnusedVariable
-                var justForReSharperAnalysis = args?.Select(s => s).ToArray();
-
-                if (isValid)
-                {
-                    Assert.Empty(errorsCollection.Members);
-                }
-                else if (message != null)
-                {
-                    Assert.Equal(message, errorsCollection.Members["0"].Errors.Single().Message);
-                    Assert.Same(args, errorsCollection.Members["0"].Errors.Single().Arguments);
-                }
-                else
-                {
-                    Assert.Equal(executionOptions.DefaultError, errorsCollection.Members["0"].Errors.Single());
-                }
-            }
-
-            [Theory]
-            [MemberData(nameof(TrueFalse_ValidErrorAndArgsCombinations_Data), MemberType = typeof(SpecificationBuilderTests))]
-            public void Should_ValidCollectionRule_BeAdded_When_ValidCollection_Array(bool isValid, string message, IMessageArg[] args)
-            {
-                var collectionsGroup = new CollectionHolder<object[]>
-                {
-                    Items = new[] {new object()}
-                };
-
-                var builder = new SpecificationBuilder<CollectionHolder<object[]>>();
-
-                var executed = 0;
-                builder.For(m => m.Items, be => be.ValidCollection(c => c.Valid(m =>
-                {
-                    Assert.Equal(collectionsGroup.Items.Single(), m);
-                    // ReSharper disable once AccessToModifiedClosure
-                    executed++;
-
-                    return isValid;
-                }, message, args)));
-
-                TestCollection(collectionsGroup, builder, ref executed, isValid, message, args);
-            }
-
-            [Theory]
-            [MemberData(nameof(TrueFalse_ValidErrorAndArgsCombinations_Data), MemberType = typeof(SpecificationBuilderTests))]
-            public void Should_ValidCollectionRule_BeAdded_When_ValidCollection_IEnumerable(bool isValid, string message, IMessageArg[] args)
-            {
-                var collectionsGroup = new CollectionHolder<IEnumerable<object>>
-                {
-                    Items = new[] {new object()}
-                };
-
-                var builder = new SpecificationBuilder<CollectionHolder<IEnumerable<object>>>();
-
-                var executed = 0;
-                builder.For(m => m.Items, be => be.ValidCollection(c => c.Valid(m =>
-                {
-                    Assert.Equal(collectionsGroup.Items.Single(), m);
-                    // ReSharper disable once AccessToModifiedClosure
-                    executed++;
-
-                    return isValid;
-                }, message, args)));
-
-                TestCollection(collectionsGroup, builder, ref executed, isValid, message, args);
-            }
-
-            [Theory]
-            [MemberData(nameof(TrueFalse_ValidErrorAndArgsCombinations_Data), MemberType = typeof(SpecificationBuilderTests))]
-            public void Should_ValidCollectionRule_BeAdded_When_ValidCollection_Collection(bool isValid, string message, IMessageArg[] args)
-            {
-                var collectionsGroup = new CollectionHolder<Collection<object>>
-                {
-                    Items = new Collection<object>(new List<object> {new object()})
-                };
-
-                var builder = new SpecificationBuilder<CollectionHolder<Collection<object>>>();
-
-                var executed = 0;
-                builder.For(m => m.Items, be => be.ValidCollection(c => c.Valid(m =>
-                {
-                    Assert.Equal(collectionsGroup.Items.Single(), m);
-                    // ReSharper disable once AccessToModifiedClosure
-                    executed++;
-
-                    return isValid;
-                }, message, args)));
-
-                TestCollection(collectionsGroup, builder, ref executed, isValid, message, args);
-            }
-
-            [Theory]
-            [MemberData(nameof(TrueFalse_ValidErrorAndArgsCombinations_Data), MemberType = typeof(SpecificationBuilderTests))]
-            public void Should_ValidCollectionRule_BeAdded_When_ValidCollection_ICollection(bool isValid, string message, IMessageArg[] args)
-            {
-                var collectionsGroup = new CollectionHolder<ICollection<object>>
-                {
-                    Items = new Collection<object>(new List<object> {new object()})
-                };
-
-                var builder = new SpecificationBuilder<CollectionHolder<ICollection<object>>>();
-
-                var executed = 0;
-                builder.For(m => m.Items, be => be.ValidCollection(c => c.Valid(m =>
-                {
-                    Assert.Equal(collectionsGroup.Items.Single(), m);
-                    // ReSharper disable once AccessToModifiedClosure
-                    executed++;
-
-                    return isValid;
-                }, message, args)));
-
-                TestCollection(collectionsGroup, builder, ref executed, isValid, message, args);
-            }
-
-            [Theory]
-            [MemberData(nameof(TrueFalse_ValidErrorAndArgsCombinations_Data), MemberType = typeof(SpecificationBuilderTests))]
-            public void Should_ValidCollectionRule_BeAdded_When_ValidCollection_ReadOnlyCollection(bool isValid, string message, IMessageArg[] args)
-            {
-                var collectionsGroup = new CollectionHolder<ReadOnlyCollection<object>>
-                {
-                    Items = new ReadOnlyCollection<object>(new List<object> {new object()})
-                };
-
-                var builder = new SpecificationBuilder<CollectionHolder<ReadOnlyCollection<object>>>();
-
-                var executed = 0;
-                builder.For(m => m.Items, be => be.ValidCollection(c => c.Valid(m =>
-                {
-                    Assert.Equal(collectionsGroup.Items.Single(), m);
-                    // ReSharper disable once AccessToModifiedClosure
-                    executed++;
-
-                    return isValid;
-                }, message, args)));
-
-                TestCollection(collectionsGroup, builder, ref executed, isValid, message, args);
-            }
-
-            [Theory]
-            [MemberData(nameof(TrueFalse_ValidErrorAndArgsCombinations_Data), MemberType = typeof(SpecificationBuilderTests))]
-            public void Should_ValidCollectionRule_BeAdded_When_ValidCollection_IReadOnlyCollection(bool isValid, string message, IMessageArg[] args)
-            {
-                var collectionsGroup = new CollectionHolder<IReadOnlyCollection<object>>
-                {
-                    Items = new ReadOnlyCollection<object>(new List<object> {new object()})
-                };
-
-                var builder = new SpecificationBuilder<CollectionHolder<IReadOnlyCollection<object>>>();
-
-                var executed = 0;
-                builder.For(m => m.Items, be => be.ValidCollection(c => c.Valid(m =>
-                {
-                    Assert.Equal(collectionsGroup.Items.Single(), m);
-                    // ReSharper disable once AccessToModifiedClosure
-                    executed++;
-
-                    return isValid;
-                }, message, args)));
-
-                TestCollection(collectionsGroup, builder, ref executed, isValid, message, args);
-            }
-
-            [Theory]
-            [MemberData(nameof(TrueFalse_ValidErrorAndArgsCombinations_Data), MemberType = typeof(SpecificationBuilderTests))]
-            public void Should_ValidCollectionRule_BeAdded_When_ValidCollection_List(bool isValid, string message, IMessageArg[] args)
-            {
-                var collectionsGroup = new CollectionHolder<List<object>>
-                {
-                    Items = new List<object> {new object()}
-                };
-
-                var builder = new SpecificationBuilder<CollectionHolder<List<object>>>();
-
-                var executed = 0;
-                builder.For(m => m.Items, be => be.ValidCollection(c => c.Valid(m =>
-                {
-                    Assert.Equal(collectionsGroup.Items.Single(), m);
-                    // ReSharper disable once AccessToModifiedClosure
-                    executed++;
-
-                    return isValid;
-                }, message, args)));
-
-                TestCollection(collectionsGroup, builder, ref executed, isValid, message, args);
-            }
-
-            [Theory]
-            [MemberData(nameof(TrueFalse_ValidErrorAndArgsCombinations_Data), MemberType = typeof(SpecificationBuilderTests))]
-            public void Should_ValidCollectionRule_BeAdded_When_ValidCollection_IList(bool isValid, string message, IMessageArg[] args)
-            {
-                var collectionsGroup = new CollectionHolder<IList<object>>
-                {
-                    Items = new List<object> {new object()}
-                };
-
-                var builder = new SpecificationBuilder<CollectionHolder<IList<object>>>();
-
-                var executed = 0;
-                builder.For(m => m.Items, be => be.ValidCollection(c => c.Valid(m =>
-                {
-                    Assert.Equal(collectionsGroup.Items.Single(), m);
-                    // ReSharper disable once AccessToModifiedClosure
-                    executed++;
-
-                    return isValid;
-                }, message, args)));
-
-                TestCollection(collectionsGroup, builder, ref executed, isValid, message, args);
-            }
-
-            [Theory]
-            [MemberData(nameof(TrueFalse_ValidErrorAndArgsCombinations_Data), MemberType = typeof(SpecificationBuilderTests))]
-            public void Should_ValidCollectionRule_BeAdded_When_ValidModelsCollection_Array(bool isValid, string message, IMessageArg[] args)
-            {
-                var collectionsGroup = new CollectionHolder<object[]>
-                {
-                    Items = new[] {new object()}
-                };
-
-                var builder = new SpecificationBuilder<CollectionHolder<object[]>>();
-
-                var executed = 0;
-                builder.For(m => m.Items, be => be.ValidModelsCollection(c => c.Valid(m =>
-                {
-                    Assert.Equal(collectionsGroup.Items.Single(), m);
-                    // ReSharper disable once AccessToModifiedClosure
-                    executed++;
-
-                    return isValid;
-                }, message, args)));
-
-                TestCollection(collectionsGroup, builder, ref executed, isValid, message, args);
-            }
-
-            [Theory]
-            [MemberData(nameof(TrueFalse_ValidErrorAndArgsCombinations_Data), MemberType = typeof(SpecificationBuilderTests))]
-            public void Should_ValidCollectionRule_BeAdded_When_ValidModelsCollection_IEnumerable(bool isValid, string message, IMessageArg[] args)
-            {
-                var collectionsGroup = new CollectionHolder<IEnumerable<object>>
-                {
-                    Items = new[] {new object()}
-                };
-
-                var builder = new SpecificationBuilder<CollectionHolder<IEnumerable<object>>>();
-
-                var executed = 0;
-                builder.For(m => m.Items, be => be.ValidModelsCollection(c => c.Valid(m =>
-                {
-                    Assert.Equal(collectionsGroup.Items.Single(), m);
-                    // ReSharper disable once AccessToModifiedClosure
-                    executed++;
-
-                    return isValid;
-                }, message, args)));
-
-                TestCollection(collectionsGroup, builder, ref executed, isValid, message, args);
-            }
-
-            [Theory]
-            [MemberData(nameof(TrueFalse_ValidErrorAndArgsCombinations_Data), MemberType = typeof(SpecificationBuilderTests))]
-            public void Should_ValidCollectionRule_BeAdded_When_ValidModelsCollection_Collection(bool isValid, string message, IMessageArg[] args)
-            {
-                var collectionsGroup = new CollectionHolder<Collection<object>>
-                {
-                    Items = new Collection<object>(new List<object> {new object()})
-                };
-
-                var builder = new SpecificationBuilder<CollectionHolder<Collection<object>>>();
-
-                var executed = 0;
-                builder.For(m => m.Items, be => be.ValidModelsCollection(c => c.Valid(m =>
-                {
-                    Assert.Equal(collectionsGroup.Items.Single(), m);
-                    // ReSharper disable once AccessToModifiedClosure
-                    executed++;
-
-                    return isValid;
-                }, message, args)));
-
-                TestCollection(collectionsGroup, builder, ref executed, isValid, message, args);
-            }
-
-            [Theory]
-            [MemberData(nameof(TrueFalse_ValidErrorAndArgsCombinations_Data), MemberType = typeof(SpecificationBuilderTests))]
-            public void Should_ValidCollectionRule_BeAdded_When_ValidModelsCollection_ICollection(bool isValid, string message, IMessageArg[] args)
-            {
-                var collectionsGroup = new CollectionHolder<ICollection<object>>
-                {
-                    Items = new Collection<object>(new List<object> {new object()})
-                };
-
-                var builder = new SpecificationBuilder<CollectionHolder<ICollection<object>>>();
-
-                var executed = 0;
-                builder.For(m => m.Items, be => be.ValidModelsCollection(c => c.Valid(m =>
-                {
-                    Assert.Equal(collectionsGroup.Items.Single(), m);
-                    // ReSharper disable once AccessToModifiedClosure
-                    executed++;
-
-                    return isValid;
-                }, message, args)));
-
-                TestCollection(collectionsGroup, builder, ref executed, isValid, message, args);
-            }
-
-            [Theory]
-            [MemberData(nameof(TrueFalse_ValidErrorAndArgsCombinations_Data), MemberType = typeof(SpecificationBuilderTests))]
-            public void Should_ValidCollectionRule_BeAdded_When_ValidModelsCollection_ReadOnlyCollection(bool isValid, string message, IMessageArg[] args)
-            {
-                var collectionsGroup = new CollectionHolder<ReadOnlyCollection<object>>
-                {
-                    Items = new ReadOnlyCollection<object>(new List<object> {new object()})
-                };
-
-                var builder = new SpecificationBuilder<CollectionHolder<ReadOnlyCollection<object>>>();
-
-                var executed = 0;
-                builder.For(m => m.Items, be => be.ValidModelsCollection(c => c.Valid(m =>
-                {
-                    Assert.Equal(collectionsGroup.Items.Single(), m);
-                    // ReSharper disable once AccessToModifiedClosure
-                    executed++;
-
-                    return isValid;
-                }, message, args)));
-
-                TestCollection(collectionsGroup, builder, ref executed, isValid, message, args);
-            }
-
-            [Theory]
-            [MemberData(nameof(TrueFalse_ValidErrorAndArgsCombinations_Data), MemberType = typeof(SpecificationBuilderTests))]
-            public void Should_ValidCollectionRule_BeAdded_When_ValidModelsCollection_IReadOnlyCollection(bool isValid, string message, IMessageArg[] args)
-            {
-                var collectionsGroup = new CollectionHolder<IReadOnlyCollection<object>>
-                {
-                    Items = new ReadOnlyCollection<object>(new List<object> {new object()})
-                };
-
-                var builder = new SpecificationBuilder<CollectionHolder<IReadOnlyCollection<object>>>();
-
-                var executed = 0;
-                builder.For(m => m.Items, be => be.ValidModelsCollection(c => c.Valid(m =>
-                {
-                    Assert.Equal(collectionsGroup.Items.Single(), m);
-                    // ReSharper disable once AccessToModifiedClosure
-                    executed++;
-
-                    return isValid;
-                }, message, args)));
-
-                TestCollection(collectionsGroup, builder, ref executed, isValid, message, args);
-            }
-
-            [Theory]
-            [MemberData(nameof(TrueFalse_ValidErrorAndArgsCombinations_Data), MemberType = typeof(SpecificationBuilderTests))]
-            public void Should_ValidCollectionRule_BeAdded_When_ValidModelsCollection_List(bool isValid, string message, IMessageArg[] args)
-            {
-                var collectionsGroup = new CollectionHolder<List<object>>
-                {
-                    Items = new List<object> {new object()}
-                };
-
-                var builder = new SpecificationBuilder<CollectionHolder<List<object>>>();
-
-                var executed = 0;
-                builder.For(m => m.Items, be => be.ValidModelsCollection(c => c.Valid(m =>
-                {
-                    Assert.Equal(collectionsGroup.Items.Single(), m);
-                    // ReSharper disable once AccessToModifiedClosure
-                    executed++;
-
-                    return isValid;
-                }, message, args)));
-
-                TestCollection(collectionsGroup, builder, ref executed, isValid, message, args);
-            }
-
-            [Theory]
-            [MemberData(nameof(TrueFalse_ValidErrorAndArgsCombinations_Data), MemberType = typeof(SpecificationBuilderTests))]
-            public void Should_ValidCollectionRule_BeAdded_When_ValidModelsCollection_IList(bool isValid, string message, IMessageArg[] args)
-            {
-                var collectionsGroup = new CollectionHolder<IList<object>>
-                {
-                    Items = new List<object> {new object()}
-                };
-
-                var builder = new SpecificationBuilder<CollectionHolder<IList<object>>>();
-
-                var executed = 0;
-                builder.For(m => m.Items, be => be.ValidModelsCollection(c => c.Valid(m =>
-                {
-                    Assert.Equal(collectionsGroup.Items.Single(), m);
-                    // ReSharper disable once AccessToModifiedClosure
-                    executed++;
-
-                    return isValid;
-                }, message, args)));
-
-                TestCollection(collectionsGroup, builder, ref executed, isValid, message, args);
-            }
-
-
-            private class CollectionHolder<T>
-            {
-                public T Items { get; set; }
-            }
+            // ReSharper disable once UnassignedGetOnlyAutoProperty
+            public string Property { get; }
         }
 
-        private class User
+        public class CustomCommand : ICommand
         {
-            public string Email { get; set; }
-
-            public DateTime? FirstLogin { get; set; }
-
-            public bool IsAdmin { get; set; }
-
-            public Address Address { get; set; }
-
-            public IEnumerable<Address> PastAddresses { get; set; }
+            // ReSharper disable once UnassignedGetOnlyAutoProperty
+            public string Name { get; }
         }
 
-        private class Address
+        [Fact]
+        public void Should_AddCommand()
         {
+            var builder = new SpecificationBuilder<MemberClass>();
+
+            var command = new CustomCommand();
+
+            builder.AddCommand(command);
+
+            Assert.Single(builder.Commands);
+            Assert.Same(command, builder.Commands.Single());
         }
 
-        private class InvalidMemberModels
+        [Fact]
+        public void Should_AddCommand_ThrowException_When_NullCommand()
         {
-            public readonly int Field = 0;
+            var builder = new SpecificationBuilder<MemberClass>();
 
-            public string Method()
-            {
-                return null;
-            }
+            Assert.Throws<ArgumentNullException>(() => { builder.AddCommand(null); });
         }
     }
 }

@@ -22,7 +22,7 @@ namespace CoreValidation.UnitTests.Results.List
         }
 
         [Fact]
-        public void ToString_Should_CombineAllMessages_When_ErrorMessages_And_Duplicates()
+        public void ToString_Should_CombineAllMessages_When_ErrorMessages_And_WithoutDuplicates()
         {
             var listReport = new ListReport
             {
@@ -34,7 +34,7 @@ namespace CoreValidation.UnitTests.Results.List
                 "Test1"
             };
 
-            var expected = $"Test1{Environment.NewLine}Test2{Environment.NewLine}Test3{Environment.NewLine}Test3{Environment.NewLine}Test2{Environment.NewLine}Test1{Environment.NewLine}";
+            var expected = $"Test1{Environment.NewLine}Test2{Environment.NewLine}Test3{Environment.NewLine}";
 
             Assert.Equal(expected, listReport.ToString());
         }

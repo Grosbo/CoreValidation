@@ -10,40 +10,39 @@ namespace CoreValidation.WorkloadTests.Models
     public class SignUpModelSpecification : ISpecificationHolder<SignUpModel>
     {
         private static readonly Specification<AddressModel> _addressSpecification = specs => specs
-            .For(m => m.Street, be => be.NotWhiteSpace())
-            .For(m => m.PostCode, be => be.MaxLength(10))
-            .For(m => m.CountryId, be => be.GreaterThan(0))
+            .Member(m => m.Street, be => be.NotWhiteSpace())
+            .Member(m => m.PostCode, be => be.MaxLength(10))
+            .Member(m => m.CountryId, be => be.GreaterThan(0))
             .Valid(m => (m.Street != null) &&
                         (m.PostCode != null) &&
-                        !m.Street.Contains(m.PostCode),
-                "Both street and postcode are required and need to put separate");
+                        !m.Street.Contains(m.PostCode))
+            .WithMessage("Both street and postcode are required and need to put separate");
 
         private static readonly Specification<SignUpModel> _signUpSpecification = signUpSpecs => signUpSpecs
-            .For(m => m.Email, be => be.Email())
-            .For(m => m.Name, be => be
-                .Optional()
+            .Member(m => m.Email, be => be.Email())
+            .Member(m => m.Name, be => be
+                .SetOptional()
                 .LengthBetween(6, 15)
                 .Valid(v => char.IsLetter(v.FirstOrDefault()), "Must start with a letter")
                 .Valid(v => v.All(char.IsLetterOrDigit), "Must contains only letters and digits"))
-            .For(m => m.Password, be => be
+            .Member(m => m.Password, be => be
                 .MinLength(6)
                 .NotWhiteSpace()
                 .Valid(v => v.Any(char.IsUpper) && v.Any(char.IsDigit))
-                .WithSummaryError("Minimum 6 characters, at least one upper case and one digit"))
-            .For(m => m.PasswordConfirmation, be => be
-                .WithName("Confirmation")
-                .ValidRelative(m => m.Password == m.PasswordConfirmation, "Confirmation doesn't match password"))
-            .For(m => m.Address, be => be.ValidModel(_addressSpecification))
-            .For(m => m.Tags, be => be
-                .NotEmptyCollection("At least one tag is required")
-                .MaxCollectionSize(5, "Max {max} tags allowed")
-                .ValidCollection(i => i
+                .SetSingleError("Minimum 6 characters, at least one upper case and one digit"))
+            .Member(m => m.PasswordConfirmation, be => be
+                .AsRelative(m => m.Password == m.PasswordConfirmation).WithMessage("Confirmation doesn't match password"))
+            .Member(m => m.Address, be => be.AsModel(_addressSpecification))
+            .Member(m => m.Tags, be => be
+                .NotEmptyCollection().WithMessage("At least one tag is required")
+                .MaxCollectionSize(5).WithMessage("Max {max} tags allowed")
+                .AsCollection(i => i
                     .NotWhiteSpace()
                     .MaxLength(10)
-                    .Valid(v => v.All(char.IsLetter), "Tag can contains only letters")))
-            .For(m => m.DateOfBirth, be => be
-                .WithRequiredError("Date of birth is required")
-                .After(new DateTime(1900, 1, 1), message: "Earliest allowed date is {min|format=yyyy-MM-dd}"));
+                    .Valid(v => v.All(char.IsLetter)).WithMessage("Tag can contains only letters")))
+            .Member(m => m.DateOfBirth, be => be
+                .SetRequired("Date of birth is required")
+                .After(new DateTime(1900, 1, 1)).WithMessage("Earliest allowed date is {min|format=yyyy-MM-dd}"));
 
 
         public TranslationsPackage TranslationsPackage => new TranslationsPackage

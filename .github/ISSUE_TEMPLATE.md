@@ -1,12 +1,10 @@
-## Question or request?
-(if not bug, please ignore/delete the "BUG" section and fill the "ENVIRONMENT" section if needed)
-
-## Bug?
+## Question/Request/Bug (leave one)
 
 ### Current behavior
+(you can ignore this template, but following will be very helpful)
 (what's going on? logs? examples?)
 
-#### Steps to reproduce:
+### Steps to reproduce:
 
   1.
   2.

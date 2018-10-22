@@ -80,7 +80,7 @@ namespace CoreValidation.UnitTests.Results.List
 
             errorsCollection.AddError("member", level1);
 
-            var result = ResultsTestHelpers.MockValidationResult(errorsCollection, new ExecutionOptionsStub {MaxDepth = maxDepth, CollectionForceKey = "*", RequiredError = new Error("Required")});
+            var result = ResultsTestHelpers.MockValidationResult(errorsCollection, new ExecutionContextStub {MaxDepth = maxDepth, CollectionForceKey = "*", RequiredError = new Error("Required")});
 
             if (expectException)
             {
@@ -166,6 +166,27 @@ namespace CoreValidation.UnitTests.Results.List
         }
 
         [Fact]
+        public void ToListReport_Should_Generate_MemberMessages_WithoutDuplicates()
+        {
+            var errorsCollection = new ErrorsCollection();
+
+            errorsCollection.AddError("test", new Error("test123"));
+            errorsCollection.AddError("test", new Error("test321"));
+            errorsCollection.AddError("test", new Error("test321"));
+            errorsCollection.AddError("test", new Error("test123"));
+            errorsCollection.AddError("test", new Error("foo"));
+            errorsCollection.AddError("test", new Error("foo"));
+            errorsCollection.AddError("test", new Error("bar"));
+            errorsCollection.AddError("test", new Error("bar"));
+
+            var report = ResultsTestHelpers.MockValidationResult(errorsCollection).ToListReport();
+
+            ExpectMembersInReport(report, "", new[] {"test"});
+
+            ExpectMessagesInReport(report, "test", new[] {"test123", "test321", "foo", "bar"});
+        }
+
+        [Fact]
         public void ToListReport_Should_Generate_NestedLevel()
         {
             var errorsCollection = new ErrorsCollection();
@@ -213,6 +234,28 @@ namespace CoreValidation.UnitTests.Results.List
             errorsCollection.AddError("test", new Error("test123"));
             errorsCollection.AddError("test", new Error("test321"));
             errorsCollection.AddError(new Error("foo"));
+            errorsCollection.AddError(new Error("bar"));
+
+            var report = ResultsTestHelpers.MockValidationResult(errorsCollection).ToListReport();
+
+            ExpectMembersInReport(report, "", new[] {"test"});
+            ExpectMessagesInReport(report, "test", new[] {"test123", "test321"});
+
+            ExpectMessagesInReport(report, "", new[] {"foo", "bar"});
+        }
+
+        [Fact]
+        public void ToListReport_Should_Generate_RootMessages_And_MemberMessages_And_WithoutDuplicates()
+        {
+            var errorsCollection = new ErrorsCollection();
+
+            errorsCollection.AddError("test", new Error("test123"));
+            errorsCollection.AddError("test", new Error("test321"));
+            errorsCollection.AddError("test", new Error("test321"));
+            errorsCollection.AddError("test", new Error("test123"));
+            errorsCollection.AddError(new Error("foo"));
+            errorsCollection.AddError(new Error("foo"));
+            errorsCollection.AddError(new Error("bar"));
             errorsCollection.AddError(new Error("bar"));
 
             var report = ResultsTestHelpers.MockValidationResult(errorsCollection).ToListReport();

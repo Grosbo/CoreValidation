@@ -4,8 +4,8 @@
     {
         string TranslationName { get; }
 
-        ValidationStrategy ValidationStrategy { get; }
-
         NullRootStrategy NullRootStrategy { get; }
+
+        ValidationStrategy ValidationStrategy { get; }
     }
 }

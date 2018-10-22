@@ -26,11 +26,12 @@ namespace CoreValidation.FunctionalTests.Readme
 
             // Setting the rules for the model:
             Specification<LoginModel> loginSpecification = login => login
-                .For(m => m.Email, be => be
+                .Member(m => m.Email, be => be
                     .Email()
                     .MaxLength(50)
-                    .Valid(email => email.EndsWith("gmail.com"), "Only gmails are accepted"))
-                .For(m => m.Password, be => be.NotEmpty());
+                    .Valid(email => email.EndsWith("gmail.com"))
+                    .WithMessage("Only gmails are accepted"))
+                .Member(m => m.Password, be => be.NotEmpty());
 
             var loginModel = JsonConvert.DeserializeObject<LoginModel>(incomingJson);
 

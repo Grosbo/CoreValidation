@@ -44,7 +44,10 @@ namespace CoreValidation
 
             if (errorsCollection.Errors.Any())
             {
-                var errors = errorsCollection.Errors.Select(e => translator(e));
+                var errors = errorsCollection.Errors
+                    .Select(e => translator(e))
+                    .Distinct()
+                    .ToList();
 
                 errorsList.AddRange(errors);
             }

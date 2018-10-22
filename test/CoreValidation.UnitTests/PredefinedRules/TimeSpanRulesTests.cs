@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using CoreValidation.Specifications;
+using CoreValidation.Errors.Args;
+using CoreValidation.Tests;
 using Xunit;
 
 namespace CoreValidation.UnitTests.PredefinedRules
@@ -20,13 +21,17 @@ namespace CoreValidation.UnitTests.PredefinedRules
 
         [Theory]
         [MemberData(nameof(EqualTo_Should_CollectError_Data))]
-        public void EqualTo_Should_CollectError(TimeSpan model, TimeSpan value, bool expectedIsValid)
+        public void EqualTo_Should_CollectError(TimeSpan memberValue, TimeSpan argValue, bool expectedIsValid)
         {
-            var builder = new MemberSpecificationBuilder<object, TimeSpan>();
-
-            builder.EqualTo(value);
-
-            RulesHelper.AssertErrorCompilation(model, builder.Rules, expectedIsValid, Phrases.Keys.TimeSpan.EqualTo);
+            Tester.TestSingleMemberRule(
+                m => m.EqualTo(argValue),
+                memberValue,
+                expectedIsValid,
+                Phrases.Keys.TimeSpan.EqualTo,
+                new IMessageArg[]
+                {
+                    TimeArg.Create("value", argValue)
+                });
         }
 
         public static IEnumerable<object[]> NotEqualTo_Should_CollectError_Data()
@@ -40,13 +45,17 @@ namespace CoreValidation.UnitTests.PredefinedRules
 
         [Theory]
         [MemberData(nameof(NotEqualTo_Should_CollectError_Data))]
-        public void NotEqualTo_Should_CollectError(TimeSpan model, TimeSpan value, bool expectedIsValid)
+        public void NotEqualTo_Should_CollectError(TimeSpan memberValue, TimeSpan argValue, bool expectedIsValid)
         {
-            var builder = new MemberSpecificationBuilder<object, TimeSpan>();
-
-            builder.NotEqualTo(value);
-
-            RulesHelper.AssertErrorCompilation(model, builder.Rules, expectedIsValid, Phrases.Keys.TimeSpan.NotEqualTo);
+            Tester.TestSingleMemberRule(
+                m => m.NotEqualTo(argValue),
+                memberValue,
+                expectedIsValid,
+                Phrases.Keys.TimeSpan.NotEqualTo,
+                new IMessageArg[]
+                {
+                    TimeArg.Create("value", argValue)
+                });
         }
 
         public static IEnumerable<object[]> GreaterThan_Should_CollectError_Data()
@@ -60,13 +69,17 @@ namespace CoreValidation.UnitTests.PredefinedRules
 
         [Theory]
         [MemberData(nameof(GreaterThan_Should_CollectError_Data))]
-        public void GreaterThan_Should_CollectError(TimeSpan model, TimeSpan min, bool expectedIsValid)
+        public void GreaterThan_Should_CollectError(TimeSpan memberValue, TimeSpan min, bool expectedIsValid)
         {
-            var builder = new MemberSpecificationBuilder<object, TimeSpan>();
-
-            builder.GreaterThan(min);
-
-            RulesHelper.AssertErrorCompilation(model, builder.Rules, expectedIsValid, Phrases.Keys.TimeSpan.GreaterThan);
+            Tester.TestSingleMemberRule(
+                m => m.GreaterThan(min),
+                memberValue,
+                expectedIsValid,
+                Phrases.Keys.TimeSpan.GreaterThan,
+                new IMessageArg[]
+                {
+                    TimeArg.Create("min", min)
+                });
         }
 
         public static IEnumerable<object[]> GreaterOrEqualTo_Should_CollectError_Data()
@@ -80,13 +93,17 @@ namespace CoreValidation.UnitTests.PredefinedRules
 
         [Theory]
         [MemberData(nameof(GreaterOrEqualTo_Should_CollectError_Data))]
-        public void GreaterOrEqualTo_Should_CollectError(TimeSpan model, TimeSpan min, bool expectedIsValid)
+        public void GreaterOrEqualTo_Should_CollectError(TimeSpan memberValue, TimeSpan min, bool expectedIsValid)
         {
-            var builder = new MemberSpecificationBuilder<object, TimeSpan>();
-
-            builder.GreaterOrEqualTo(min);
-
-            RulesHelper.AssertErrorCompilation(model, builder.Rules, expectedIsValid, Phrases.Keys.TimeSpan.GreaterOrEqualTo);
+            Tester.TestSingleMemberRule(
+                m => m.GreaterOrEqualTo(min),
+                memberValue,
+                expectedIsValid,
+                Phrases.Keys.TimeSpan.GreaterOrEqualTo,
+                new IMessageArg[]
+                {
+                    TimeArg.Create("min", min)
+                });
         }
 
         public static IEnumerable<object[]> LessThan_Should_CollectError_Data()
@@ -100,13 +117,17 @@ namespace CoreValidation.UnitTests.PredefinedRules
 
         [Theory]
         [MemberData(nameof(LessThan_Should_CollectError_Data))]
-        public void LessThan_Should_CollectError(TimeSpan model, TimeSpan max, bool expectedIsValid)
+        public void LessThan_Should_CollectError(TimeSpan memberValue, TimeSpan max, bool expectedIsValid)
         {
-            var builder = new MemberSpecificationBuilder<object, TimeSpan>();
-
-            builder.LessThan(max);
-
-            RulesHelper.AssertErrorCompilation(model, builder.Rules, expectedIsValid, Phrases.Keys.TimeSpan.LessThan);
+            Tester.TestSingleMemberRule(
+                m => m.LessThan(max),
+                memberValue,
+                expectedIsValid,
+                Phrases.Keys.TimeSpan.LessThan,
+                new IMessageArg[]
+                {
+                    TimeArg.Create("max", max)
+                });
         }
 
         public static IEnumerable<object[]> LessOrEqualTo_Should_CollectError_Data()
@@ -120,13 +141,17 @@ namespace CoreValidation.UnitTests.PredefinedRules
 
         [Theory]
         [MemberData(nameof(LessOrEqualTo_Should_CollectError_Data))]
-        public void LessOrEqualTo_Should_CollectError(TimeSpan model, TimeSpan max, bool expectedIsValid)
+        public void LessOrEqualTo_Should_CollectError(TimeSpan memberValue, TimeSpan max, bool expectedIsValid)
         {
-            var builder = new MemberSpecificationBuilder<object, TimeSpan>();
-
-            builder.LessOrEqualTo(max);
-
-            RulesHelper.AssertErrorCompilation(model, builder.Rules, expectedIsValid, Phrases.Keys.TimeSpan.LessOrEqualTo);
+            Tester.TestSingleMemberRule(
+                m => m.LessOrEqualTo(max),
+                memberValue,
+                expectedIsValid,
+                Phrases.Keys.TimeSpan.LessOrEqualTo,
+                new IMessageArg[]
+                {
+                    TimeArg.Create("max", max)
+                });
         }
 
         public static IEnumerable<object[]> Between_Should_CollectError_Data()
@@ -140,13 +165,18 @@ namespace CoreValidation.UnitTests.PredefinedRules
 
         [Theory]
         [MemberData(nameof(Between_Should_CollectError_Data))]
-        public void Between_Should_CollectError(TimeSpan min, TimeSpan model, TimeSpan max, bool expectedIsValid)
+        public void Between_Should_CollectError(TimeSpan min, TimeSpan memberValue, TimeSpan max, bool expectedIsValid)
         {
-            var builder = new MemberSpecificationBuilder<object, TimeSpan>();
-
-            builder.Between(min, max);
-
-            RulesHelper.AssertErrorCompilation(model, builder.Rules, expectedIsValid, Phrases.Keys.TimeSpan.Between);
+            Tester.TestSingleMemberRule(
+                m => m.Between(min, max),
+                memberValue,
+                expectedIsValid,
+                Phrases.Keys.TimeSpan.Between,
+                new IMessageArg[]
+                {
+                    TimeArg.Create("min", min),
+                    TimeArg.Create("max", max)
+                });
         }
 
         public static IEnumerable<object[]> BetweenOrEqualTo_Should_CollectError_Data()
@@ -160,96 +190,18 @@ namespace CoreValidation.UnitTests.PredefinedRules
 
         [Theory]
         [MemberData(nameof(BetweenOrEqualTo_Should_CollectError_Data))]
-        public void BetweenOrEqualTo_Should_CollectError(TimeSpan min, TimeSpan model, TimeSpan max, bool expectedIsValid)
+        public void BetweenOrEqualTo_Should_CollectError(TimeSpan min, TimeSpan memberValue, TimeSpan max, bool expectedIsValid)
         {
-            var builder = new MemberSpecificationBuilder<object, TimeSpan>();
-
-            builder.BetweenOrEqualTo(min, max);
-
-            RulesHelper.AssertErrorCompilation(model, builder.Rules, expectedIsValid, Phrases.Keys.TimeSpan.BetweenOrEqualTo);
-        }
-
-        public class MessageTests
-        {
-            [Fact]
-            public void Between_Should_SetCustomMessage()
-            {
-                var builder = new MemberSpecificationBuilder<object, TimeSpan>();
-
-                builder.Between(TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(3), "{min} {max} Overriden error message");
-
-                RulesHelper.AssertErrorMessage(TimeSpan.FromMinutes(4), builder.Rules, "{min} {max} Overriden error message", "00:01:00 00:03:00 Overriden error message");
-            }
-
-            [Fact]
-            public void BetweenOrEqualTo_Should_SetCustomMessage()
-            {
-                var builder = new MemberSpecificationBuilder<object, TimeSpan>();
-
-                builder.BetweenOrEqualTo(TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(3), "{min} {max} Overriden error message");
-
-                RulesHelper.AssertErrorMessage(TimeSpan.FromMinutes(4), builder.Rules, "{min} {max} Overriden error message", "00:01:00 00:03:00 Overriden error message");
-            }
-
-            [Fact]
-            public void EqualTo_Should_SetCustomMessage()
-            {
-                var builder = new MemberSpecificationBuilder<object, TimeSpan>();
-
-                builder.EqualTo(TimeSpan.FromMinutes(0), "{value} Overriden error message");
-
-                RulesHelper.AssertErrorMessage(TimeSpan.FromMinutes(4), builder.Rules, "{value} Overriden error message", "00:00:00 Overriden error message");
-            }
-
-            [Fact]
-            public void GreaterOrEqual_Should_SetCustomMessage()
-            {
-                var builder = new MemberSpecificationBuilder<object, TimeSpan>();
-
-                builder.GreaterOrEqualTo(TimeSpan.FromMinutes(2), "{min} Overriden error message");
-
-                RulesHelper.AssertErrorMessage(TimeSpan.FromMinutes(1), builder.Rules, "{min} Overriden error message", "00:02:00 Overriden error message");
-            }
-
-            [Fact]
-            public void GreaterThan_Should_SetCustomMessage()
-            {
-                var builder = new MemberSpecificationBuilder<object, TimeSpan>();
-
-                builder.GreaterThan(TimeSpan.FromMinutes(2), "{min} Overriden error message");
-
-                RulesHelper.AssertErrorMessage(TimeSpan.FromMinutes(1), builder.Rules, "{min} Overriden error message", "00:02:00 Overriden error message");
-            }
-
-            [Fact]
-            public void LessThan_Should_SetCustomMessage()
-            {
-                var builder = new MemberSpecificationBuilder<object, TimeSpan>();
-
-                builder.LessThan(TimeSpan.FromMinutes(1), "{max} Overriden error message");
-
-                RulesHelper.AssertErrorMessage(TimeSpan.FromMinutes(2), builder.Rules, "{max} Overriden error message", "00:01:00 Overriden error message");
-            }
-
-            [Fact]
-            public void LessThanOrEqual_Should_SetCustomMessage()
-            {
-                var builder = new MemberSpecificationBuilder<object, TimeSpan>();
-
-                builder.LessOrEqualTo(TimeSpan.FromMinutes(1), "{max} Overriden error message");
-
-                RulesHelper.AssertErrorMessage(TimeSpan.FromMinutes(2), builder.Rules, "{max} Overriden error message", "00:01:00 Overriden error message");
-            }
-
-            [Fact]
-            public void NotEqualTo_Should_SetCustomMessage()
-            {
-                var builder = new MemberSpecificationBuilder<object, TimeSpan>();
-
-                builder.NotEqualTo(TimeSpan.FromMinutes(4), "{value} Overriden error message");
-
-                RulesHelper.AssertErrorMessage(TimeSpan.FromMinutes(4), builder.Rules, "{value} Overriden error message", "00:04:00 Overriden error message");
-            }
+            Tester.TestSingleMemberRule(
+                m => m.BetweenOrEqualTo(min, max),
+                memberValue,
+                expectedIsValid,
+                Phrases.Keys.TimeSpan.BetweenOrEqualTo,
+                new IMessageArg[]
+                {
+                    TimeArg.Create("min", min),
+                    TimeArg.Create("max", max)
+                });
         }
     }
 }

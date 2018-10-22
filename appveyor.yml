@@ -9,7 +9,6 @@ image:
 
 skip_commits:
   files:
-    - docs/*
     - .github/*
     - '**/*.md'
     - test/CoreValidation.PerformanceTests/*

@@ -8,26 +8,35 @@ namespace CoreValidation.Validators
     {
         private readonly Lazy<ErrorsCollection> _defaultErrorCollection;
 
-        public ExecutionContext()
+        public ExecutionContext(IExecutionOptions executionOptions, IValidatorsFactory validatorsFactory)
         {
+            CollectionForceKey = executionOptions.CollectionForceKey;
+            RequiredError = executionOptions.RequiredError;
+            DefaultError = executionOptions.DefaultError;
+            MaxDepth = executionOptions.MaxDepth;
+            ValidatorsFactory = validatorsFactory;
+
             _defaultErrorCollection = new Lazy<ErrorsCollection>(() =>
             {
-                if (ExecutionOptions?.DefaultError == null)
+                if (DefaultError == null)
                 {
                     return null;
                 }
 
                 var defaultErrorCollection = new ErrorsCollection();
-                defaultErrorCollection.AddError(ExecutionOptions.DefaultError);
+                defaultErrorCollection.AddError(DefaultError);
 
                 return defaultErrorCollection;
             });
         }
 
-        public IExecutionOptions ExecutionOptions { get; set; }
         public IValidatorsFactory ValidatorsFactory { get; set; }
-        public ValidationStrategy ValidationStrategy { get; set; }
 
         public IErrorsCollection DefaultErrorAsCollection => _defaultErrorCollection.Value;
+
+        public string CollectionForceKey { get; }
+        public IError RequiredError { get; }
+        public IError DefaultError { get; }
+        public int MaxDepth { get; }
     }
 }

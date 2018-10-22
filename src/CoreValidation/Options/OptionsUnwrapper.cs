@@ -8,10 +8,7 @@ namespace CoreValidation.Options
     {
         private static IValidationContextOptions Unwrap(IValidationContextOptions wrapped, Func<ValidationContextOptions, ValidationContextOptions> processUnwrapped)
         {
-            if (!(wrapped is ValidationContextOptions unwrapped))
-            {
-                throw new InvalidOperationException($"Invalid reference of {nameof(IValidationContextOptions)}");
-            }
+            var unwrapped = (ValidationContextOptions)wrapped;
 
             var processedUnwrapped = processUnwrapped(unwrapped);
 
@@ -20,15 +17,7 @@ namespace CoreValidation.Options
 
         public static IValidationOptions UnwrapValidationOptions(IValidationOptions wrapped, Action<ValidationOptions> processUnwrapped)
         {
-            if (wrapped == null)
-            {
-                throw new ArgumentNullException(nameof(wrapped));
-            }
-
-            if (!(wrapped is ValidationOptions unwrapped))
-            {
-                throw new InvalidOperationException($"Invalid reference of {nameof(IValidationOptions)}");
-            }
+            var unwrapped = (ValidationOptions)wrapped;
 
             processUnwrapped(unwrapped);
 
@@ -47,11 +36,6 @@ namespace CoreValidation.Options
 
         public static IValidationContextOptions UnwrapSpecifications(IValidationContextOptions wrapped, Action<Dictionary<Type, object>> processUnwrapped)
         {
-            if (processUnwrapped == null)
-            {
-                throw new ArgumentNullException(nameof(processUnwrapped));
-            }
-
             return Unwrap(wrapped, options =>
             {
                 processUnwrapped((Dictionary<Type, object>)options.Specifications);

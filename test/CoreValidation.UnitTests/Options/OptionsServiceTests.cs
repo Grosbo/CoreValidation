@@ -442,7 +442,7 @@ namespace CoreValidation.UnitTests.Options
                 Assert.Equal(validationOptions.ValidationStrategy, result.ValidationStrategy);
                 Assert.Equal(validationOptions.TranslationName, result.TranslationName);
                 Assert.Equal(validationOptions.CollectionForceKey, result.CollectionForceKey);
-                Assert.Equal(validationOptions.RequiredError.FormattedMessage, result.RequiredError.FormattedMessage);
+                Assert.Equal(validationOptions.RequiredError.ToFormattedMessage(), result.RequiredError.ToFormattedMessage());
                 Assert.Equal(validationOptions.MaxDepth, result.MaxDepth);
             }
 
@@ -676,7 +676,7 @@ namespace CoreValidation.UnitTests.Options
                 Assert.Equal("[]", result.ValidationOptions.CollectionForceKey);
                 Assert.Equal(5, result.ValidationOptions.MaxDepth);
                 Assert.Equal("Ultimately required", result.ValidationOptions.RequiredError.Message);
-                Assert.Equal("Ultimately required", result.ValidationOptions.RequiredError.FormattedMessage);
+                Assert.Equal("Ultimately required", result.ValidationOptions.RequiredError.ToFormattedMessage());
             }
 
             [Fact]
@@ -839,7 +839,7 @@ namespace CoreValidation.UnitTests.Options
                 Assert.Equal("*", result.ValidationOptions.CollectionForceKey);
                 Assert.Equal(10, result.ValidationOptions.MaxDepth);
                 Assert.Equal("Required", result.ValidationOptions.RequiredError.Message);
-                Assert.Equal("Required", result.ValidationOptions.RequiredError.FormattedMessage);
+                Assert.Equal("Required", result.ValidationOptions.RequiredError.ToFormattedMessage());
             }
         }
 

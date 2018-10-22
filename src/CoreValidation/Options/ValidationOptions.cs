@@ -12,9 +12,9 @@ namespace CoreValidation.Options
 
         public string CollectionForceKey { get; set; }
 
-        public Error RequiredError { get; set; }
+        public IError RequiredError { get; set; }
 
-        public Error DefaultError { get; set; }
+        public IError DefaultError { get; set; }
 
         public int MaxDepth { get; set; }
 

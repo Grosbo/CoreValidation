@@ -6,9 +6,9 @@ namespace CoreValidation.Options
     {
         string CollectionForceKey { get; }
 
-        Error RequiredError { get; }
+        IError RequiredError { get; }
 
-        Error DefaultError { get; }
+        IError DefaultError { get; }
 
         int MaxDepth { get; }
     }

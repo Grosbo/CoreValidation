@@ -6,7 +6,7 @@ namespace CoreValidation.Errors
 {
     public sealed class ErrorsCollection : IErrorsCollection
     {
-        private readonly List<Error> _errors = new List<Error>();
+        private readonly List<IError> _errors = new List<IError>();
 
         private readonly Dictionary<string, ErrorsCollection> _memberErrors = new Dictionary<string, ErrorsCollection>();
 
@@ -14,7 +14,8 @@ namespace CoreValidation.Errors
 
         public bool IsEmpty => !Errors.Any() && !Members.Any();
 
-        public IReadOnlyCollection<Error> Errors => _errors;
+
+        public IReadOnlyCollection<IError> Errors => _errors;
 
         public IReadOnlyDictionary<string, IErrorsCollection> Members => _memberErrors.ToDictionary(pair => pair.Key, pair => pair.Value as IErrorsCollection);
 
@@ -41,20 +42,17 @@ namespace CoreValidation.Errors
             }
         }
 
-        public void AddError(Error error)
+        public void AddError(IError error)
         {
             if (error == null)
             {
                 throw new ArgumentNullException(nameof(error));
             }
 
-            if (!_errors.Any(error.EqualContent))
-            {
-                _errors.Add(error);
-            }
+            _errors.Add(error);
         }
 
-        public void AddError(string memberName, Error error)
+        public void AddError(string memberName, IError error)
         {
             var errorsCollection = new ErrorsCollection();
             errorsCollection.AddError(error);
@@ -90,6 +88,19 @@ namespace CoreValidation.Errors
             }
 
             _memberErrors[memberName].Include(errorsCollection);
+        }
+
+        public static IErrorsCollection WithSingleOrNull(IError error)
+        {
+            if (error == null)
+            {
+                return null;
+            }
+
+            var errorCollection = new ErrorsCollection();
+            errorCollection.AddError(error);
+
+            return errorCollection;
         }
     }
 }

@@ -1,132 +1,95 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using CoreValidation.Errors;
 using CoreValidation.Errors.Args;
-using CoreValidation.Specifications.Rules;
-using CoreValidation.Validators;
+using CoreValidation.Specifications.Commands;
 
 namespace CoreValidation.Specifications
 {
-    internal sealed class MemberSpecificationBuilder<TModel, TMember> : IMemberSpecificationBuilder<TModel, TMember>, IMemberValidator
+    internal sealed class MemberSpecificationBuilder<TModel, TMember> : IMemberSpecificationBuilder<TModel, TMember>
         where TModel : class
     {
-        private List<IRule> _rules;
+        private List<ICommand> _commands;
 
-        public IMemberSpecificationBuilder<TModel, TMember> ValidRelative(Predicate<TModel> isValid, string message = null, IReadOnlyCollection<IMessageArg> args = null)
+        public IReadOnlyCollection<ICommand> Commands => _commands != null
+            ? (IReadOnlyCollection<ICommand>)_commands
+            : Array.Empty<ICommand>();
+
+        public IMemberSpecificationBuilder<TModel, TMember> AsRelative(Predicate<TModel> isValid)
         {
             if (isValid == null)
             {
                 throw new ArgumentNullException(nameof(isValid));
             }
 
-            AddRule(new ValidRelativeRule<TModel>(isValid, Error.CreateValidOrNull(message, args)));
+            AddCommand(new AsRelativeRule<TModel>(isValid));
 
             return this;
         }
 
-        public IMemberSpecificationBuilder<TModel, TMember> Valid(Predicate<TMember> isValid, string message = null, IReadOnlyCollection<IMessageArg> args = null)
+        public IMemberSpecificationBuilder<TModel, TMember> Valid(Predicate<TMember> isValid)
         {
             if (isValid == null)
             {
                 throw new ArgumentNullException(nameof(isValid));
             }
 
-            AddRule(new ValidRule<TMember>(isValid, Error.CreateValidOrNull(message, args)));
+            AddCommand(new ValidRule<TMember>(isValid));
 
             return this;
         }
 
-        public IMemberSpecificationBuilder<TModel, TMember> WithSummaryError(string message, IReadOnlyCollection<IMessageArg> args = null)
+        public IMemberSpecificationBuilder<TModel, TMember> Valid(Predicate<TMember> isValid, string message, IReadOnlyCollection<IMessageArg> args = null)
         {
-            if (message == null)
+            if (isValid == null)
             {
-                throw new ArgumentNullException(nameof(message));
+                throw new ArgumentNullException(nameof(isValid));
             }
 
-            if (SummaryError != null)
-            {
-                throw new InvalidOperationException($"{nameof(WithSummaryError)} can be set only once");
-            }
-
-            SummaryError = new Error(message, args);
+            AddCommand(new ValidRule<TMember>(isValid, Error.CreateValidOrNull(message, args)));
 
             return this;
         }
 
-        public IMemberSpecificationBuilder<TModel, TMember> WithName(string name)
+        public IMemberSpecificationBuilder<TModel, TMember> SetSingleError(string message)
         {
-            if (name == null)
-            {
-                throw new ArgumentNullException(nameof(name));
-            }
-
-            if (string.IsNullOrWhiteSpace(name))
-            {
-                throw new ArgumentException("Name cannot be empty or whitespace", nameof(name));
-            }
-
-            if (Name != null)
-            {
-                throw new InvalidOperationException($"{nameof(WithName)} can be set only once");
-            }
-
-            Name = name;
+            AddCommand(new SetSingleErrorCommand(message));
 
             return this;
         }
 
-        public IReadOnlyCollection<IRule> Rules => _rules != null
-            ? (IReadOnlyCollection<IRule>)_rules
-            : Array.Empty<IRule>();
-
-        public Error SummaryError { get; private set; }
-
-        public string Name { get; private set; }
-
-        public Error RequiredError { get; private set; }
-
-        public bool IsOptional { get; private set; }
-
-        public void AddRule(IRule rule)
+        public IMemberSpecificationBuilder<TModel, TMember> WithMessage(string message)
         {
-            if (rule == null)
-            {
-                throw new ArgumentNullException(nameof(rule));
-            }
-
-            if (_rules == null)
-            {
-                _rules = new List<IRule>();
-            }
-
-            _rules.Add(rule);
-        }
-
-        internal IMemberSpecificationBuilder<TModel, TMember> WithRequiredError(string message, IReadOnlyCollection<IMessageArg> args = null)
-        {
-            if (message == null)
-            {
-                throw new ArgumentNullException(nameof(message));
-            }
-
-            if (RequiredError != null)
-            {
-                throw new InvalidOperationException($"{nameof(WithRequiredError)} can be set only once");
-            }
-
-            RequiredError = new Error(message, args);
+            AddCommand(new WithMessageCommand(message));
 
             return this;
         }
 
-        internal IMemberSpecificationBuilder<TModel, TMember> Optional()
+        public void AddCommand(ICommand command)
         {
-            if (IsOptional)
+            if (command == null)
             {
-                throw new InvalidOperationException($"{nameof(Optional)} can be set only once");
+                throw new ArgumentNullException(nameof(command));
             }
 
-            IsOptional = true;
+            if (_commands == null)
+            {
+                _commands = new List<ICommand>();
+            }
+
+            _commands.Add(command);
+        }
+
+        internal IMemberSpecificationBuilder<TModel, TMember> SetRequired(string message)
+        {
+            AddCommand(new SetRequiredCommand(message));
+
+            return this;
+        }
+
+        internal IMemberSpecificationBuilder<TModel, TMember> SetOptional()
+        {
+            AddCommand(new SetOptionalCommand());
 
             return this;
         }

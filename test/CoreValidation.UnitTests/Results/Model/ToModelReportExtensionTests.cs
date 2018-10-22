@@ -58,7 +58,7 @@ namespace CoreValidation.UnitTests.Results.Model
 
             errorsCollection.AddError("member", level1);
 
-            var result = ResultsTestHelpers.MockValidationResult(errorsCollection, new ExecutionOptionsStub {MaxDepth = maxDepth, CollectionForceKey = "*", RequiredError = new Error("Required")});
+            var result = ResultsTestHelpers.MockValidationResult(errorsCollection, new ExecutionContextStub {MaxDepth = maxDepth, CollectionForceKey = "*", RequiredError = new Error("Required")});
 
             if (expectException)
             {
@@ -145,6 +145,23 @@ namespace CoreValidation.UnitTests.Results.Model
         }
 
         [Fact]
+        public void ToModelReport_Should_Generate_MemberMessages_WithoutDuplicates()
+        {
+            var draft = new ErrorsCollection();
+
+            draft.AddError("test", new Error("bar"));
+            draft.AddError("test", new Error("foo"));
+            draft.AddError("test", new Error("foo"));
+            draft.AddError("test", new Error("bar"));
+
+            var report = (ModelReport)ResultsTestHelpers.MockValidationResult(draft).ToModelReport();
+
+            ExpectMembersInReport(report, new[] {"test"});
+
+            ExpectMessagesInList((ModelReportErrorsList)report["test"], new[] {"bar", "foo"});
+        }
+
+        [Fact]
         public void ToModelReport_Should_Generate_NestedLevel()
         {
             var draft = new ErrorsCollection();
@@ -194,6 +211,37 @@ namespace CoreValidation.UnitTests.Results.Model
             var innerDraft = new ErrorsCollection();
             innerDraft.AddError("inner", new Error("test123"));
             innerDraft.AddError("inner", new Error("test321"));
+
+            draft.AddError("test", innerDraft);
+
+            var report = ResultsTestHelpers.MockValidationResult(draft).ToModelReport() as ModelReport;
+
+            ExpectMembersInReport(report, new[] {string.Empty, "test"});
+
+            // ReSharper disable once PossibleNullReferenceException
+            ExpectMessagesInList(report[string.Empty] as ModelReportErrorsList, new[] {"foo", "bar"});
+
+            ExpectMembersInReport(report["test"] as ModelReport, new[] {"inner"});
+
+            // ReSharper disable once PossibleNullReferenceException
+            ExpectMessagesInList((report["test"] as ModelReport)["inner"] as ModelReportErrorsList, new[] {"test123", "test321"});
+        }
+
+        [Fact]
+        public void ToModelReport_Should_Generate_RootMessages_And_MemberMessages_WithoutDuplicates()
+        {
+            var draft = new ErrorsCollection();
+
+            draft.AddError(new Error("foo"));
+            draft.AddError(new Error("bar"));
+            draft.AddError(new Error("bar"));
+            draft.AddError(new Error("foo"));
+
+            var innerDraft = new ErrorsCollection();
+            innerDraft.AddError("inner", new Error("test123"));
+            innerDraft.AddError("inner", new Error("test321"));
+            innerDraft.AddError("inner", new Error("test321"));
+            innerDraft.AddError("inner", new Error("test123"));
 
             draft.AddError("test", innerDraft);
 

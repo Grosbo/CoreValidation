@@ -10,11 +10,11 @@ namespace CoreValidation.WorkloadTests.Controllers
     {
         private static readonly IValidationContext _loginModelValidationContext = ValidationContext.Factory.Create(options => options
             .AddSpecification<LoginModel>(login => login
-                .For(m => m.Email, be => be
+                .Member(m => m.Email, be => be
                     .Email()
                     .MaxLength(50)
                     .Valid(email => email.EndsWith("gmail.com"), "Only gmails are accepted"))
-                .For(m => m.Password, be => be.NotEmpty()))
+                .Member(m => m.Password, be => be.NotEmpty()))
         );
 
         [HttpPost]
@@ -22,7 +22,7 @@ namespace CoreValidation.WorkloadTests.Controllers
         {
             var validationResult = _loginModelValidationContext.Validate(loginModel);
 
-            if (!validationResult.IsValid())
+            if (!validationResult.IsValid)
             {
                 return BadRequest(validationResult.ToModelReport());
             }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using CoreValidation.Specifications;
+using CoreValidation.Errors.Args;
+using CoreValidation.Tests;
 using Xunit;
 
 namespace CoreValidation.UnitTests.PredefinedRules.Numbers
@@ -12,8 +13,8 @@ namespace CoreValidation.UnitTests.PredefinedRules.Numbers
         public static IEnumerable<object[]> CloseTo_MemberData()
         {
             return RulesHelper.GetSetsCompilation(
-                NumberDataHelper.EqualTo_Signed(_convert),
                 NumberDataHelper.EqualTo_Unsigned(_convert),
+                NumberDataHelper.EqualTo_Signed(_convert),
                 NumberDataHelper.EqualTo_Limits(float.MinValue, float.MaxValue, 0),
                 new[] {new object[] {0.999999d, 0d, false}},
                 new[] {new object[] {1.000001d, 0d, false}},
@@ -23,13 +24,18 @@ namespace CoreValidation.UnitTests.PredefinedRules.Numbers
 
         [Theory]
         [MemberData(nameof(CloseTo_MemberData))]
-        public void CloseTo(float model, float value, bool expectedIsValid)
+        public void CloseTo(float memberValue, float argValue, bool expectedIsValid)
         {
-            var builder = new MemberSpecificationBuilder<object, float?>();
-
-            builder.CloseTo(value);
-
-            RulesHelper.AssertErrorCompilation<float?>(model, builder.Rules, expectedIsValid, Phrases.Keys.Numbers.CloseTo);
+            Tester.TestSingleMemberRule<float?>(
+                m => m.CloseTo(argValue),
+                memberValue,
+                expectedIsValid,
+                Phrases.Keys.Numbers.CloseTo,
+                new IMessageArg[]
+                {
+                    NumberArg.Create("value", argValue),
+                    NumberArg.Create("tolerance", 0.0000001f)
+                });
         }
 
         public static IEnumerable<object[]> CloseTo_WithTolerance_MemberData()
@@ -48,20 +54,25 @@ namespace CoreValidation.UnitTests.PredefinedRules.Numbers
 
         [Theory]
         [MemberData(nameof(CloseTo_WithTolerance_MemberData))]
-        public void CloseTo_WithTolerance(float model, float value, float tolerance, bool expectedIsValid)
+        public void CloseTo_WithTolerance(float memberValue, float argValue, float tolerance, bool expectedIsValid)
         {
-            var builder = new MemberSpecificationBuilder<object, float?>();
-
-            builder.CloseTo(value, tolerance);
-
-            RulesHelper.AssertErrorCompilation<float?>(model, builder.Rules, expectedIsValid, Phrases.Keys.Numbers.CloseTo);
+            Tester.TestSingleMemberRule<float?>(
+                m => m.CloseTo(argValue, tolerance),
+                memberValue,
+                expectedIsValid,
+                Phrases.Keys.Numbers.CloseTo,
+                new IMessageArg[]
+                {
+                    NumberArg.Create("value", argValue),
+                    NumberArg.Create("tolerance", tolerance)
+                });
         }
 
         public static IEnumerable<object[]> NotCloseTo_MemberData()
         {
             return RulesHelper.GetSetsCompilation(
-                NumberDataHelper.NotEqualTo_Signed(_convert),
                 NumberDataHelper.NotEqualTo_Unsigned(_convert),
+                NumberDataHelper.NotEqualTo_Signed(_convert),
                 NumberDataHelper.NotEqualTo_Limits(float.MinValue, float.MaxValue, 0),
                 new[] {new object[] {0.999999d, 0d, true}},
                 new[] {new object[] {1.000001d, 0d, true}},
@@ -71,13 +82,18 @@ namespace CoreValidation.UnitTests.PredefinedRules.Numbers
 
         [Theory]
         [MemberData(nameof(NotCloseTo_MemberData))]
-        public void NotCloseTo(float model, float value, bool expectedIsValid)
+        public void NotCloseTo(float memberValue, float argValue, bool expectedIsValid)
         {
-            var builder = new MemberSpecificationBuilder<object, float?>();
-
-            builder.NotCloseTo(value);
-
-            RulesHelper.AssertErrorCompilation<float?>(model, builder.Rules, expectedIsValid, Phrases.Keys.Numbers.NotCloseTo);
+            Tester.TestSingleMemberRule<float?>(
+                m => m.NotCloseTo(argValue),
+                memberValue,
+                expectedIsValid,
+                Phrases.Keys.Numbers.NotCloseTo,
+                new IMessageArg[]
+                {
+                    NumberArg.Create("value", argValue),
+                    NumberArg.Create("tolerance", 0.0000001f)
+                });
         }
 
         public static IEnumerable<object[]> NotCloseTo_WithTolerance_MemberData()
@@ -96,20 +112,25 @@ namespace CoreValidation.UnitTests.PredefinedRules.Numbers
 
         [Theory]
         [MemberData(nameof(NotCloseTo_WithTolerance_MemberData))]
-        public void NotCloseTo_WithTolerance(float model, float value, float tolerance, bool expectedIsValid)
+        public void NotCloseTo_WithTolerance(float memberValue, float argValue, float tolerance, bool expectedIsValid)
         {
-            var builder = new MemberSpecificationBuilder<object, float?>();
-
-            builder.NotCloseTo(value, tolerance);
-
-            RulesHelper.AssertErrorCompilation<float?>(model, builder.Rules, expectedIsValid, Phrases.Keys.Numbers.NotCloseTo);
+            Tester.TestSingleMemberRule<float?>(
+                m => m.NotCloseTo(argValue, tolerance),
+                memberValue,
+                expectedIsValid,
+                Phrases.Keys.Numbers.NotCloseTo,
+                new IMessageArg[]
+                {
+                    NumberArg.Create("value", argValue),
+                    NumberArg.Create("tolerance", tolerance)
+                });
         }
 
         public static IEnumerable<object[]> GreaterThan_Should_CollectError_Data()
         {
             return RulesHelper.GetSetsCompilation(
-                NumberDataHelper.GreaterThan_Signed(_convert),
                 NumberDataHelper.GreaterThan_Unsigned(_convert),
+                NumberDataHelper.GreaterThan_Signed(_convert),
                 NumberDataHelper.GreaterThan_Limits(float.MinValue, float.MaxValue, 0),
                 new[] {new object[] {0.999999d, 1d, false}},
                 new[] {new object[] {1.000001d, 1d, true}},
@@ -121,20 +142,24 @@ namespace CoreValidation.UnitTests.PredefinedRules.Numbers
 
         [Theory]
         [MemberData(nameof(GreaterThan_Should_CollectError_Data))]
-        public void GreaterThan_Should_CollectError(float model, float min, bool expectedIsValid)
+        public void GreaterThan_Should_CollectError(float memberValue, float min, bool expectedIsValid)
         {
-            var builder = new MemberSpecificationBuilder<object, float?>();
-
-            builder.GreaterThan(min);
-
-            RulesHelper.AssertErrorCompilation<float?>(model, builder.Rules, expectedIsValid, Phrases.Keys.Numbers.GreaterThan);
+            Tester.TestSingleMemberRule<float?>(
+                m => m.GreaterThan(min),
+                memberValue,
+                expectedIsValid,
+                Phrases.Keys.Numbers.GreaterThan,
+                new IMessageArg[]
+                {
+                    NumberArg.Create("min", min)
+                });
         }
 
         public static IEnumerable<object[]> LessThan_Should_CollectError_Data()
         {
             return RulesHelper.GetSetsCompilation(
-                NumberDataHelper.LessThan_Signed(_convert),
                 NumberDataHelper.LessThan_Unsigned(_convert),
+                NumberDataHelper.LessThan_Signed(_convert),
                 NumberDataHelper.LessThan_Limits(float.MinValue, float.MaxValue, 0),
                 new[] {new object[] {0.999999d, 1d, true}},
                 new[] {new object[] {1.000001d, 1d, false}},
@@ -146,20 +171,24 @@ namespace CoreValidation.UnitTests.PredefinedRules.Numbers
 
         [Theory]
         [MemberData(nameof(LessThan_Should_CollectError_Data))]
-        public void LessThan_Should_CollectError(float model, float max, bool expectedIsValid)
+        public void LessThan_Should_CollectError(float memberValue, float max, bool expectedIsValid)
         {
-            var builder = new MemberSpecificationBuilder<object, float?>();
-
-            builder.LessThan(max);
-
-            RulesHelper.AssertErrorCompilation<float?>(model, builder.Rules, expectedIsValid, Phrases.Keys.Numbers.LessThan);
+            Tester.TestSingleMemberRule<float?>(
+                m => m.LessThan(max),
+                memberValue,
+                expectedIsValid,
+                Phrases.Keys.Numbers.LessThan,
+                new IMessageArg[]
+                {
+                    NumberArg.Create("max", max)
+                });
         }
 
         public static IEnumerable<object[]> Between_Should_CollectError_Data()
         {
             return RulesHelper.GetSetsCompilation(
-                NumberDataHelper.Between_Signed(_convert),
                 NumberDataHelper.Between_Unsigned(_convert),
+                NumberDataHelper.Between_Signed(_convert),
                 NumberDataHelper.Between_Limits(float.MinValue, float.MaxValue, 0),
                 new[] {new object[] {0.999999d, 1, 1.000001d, true}},
                 new[] {new object[] {0.999999d, 0.999999d, 1.000001d, false}},
@@ -169,76 +198,18 @@ namespace CoreValidation.UnitTests.PredefinedRules.Numbers
 
         [Theory]
         [MemberData(nameof(Between_Should_CollectError_Data))]
-        public void Between_Should_CollectError(float min, float model, float max, bool expectedIsValid)
+        public void Between_Should_CollectError(float min, float memberValue, float max, bool expectedIsValid)
         {
-            var builder = new MemberSpecificationBuilder<object, float?>();
-
-            builder.Between(min, max);
-
-            RulesHelper.AssertErrorCompilation<float?>(model, builder.Rules, expectedIsValid, Phrases.Keys.Numbers.Between);
-        }
-
-        public class MessageTests
-        {
-            [Fact]
-            public void Between_Should_SetCustomMessage()
-            {
-                var builder = new MemberSpecificationBuilder<object, float?>();
-
-                builder.Between(1, 3, "{min} {max} Overriden error message");
-
-                RulesHelper.AssertErrorMessage<float?>(4, builder.Rules, "{min} {max} Overriden error message", "1 3 Overriden error message");
-            }
-
-            [Fact]
-            public void BetweenOrEqualTo_Should_SetCustomMessage()
-            {
-                var builder = new MemberSpecificationBuilder<object, float?>();
-
-                builder.Between(1, 3, "{min} {max} Overriden error message");
-
-                RulesHelper.AssertErrorMessage<float?>(4, builder.Rules, "{min} {max} Overriden error message", "1 3 Overriden error message");
-            }
-
-            [Fact]
-            public void CloseTo_Should_SetCustomMessage()
-            {
-                var builder = new MemberSpecificationBuilder<object, float?>();
-
-                builder.CloseTo(0, (float)0.001, "{value} {tolerance} Overriden error message");
-
-                RulesHelper.AssertErrorMessage<float?>(4, builder.Rules, "{value} {tolerance} Overriden error message", "0 0.001 Overriden error message");
-            }
-
-            [Fact]
-            public void GreaterThan()
-            {
-                var builder = new MemberSpecificationBuilder<object, float?>();
-
-                builder.GreaterThan(2, "{min} Overriden error message");
-
-                RulesHelper.AssertErrorMessage<float?>(1, builder.Rules, "{min} Overriden error message", "2 Overriden error message");
-            }
-
-            [Fact]
-            public void LessThan_Should_SetCustomMessage()
-            {
-                var builder = new MemberSpecificationBuilder<object, float?>();
-
-                builder.LessThan(1, "{max} Overriden error message");
-
-                RulesHelper.AssertErrorMessage<float?>(2, builder.Rules, "{max} Overriden error message", "1 Overriden error message");
-            }
-
-            [Fact]
-            public void NotCloseTo_Should_SetCustomMessage()
-            {
-                var builder = new MemberSpecificationBuilder<object, float?>();
-
-                builder.NotCloseTo(4, (float)0.001, "{value} {tolerance} Overriden error message");
-
-                RulesHelper.AssertErrorMessage<float?>(4, builder.Rules, "{value} {tolerance} Overriden error message", "4 0.001 Overriden error message");
-            }
+            Tester.TestSingleMemberRule<float?>(
+                m => m.Between(min, max),
+                memberValue,
+                expectedIsValid,
+                Phrases.Keys.Numbers.Between,
+                new IMessageArg[]
+                {
+                    NumberArg.Create("min", min),
+                    NumberArg.Create("max", max)
+                });
         }
     }
 }

@@ -12,6 +12,8 @@ namespace CoreValidation.Results
 
         IErrorsCollection ErrorsCollection { get; }
 
+        bool IsValid { get; }
+
         Guid CoreValidatorId { get; }
 
         DateTime ValidationDate { get; }

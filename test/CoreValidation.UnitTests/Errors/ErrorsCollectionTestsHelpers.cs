@@ -26,7 +26,7 @@ namespace CoreValidation.UnitTests.Errors
 
             for (var i = 0; i < errors.Count(); ++i)
             {
-                Assert.Equal(errors.ElementAt(i), errorsCollection.Errors.ElementAt(i).FormattedMessage);
+                Assert.Equal(errors.ElementAt(i), errorsCollection.Errors.ElementAt(i).ToFormattedMessage());
             }
         }
     }

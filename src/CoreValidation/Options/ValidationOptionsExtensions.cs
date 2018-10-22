@@ -1,6 +1,5 @@
 ﻿using System;
 using CoreValidation.Errors;
-using CoreValidation.Errors.Args;
 using CoreValidation.Options;
 
 // ReSharper disable once CheckNamespace
@@ -28,16 +27,16 @@ namespace CoreValidation
             return OptionsUnwrapper.UnwrapValidationOptions(options, validationOptions => { validationOptions.ValidationStrategy = validationStrategy; });
         }
 
-        public static IValidationOptions SetRequiredError(this IValidationOptions options, string errorMessage, IMessageArg[] args = null)
+        public static IValidationOptions SetRequiredError(this IValidationOptions options, string errorMessage)
         {
-            var requiredError = new Error(errorMessage, args);
+            var requiredError = new Error(errorMessage);
 
             return OptionsUnwrapper.UnwrapValidationOptions(options, validationOptions => { validationOptions.RequiredError = requiredError; });
         }
 
-        public static IValidationOptions SetDefaultError(this IValidationOptions options, string errorMessage, IMessageArg[] args = null)
+        public static IValidationOptions SetDefaultError(this IValidationOptions options, string errorMessage)
         {
-            var requiredError = new Error(errorMessage, args);
+            var requiredError = new Error(errorMessage);
 
             return OptionsUnwrapper.UnwrapValidationOptions(options, validationOptions => { validationOptions.DefaultError = requiredError; });
         }

@@ -1,20 +1,20 @@
-﻿using CoreValidation.Specifications;
+using CoreValidation.Specifications;
 
 // ReSharper disable once CheckNamespace
 namespace CoreValidation
 {
     public static class BoolNullableRules
     {
-        public static IMemberSpecificationBuilder<TModel, bool?> True<TModel>(this IMemberSpecificationBuilder<TModel, bool?> @this, string message = null)
+        public static IMemberSpecificationBuilder<TModel, bool?> True<TModel>(this IMemberSpecificationBuilder<TModel, bool?> @this)
             where TModel : class
         {
-            return @this.ValidNullable(m => m.True(message));
+            return @this.AsNullable(m => m.True());
         }
 
-        public static IMemberSpecificationBuilder<TModel, bool?> False<TModel>(this IMemberSpecificationBuilder<TModel, bool?> @this, string message = null)
+        public static IMemberSpecificationBuilder<TModel, bool?> False<TModel>(this IMemberSpecificationBuilder<TModel, bool?> @this)
             where TModel : class
         {
-            return @this.ValidNullable(m => m.False(message));
+            return @this.AsNullable(m => m.False());
         }
     }
 }

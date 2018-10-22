@@ -20,7 +20,7 @@ namespace CoreValidation.WorkloadTests.Controllers
         {
             var validationResult = _signUpValidationContext.Validate(signUpModel);
 
-            if (!validationResult.IsValid())
+            if (!validationResult.IsValid)
             {
                 return BadRequest(validationResult.ToModelReport());
             }

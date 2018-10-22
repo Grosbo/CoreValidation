@@ -6,7 +6,7 @@ namespace CoreValidation.Errors
     {
         bool IsEmpty { get; }
 
-        IReadOnlyCollection<Error> Errors { get; }
+        IReadOnlyCollection<IError> Errors { get; }
 
         IReadOnlyDictionary<string, IErrorsCollection> Members { get; }
     }

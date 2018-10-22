@@ -2,5 +2,5 @@
 
 namespace CoreValidation.Translations
 {
-    public delegate string Translator(Error error);
+    public delegate string Translator(IError error);
 }

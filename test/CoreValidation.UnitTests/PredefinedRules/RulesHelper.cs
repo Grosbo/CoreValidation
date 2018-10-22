@@ -2,38 +2,33 @@
 using System.Linq;
 using CoreValidation.Errors;
 using CoreValidation.Options;
-using CoreValidation.Specifications.Rules;
-using CoreValidation.Validators;
+using CoreValidation.Specifications.Commands;
 using Xunit;
 
 namespace CoreValidation.UnitTests.PredefinedRules
 {
     internal static class RulesHelper
     {
-        private static readonly IExecutionOptions _executionOptions = new ExecutionOptionsStub();
+        private static readonly IExecutionOptions _executionOptions = new ExecutionContextStub();
 
-        public static IErrorsCollection CompileSingleError<TMember>(TMember member, IReadOnlyCollection<IRule> rulesCollection, Error defaultError)
+        public static IErrorsCollection CompileSingleError<TMember>(TMember member, IReadOnlyCollection<IRule> rulesCollection, IError defaultError)
         {
             var errorsCollection = new ErrorsCollection() as IErrorsCollection;
 
             var rule = rulesCollection.Single();
 
-            var compilationContext = new ExecutionContext
+            var compilationContext = new ExecutionContextStub
             {
-                ExecutionOptions = new ExecutionOptionsStub
-                {
-                    DefaultError = defaultError
-                },
-                ValidationStrategy = ValidationStrategy.Complete
+                DefaultError = defaultError
             };
 
             if (rule is ValidRule<TMember> validateRule)
             {
-                validateRule.TryGetErrors(member, compilationContext, out errorsCollection);
+                validateRule.TryGetErrors(member, compilationContext, ValidationStrategy.Complete, out errorsCollection);
             }
-            else if (rule is ValidNullableRule validateNullableRule)
+            else if (rule is AsNullableRule validateNullableRule)
             {
-                validateNullableRule.TryGetErrors(new object(), member, compilationContext, out errorsCollection);
+                validateNullableRule.TryGetErrors(new object(), member, compilationContext, ValidationStrategy.Complete, out errorsCollection);
             }
 
             return errorsCollection;
@@ -63,7 +58,7 @@ namespace CoreValidation.UnitTests.PredefinedRules
 
             var singleError = errorsCollection.Errors.Single();
             Assert.Equal(expectedErrorMessage, singleError.Message);
-            Assert.Equal(expectedStringifiedErrorMessage, singleError.FormattedMessage);
+            Assert.Equal(expectedStringifiedErrorMessage, singleError.ToFormattedMessage());
         }
 
         public static IEnumerable<object[]> GetSetsCompilation(params IEnumerable<object[]>[] sets)

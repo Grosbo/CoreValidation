@@ -38,14 +38,14 @@ namespace CoreValidation.Translations
 
             return error => dictionary.TryGetValue(error.Message, out var translation)
                 ? MessageFormatter.Format(translation, error.Arguments)
-                : error.FormattedMessage;
+                : MessageFormatter.Format(error.Message, error.Arguments);
         }
 
         public Translator GetOriginal()
         {
             return error => Phrases.English.TryGetValue(error.Message, out var translation)
                 ? MessageFormatter.Format(translation, error.Arguments)
-                : error.FormattedMessage;
+                : MessageFormatter.Format(error.Message, error.Arguments);
         }
 
         public IReadOnlyDictionary<string, IReadOnlyDictionary<string, string>> Translations { get; }

@@ -1,34 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using CoreValidation.Errors.Args;
 
 namespace CoreValidation.Errors
 {
-    public sealed class Error
+    internal sealed class Error : IError
     {
+        private string _message;
+
         public Error(string message, IReadOnlyCollection<IMessageArg> args = null)
-            : this(message, args, MessageFormatter.Format(message, args))
         {
-        }
+            if ((args != null) && args.Contains(null))
+            {
+                throw new ArgumentException($"Null argument in {nameof(args)}");
+            }
 
-
-        private Error(string message, IReadOnlyCollection<IMessageArg> args, string formattedMessage)
-        {
-            Message = message ?? throw new ArgumentNullException(nameof(message));
             Arguments = args;
-            FormattedMessage = formattedMessage;
+            Message = message;
         }
 
-        public string FormattedMessage { get; }
-
-        public string Message { get; }
+        public string Message
+        {
+            get => _message;
+            set => _message = value ?? throw new ArgumentNullException(nameof(value));
+        }
 
         public IReadOnlyCollection<IMessageArg> Arguments { get; }
-
-        public bool EqualContent(Error other)
-        {
-            return string.Equals(FormattedMessage, other?.FormattedMessage, StringComparison.Ordinal);
-        }
 
         public static Error CreateValidOrNull(string message, IReadOnlyCollection<IMessageArg> args)
         {

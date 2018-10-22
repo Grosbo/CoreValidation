@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CoreValidation.Errors.Args;
 using CoreValidation.Exceptions;
 using CoreValidation.Factory;
 using CoreValidation.Factory.Specifications;
@@ -734,15 +733,6 @@ namespace CoreValidation.UnitTests.Factory
                         .SetRequiredError("This is REQUIRED!")
                     )
                 };
-
-                yield return new object[]
-                {
-                    "WithArgs",
-                    "This {arg1} REQUIRED{arg2}",
-                    new Func<IValidationContextOptions, IValidationContextOptions>(o => o
-                        .SetRequiredError("This {arg1} REQUIRED{arg2}", new IMessageArg[] {new MessageArg("arg1", "is"), new MessageArg("arg2", "!")})
-                    )
-                };
             }
 
             [Theory]
@@ -756,13 +746,7 @@ namespace CoreValidation.UnitTests.Factory
                 Assert.NotNull(validationContext);
 
                 Assert.Equal(message, validationContext.ValidationOptions.RequiredError.Message);
-                Assert.Equal("This is REQUIRED!", validationContext.ValidationOptions.RequiredError.FormattedMessage);
-            }
-
-            [Fact]
-            public static void Create_Should_ThrowException_When_NullInRequiredErrorMessageArgs()
-            {
-                Assert.Throws<ArgumentNullException>(() => { new ValidationContextFactory().Create(options => options.SetRequiredError("test", new IMessageArg[] {null})); });
+                Assert.Equal("This is REQUIRED!", validationContext.ValidationOptions.RequiredError.ToFormattedMessage());
             }
 
             [Fact]
@@ -794,15 +778,6 @@ namespace CoreValidation.UnitTests.Factory
                         .SetRequiredError("This is DEFAULT!")
                     )
                 };
-
-                yield return new object[]
-                {
-                    "WithArgs",
-                    "This {arg1} DEFAULT{arg2}",
-                    new Func<IValidationContextOptions, IValidationContextOptions>(o => o
-                        .SetRequiredError("This {arg1} DEFAULT{arg2}", new IMessageArg[] {new MessageArg("arg1", "is"), new MessageArg("arg2", "!")})
-                    )
-                };
             }
 
             [Theory]
@@ -816,19 +791,13 @@ namespace CoreValidation.UnitTests.Factory
                 Assert.NotNull(validationContext);
 
                 Assert.Equal(message, validationContext.ValidationOptions.RequiredError.Message);
-                Assert.Equal("This is DEFAULT!", validationContext.ValidationOptions.RequiredError.FormattedMessage);
+                Assert.Equal("This is DEFAULT!", validationContext.ValidationOptions.RequiredError.ToFormattedMessage());
             }
 
             [Fact]
             public static void Create_Should_ThrowException_When_NullDefaultErrorMessage()
             {
                 Assert.Throws<ArgumentNullException>(() => { new ValidationContextFactory().Create(options => options.SetDefaultError(null)); });
-            }
-
-            [Fact]
-            public static void Create_Should_ThrowException_When_NullInDefaultErrorMessageArgs()
-            {
-                Assert.Throws<ArgumentNullException>(() => { new ValidationContextFactory().Create(options => options.SetDefaultError("test", new IMessageArg[] {null})); });
             }
         }
 
@@ -845,8 +814,8 @@ namespace CoreValidation.UnitTests.Factory
                 .SetValidationStrategy(ValidationStrategy.FailFast)
                 .SetCollectionForceKey("[]")
                 .SetMaxDepth(15)
-                .SetRequiredError("This is required{arg}", new IMessageArg[] {new MessageArg("arg", "!")})
-                .SetDefaultError("This is default{arg}", new IMessageArg[] {new MessageArg("arg", "!")})
+                .SetRequiredError("This is required")
+                .SetDefaultError("This is default")
             );
 
             Assert.NotNull(validationContext);
@@ -863,10 +832,8 @@ namespace CoreValidation.UnitTests.Factory
             Assert.Equal(ValidationStrategy.FailFast, validationContext.ValidationOptions.ValidationStrategy);
             Assert.Equal("[]", validationContext.ValidationOptions.CollectionForceKey);
             Assert.Equal(15, validationContext.ValidationOptions.MaxDepth);
-            Assert.Equal("This is required{arg}", validationContext.ValidationOptions.RequiredError.Message);
-            Assert.Equal("This is required!", validationContext.ValidationOptions.RequiredError.FormattedMessage);
-            Assert.Equal("This is default{arg}", validationContext.ValidationOptions.DefaultError.Message);
-            Assert.Equal("This is default!", validationContext.ValidationOptions.DefaultError.FormattedMessage);
+            Assert.Equal("This is required", validationContext.ValidationOptions.RequiredError.Message);
+            Assert.Equal("This is default", validationContext.ValidationOptions.DefaultError.Message);
         }
 
         [Fact]
@@ -884,9 +851,9 @@ namespace CoreValidation.UnitTests.Factory
             Assert.Equal("*", validationContext.ValidationOptions.CollectionForceKey);
             Assert.Equal(10, validationContext.ValidationOptions.MaxDepth);
             Assert.Equal("Required", validationContext.ValidationOptions.RequiredError.Message);
-            Assert.Equal("Required", validationContext.ValidationOptions.RequiredError.FormattedMessage);
+            Assert.Equal("Required", validationContext.ValidationOptions.RequiredError.ToFormattedMessage());
             Assert.Equal("Invalid", validationContext.ValidationOptions.DefaultError.Message);
-            Assert.Equal("Invalid", validationContext.ValidationOptions.DefaultError.FormattedMessage);
+            Assert.Equal("Invalid", validationContext.ValidationOptions.DefaultError.ToFormattedMessage());
         }
 
         [Fact]
@@ -912,10 +879,10 @@ namespace CoreValidation.UnitTests.Factory
                 .SetCollectionForceKey("[*]")
                 .SetMaxDepth(15)
                 .SetMaxDepth(20)
-                .SetRequiredError("This is required{arg}", new IMessageArg[] {new MessageArg("arg", "!")})
-                .SetRequiredError("This is required{arg}. True story.", new IMessageArg[] {new MessageArg("arg", "!")})
-                .SetDefaultError("This is default{arg}", new IMessageArg[] {new MessageArg("arg", "!")})
-                .SetDefaultError("This is default{arg}. Legit.", new IMessageArg[] {new MessageArg("arg", "!")})
+                .SetRequiredError("This is required")
+                .SetRequiredError("This is required. True story.")
+                .SetDefaultError("This is default")
+                .SetDefaultError("This is default. Legit.")
             );
 
             Assert.NotNull(validationContext);
@@ -939,10 +906,8 @@ namespace CoreValidation.UnitTests.Factory
             Assert.Equal(ValidationStrategy.Force, validationContext.ValidationOptions.ValidationStrategy);
             Assert.Equal("[*]", validationContext.ValidationOptions.CollectionForceKey);
             Assert.Equal(20, validationContext.ValidationOptions.MaxDepth);
-            Assert.Equal("This is required{arg}. True story.", validationContext.ValidationOptions.RequiredError.Message);
-            Assert.Equal("This is required!. True story.", validationContext.ValidationOptions.RequiredError.FormattedMessage);
-            Assert.Equal("This is default{arg}. Legit.", validationContext.ValidationOptions.DefaultError.Message);
-            Assert.Equal("This is default!. Legit.", validationContext.ValidationOptions.DefaultError.FormattedMessage);
+            Assert.Equal("This is required. True story.", validationContext.ValidationOptions.RequiredError.Message);
+            Assert.Equal("This is default. Legit.", validationContext.ValidationOptions.DefaultError.Message);
         }
 
         [Fact]

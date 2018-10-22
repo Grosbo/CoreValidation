@@ -1,6 +1,8 @@
 ﻿using System;
 using CoreValidation.Errors;
+using CoreValidation.Options;
 using CoreValidation.Results;
+using CoreValidation.Translations;
 using Moq;
 using Xunit;
 
@@ -17,22 +19,16 @@ namespace CoreValidation.UnitTests.Results
         [InlineData(false)]
         public void Should_ThrowIfInvalid(bool isValid)
         {
-            var errorsCollectionMock = new Mock<IErrorsCollection>();
-            errorsCollectionMock.Setup(r => r.IsEmpty).Returns(isValid);
+            var errorCollection = new ErrorsCollection();
 
-            var resultMock = new Mock<IValidationResult<Item>>();
+            if (!isValid)
+            {
+                errorCollection.AddError(new Error("error"));
+            }
 
             var model = new Item();
 
-            resultMock
-                .Setup(r => r.ErrorsCollection)
-                .Returns(errorsCollectionMock.Object);
-
-            resultMock
-                .Setup(r => r.Model)
-                .Returns(model);
-
-            var result = resultMock.Object;
+            var varlidationResult = new ValidationResult<Item>(Guid.NewGuid(), new Mock<ITranslationProxy>().Object, new Mock<IExecutionOptions>().Object, model, errorCollection);
 
             if (!isValid)
             {
@@ -40,12 +36,12 @@ namespace CoreValidation.UnitTests.Results
 
                 try
                 {
-                    result.ThrowIfInvalid();
+                    varlidationResult.ThrowIfInvalid();
                 }
                 catch (InvalidModelException<Item> exception)
                 {
                     Assert.Same(model, exception.Model);
-                    Assert.Same(result, exception.ValidationResult);
+                    Assert.Same(varlidationResult, exception.ValidationResult);
                     Assert.Equal(typeof(Item), exception.Type);
 
                     var general = exception as InvalidModelException;
@@ -59,7 +55,7 @@ namespace CoreValidation.UnitTests.Results
             }
             else
             {
-                result.ThrowIfInvalid();
+                varlidationResult.ThrowIfInvalid();
             }
         }
 

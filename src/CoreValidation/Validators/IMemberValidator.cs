@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using CoreValidation.Errors;
-using CoreValidation.Specifications.Rules;
+using CoreValidation.Specifications.Commands;
 
 namespace CoreValidation.Validators
 {
@@ -10,10 +10,8 @@ namespace CoreValidation.Validators
 
         bool IsOptional { get; }
 
-        Error SummaryError { get; }
+        IError SingleError { get; }
 
-        string Name { get; }
-
-        Error RequiredError { get; }
+        IError RequiredError { get; }
     }
 }

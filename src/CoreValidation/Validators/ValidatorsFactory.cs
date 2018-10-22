@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using CoreValidation.Exceptions;
 using CoreValidation.Specifications;
 
 namespace CoreValidation.Validators
@@ -29,26 +28,12 @@ namespace CoreValidation.Validators
         {
             var cacheKey = ResolveCacheKey<T>(key);
 
-            return _cache.GetOrAdd(cacheKey, _ =>
-            {
-                var initSpecification = new SpecificationBuilder<T>();
-
-                var finalSpecification = specification ?? _specificationsRepository.Get<T>();
-
-                var processedSpecification = finalSpecification(initSpecification);
-
-                if (!ReferenceEquals(initSpecification, processedSpecification) || !(processedSpecification is SpecificationBuilder<T>))
-                {
-                    throw new InvalidProcessedReferenceException(typeof(SpecificationBuilder<T>));
-                }
-
-                return processedSpecification;
-            }) as IValidator<T>;
+            return _cache.GetOrAdd(cacheKey, _ => ValidatorCreator.Create(specification ?? _specificationsRepository.Get<T>())) as IValidator<T>;
         }
 
         private string ResolveCacheKey<T>(string key)
         {
-            return key ?? typeof(T).FullName ?? throw new InvalidOperationException("Cannot resolve cache key");
+            return key ?? typeof(T).FullName;
         }
     }
 }

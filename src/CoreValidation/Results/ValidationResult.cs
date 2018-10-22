@@ -54,6 +54,8 @@ namespace CoreValidation.Results
 
         public T Model { get; }
 
+        public bool IsValid => ErrorsCollection.IsEmpty;
+
         public Guid CoreValidatorId { get; }
 
         public DateTime ValidationDate { get; }

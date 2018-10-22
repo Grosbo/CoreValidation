@@ -77,14 +77,9 @@ namespace CoreValidation
 
             var specification = ValidatorsFactory.GetOrInit<T>();
 
-            var executionContext = new ExecutionContext
-            {
-                ExecutionOptions = validationOptions,
-                ValidatorsFactory = ValidatorsFactory,
-                ValidationStrategy = validationOptions.ValidationStrategy
-            };
+            var executionContext = new ExecutionContext(validationOptions, ValidatorsFactory);
 
-            var errorsCollection = ValidatorExecutor.Execute(specification, model, executionContext, 0);
+            var errorsCollection = ValidatorExecutor.Execute(specification, model, executionContext, validationOptions.ValidationStrategy, 0);
 
             return new ValidationResult<T>(Id, translationProxy, Options.ValidationOptions, model, errorsCollection);
         }

@@ -15,7 +15,9 @@ namespace CoreValidation.Results.List
 
             var stringBuilder = new StringBuilder();
 
-            foreach (var errorMessage in this)
+            var errorMessages = this.Distinct();
+
+            foreach (var errorMessage in errorMessages)
             {
                 stringBuilder.AppendLine(errorMessage);
             }

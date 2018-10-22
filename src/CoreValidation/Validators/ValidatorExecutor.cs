@@ -1,39 +1,39 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using CoreValidation.Errors;
 using CoreValidation.Exceptions;
-using CoreValidation.Specifications.Rules;
+using CoreValidation.Specifications.Commands;
 
 namespace CoreValidation.Validators
 {
     internal static class ValidatorExecutor
     {
-        public static IErrorsCollection Execute<TModel>(IValidator<TModel> validator, TModel model, IExecutionContext executionContext, int depth)
+        public static IErrorsCollection Execute<TModel>(IValidator<TModel> validator, TModel model, IExecutionContext executionContext, ValidationStrategy validationStrategy, int depth)
             where TModel : class
         {
-            if (depth > executionContext.ExecutionOptions.MaxDepth)
+            if (depth > executionContext.MaxDepth)
             {
-                throw new MaxDepthExceededException(executionContext.ExecutionOptions.MaxDepth);
+                throw new MaxDepthExceededException(executionContext.MaxDepth);
             }
 
             ErrorsCollection errorsCollection = null;
 
-            var validationStrategy = executionContext.ValidationStrategy;
+            var strategy = validationStrategy;
 
-            if ((validationStrategy == ValidationStrategy.Complete) && (validator.SummaryError != null))
+            if ((strategy == ValidationStrategy.Complete) && (validator.SingleError != null))
             {
-                validationStrategy = ValidationStrategy.FailFast;
+                strategy = ValidationStrategy.FailFast;
             }
 
             foreach (var scope in validator.Scopes)
             {
-                if ((errorsCollection != null) && !errorsCollection.IsEmpty && (validationStrategy == ValidationStrategy.FailFast))
+                if ((errorsCollection != null) && !errorsCollection.IsEmpty && (strategy == ValidationStrategy.FailFast))
                 {
                     break;
                 }
 
-                if (scope.TryGetErrors(model, executionContext, depth, out var ruleErrorsCollection))
+                if (scope.TryGetErrors(model, executionContext, strategy, depth, out var ruleErrorsCollection))
                 {
                     if (errorsCollection == null)
                     {
@@ -44,10 +44,10 @@ namespace CoreValidation.Validators
                 }
             }
 
-            if ((errorsCollection != null) && !errorsCollection.IsEmpty && (validator.SummaryError != null))
+            if ((errorsCollection != null) && !errorsCollection.IsEmpty && (validator.SingleError != null))
             {
                 var summaryErrorCollection = new ErrorsCollection();
-                summaryErrorCollection.AddError(validator.SummaryError);
+                summaryErrorCollection.AddError(validator.SingleError);
 
                 return summaryErrorCollection;
             }
@@ -55,7 +55,7 @@ namespace CoreValidation.Validators
             return errorsCollection ?? ErrorsCollection.Empty;
         }
 
-        public static IErrorsCollection ExecuteMember<TModel, TMember>(IMemberValidator memberValidator, TModel model, TMember memberValue, IExecutionContext executionContext, int depth)
+        public static IErrorsCollection ExecuteMember<TModel, TMember>(IMemberValidator memberValidator, TModel model, TMember memberValue, IExecutionContext executionContext, ValidationStrategy validationStrategy, int depth)
             where TModel : class
         {
             ErrorsCollection result = null;
@@ -63,27 +63,27 @@ namespace CoreValidation.Validators
             // ReSharper disable once CompareNonConstrainedGenericWithNull
             var exists = IsValueType(typeof(TMember)) || (memberValue != null);
 
-            var validationStrategy = executionContext.ValidationStrategy;
+            var strategy = validationStrategy;
 
-            var includeRequired = !memberValidator.IsOptional && (!exists || (validationStrategy == ValidationStrategy.Force));
+            var includeRequired = !memberValidator.IsOptional && (!exists || (strategy == ValidationStrategy.Force));
 
             if (includeRequired)
             {
                 result = new ErrorsCollection();
-                result.AddError(memberValidator.RequiredError ?? executionContext.ExecutionOptions.RequiredError);
+                result.AddError(memberValidator.RequiredError ?? executionContext.RequiredError);
             }
 
-            if ((validationStrategy == ValidationStrategy.Complete) && (memberValidator.SummaryError != null))
+            if ((strategy == ValidationStrategy.Complete) && (memberValidator.SingleError != null))
             {
-                validationStrategy = ValidationStrategy.FailFast;
+                strategy = ValidationStrategy.FailFast;
             }
 
-            if ((validationStrategy == ValidationStrategy.FailFast) && (result != null) && !result.IsEmpty)
+            if ((strategy == ValidationStrategy.FailFast) && (result != null) && !result.IsEmpty)
             {
                 return result;
             }
 
-            if (exists || (validationStrategy == ValidationStrategy.Force))
+            if (exists || (strategy == ValidationStrategy.Force))
             {
                 foreach (var rule in memberValidator.Rules)
                 {
@@ -93,27 +93,27 @@ namespace CoreValidation.Validators
 
                     if (rule is ValidRule<TMember> validateRule)
                     {
-                        anyErrors = validateRule.TryGetErrors(memberValue, executionContext, out ruleErrorsCollection);
+                        anyErrors = validateRule.TryGetErrors(memberValue, executionContext, strategy, out ruleErrorsCollection);
                     }
-                    else if (rule is ValidRelativeRule<TModel> validateRelationRule)
+                    else if (rule is AsRelativeRule<TModel> validateRelationRule)
                     {
-                        anyErrors = validateRelationRule.TryGetErrors(model, executionContext, out ruleErrorsCollection);
+                        anyErrors = validateRelationRule.TryGetErrors(model, executionContext, strategy, out ruleErrorsCollection);
                     }
-                    else if (rule is ValidModelRule validModelRule)
+                    else if (rule is AsModelRule validModelRule)
                     {
-                        anyErrors = validModelRule.TryGetErrors(memberValue, executionContext, depth, out ruleErrorsCollection);
+                        anyErrors = validModelRule.TryGetErrors(memberValue, executionContext, strategy, depth, out ruleErrorsCollection);
                     }
-                    else if (rule is ValidCollectionRule validCollectionRule)
+                    else if (rule is AsCollectionRule validCollectionRule)
                     {
-                        anyErrors = validCollectionRule.TryGetErrors(model, memberValue, executionContext, depth, out ruleErrorsCollection);
+                        anyErrors = validCollectionRule.TryGetErrors(model, memberValue, executionContext, strategy, depth, out ruleErrorsCollection);
                     }
-                    else if (rule is ValidNullableRule validNullableRule)
+                    else if (rule is AsNullableRule validNullableRule)
                     {
-                        anyErrors = validNullableRule.TryGetErrors(model, memberValue, executionContext, out ruleErrorsCollection);
+                        anyErrors = validNullableRule.TryGetErrors(model, memberValue, executionContext, strategy, out ruleErrorsCollection);
                     }
                     else
                     {
-                        throw new InvalidOperationException("Unknown rule");
+                        throw new InvalidRuleException("Unknown rule");
                     }
 
                     if (!anyErrors)
@@ -128,7 +128,7 @@ namespace CoreValidation.Validators
 
                     result.Include(ruleErrorsCollection);
 
-                    if (validationStrategy == ValidationStrategy.FailFast)
+                    if (strategy == ValidationStrategy.FailFast)
                     {
                         break;
                     }
@@ -140,7 +140,7 @@ namespace CoreValidation.Validators
                 return ErrorsCollection.Empty;
             }
 
-            if (memberValidator.SummaryError == null)
+            if (memberValidator.SingleError == null)
             {
                 return result;
             }
@@ -149,50 +149,50 @@ namespace CoreValidation.Validators
 
             if (includeRequired)
             {
-                summaryErrorResult.AddError(executionContext.ExecutionOptions.RequiredError ?? memberValidator.RequiredError);
+                summaryErrorResult.AddError(executionContext.RequiredError ?? memberValidator.RequiredError);
             }
 
-            summaryErrorResult.AddError(memberValidator.SummaryError);
+            summaryErrorResult.AddError(memberValidator.SingleError);
 
             return summaryErrorResult;
         }
 
-        public static IErrorsCollection ExecuteNullableMember<TModel, TMember>(IMemberValidator memberValidator, TModel model, TMember? memberValue, IExecutionContext executionContext)
+        public static IErrorsCollection ExecuteNullableMember<TModel, TMember>(IMemberValidator memberValidator, TModel model, TMember? memberValue, IExecutionContext executionContext, ValidationStrategy validationStrategy)
             where TModel : class
             where TMember : struct
         {
             ErrorsCollection result = null;
 
-            var validationStrategy = executionContext.ValidationStrategy;
+            var strategy = validationStrategy;
 
-            if ((validationStrategy == ValidationStrategy.Complete) && (memberValidator.SummaryError != null))
+            if ((strategy == ValidationStrategy.Complete) && (memberValidator.SingleError != null))
             {
-                validationStrategy = ValidationStrategy.FailFast;
+                strategy = ValidationStrategy.FailFast;
             }
 
             foreach (var rule in memberValidator.Rules)
             {
-                Error error = null;
+                IError error = null;
 
                 if (rule is ValidRule<TMember> validateRule)
                 {
-                    if ((validationStrategy == ValidationStrategy.Force) ||
+                    if ((strategy == ValidationStrategy.Force) ||
                         (memberValue.HasValue && !validateRule.IsValid(memberValue.Value)))
                     {
-                        error = validateRule.Error ?? executionContext.ExecutionOptions.DefaultError;
+                        error = validateRule.RuleSingleError ?? validateRule.Error ?? executionContext.DefaultError;
                     }
                 }
-                else if (rule is ValidRelativeRule<TModel> relationRule)
+                else if (rule is AsRelativeRule<TModel> relationRule)
                 {
-                    if ((validationStrategy == ValidationStrategy.Force) ||
+                    if ((strategy == ValidationStrategy.Force) ||
                         (memberValue.HasValue && !relationRule.IsValid(model)))
                     {
-                        error = relationRule.Error ?? executionContext.ExecutionOptions.DefaultError;
+                        error = relationRule.RuleSingleError ?? relationRule.Error ?? executionContext.DefaultError;
                     }
                 }
                 else
                 {
-                    throw new InvalidOperationException($"Unknown (or not allowed) rule in {nameof(ValidNullableRule)}");
+                    throw new InvalidRuleException($"Unknown (or not allowed) rule in {nameof(AsNullableRule)}");
                 }
 
                 if (error == null)
@@ -205,16 +205,16 @@ namespace CoreValidation.Validators
                     result = new ErrorsCollection();
                 }
 
-                if (memberValidator.SummaryError != null)
+                if (memberValidator.SingleError != null)
                 {
-                    result.AddError(memberValidator.SummaryError);
+                    result.AddError(memberValidator.SingleError);
 
                     break;
                 }
 
                 result.AddError(error);
 
-                if (validationStrategy == ValidationStrategy.FailFast)
+                if (strategy == ValidationStrategy.FailFast)
                 {
                     break;
                 }
@@ -223,24 +223,25 @@ namespace CoreValidation.Validators
             return GetOrEmpty(result);
         }
 
-        public static IErrorsCollection ExecuteCollectionMember<TModel, TItem>(IMemberValidator memberValidator, TModel model, IEnumerable<TItem> memberValue, IExecutionContext executionContext, int depth)
+        public static IErrorsCollection ExecuteCollectionMember<TModel, TItem>(IMemberValidator memberValidator, TModel model, IEnumerable<TItem> memberValue, IExecutionContext executionContext, ValidationStrategy validationStrategy, int depth)
             where TModel : class
         {
             ErrorsCollection result = null;
 
-            if (executionContext.ValidationStrategy == ValidationStrategy.Force)
+            if (validationStrategy == ValidationStrategy.Force)
             {
                 var itemErrorsCollection = ExecuteMember(
                     memberValidator,
                     model,
                     default(TItem),
                     executionContext,
+                    validationStrategy,
                     depth
                 );
 
                 result = new ErrorsCollection();
 
-                result.AddError(executionContext.ExecutionOptions.CollectionForceKey, itemErrorsCollection);
+                result.AddError(executionContext.CollectionForceKey, itemErrorsCollection);
             }
             else if (memberValue != null)
             {
@@ -255,6 +256,7 @@ namespace CoreValidation.Validators
                         model,
                         item,
                         executionContext,
+                        validationStrategy,
                         depth
                     );
 
@@ -270,7 +272,7 @@ namespace CoreValidation.Validators
 
                     result.AddError(i.ToString(), itemErrorsCollection);
 
-                    if ((executionContext.ValidationStrategy == ValidationStrategy.FailFast) && !result.IsEmpty)
+                    if ((validationStrategy == ValidationStrategy.FailFast) && !result.IsEmpty)
                     {
                         break;
                     }

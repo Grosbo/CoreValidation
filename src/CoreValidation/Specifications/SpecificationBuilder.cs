@@ -1,20 +1,22 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
-using CoreValidation.Errors;
-using CoreValidation.Errors.Args;
-using CoreValidation.Validators;
-using CoreValidation.Validators.Scopes;
+using CoreValidation.Specifications.Commands;
 
 namespace CoreValidation.Specifications
 {
-    internal sealed class SpecificationBuilder<TModel> : ISpecificationBuilder<TModel>, IValidator<TModel>
+    internal sealed class SpecificationBuilder<TModel> : ISpecificationBuilder<TModel>
         where TModel : class
     {
-        private readonly List<IValidationScope<TModel>> _scopes = new List<IValidationScope<TModel>>();
+        private List<ICommand> _commands;
 
-        public ISpecificationBuilder<TModel> For<TMember>(Expression<Func<TModel, TMember>> memberSelector, MemberSpecification<TModel, TMember> memberSpecification = null)
+
+        public IReadOnlyCollection<ICommand> Commands => _commands != null
+            ? (IReadOnlyCollection<ICommand>)_commands
+            : Array.Empty<ICommand>();
+
+        public ISpecificationBuilder<TModel> Member<TMember>(Expression<Func<TModel, TMember>> memberSelector, MemberSpecification<TModel, TMember> memberSpecification = null)
         {
             if (memberSelector == null)
             {
@@ -23,45 +25,38 @@ namespace CoreValidation.Specifications
 
             var memberScope = new MemberScope<TModel, TMember>(GetPropertyInfo(memberSelector), memberSpecification);
 
-            _scopes.Add(memberScope);
+            AddCommand(memberScope);
 
             return this;
         }
 
-        public ISpecificationBuilder<TModel> Valid(Predicate<TModel> isValid, string message = null, IReadOnlyCollection<IMessageArg> args = null)
+        public ISpecificationBuilder<TModel> Valid(Predicate<TModel> isValid)
         {
             if (isValid == null)
             {
                 throw new ArgumentNullException(nameof(isValid));
             }
 
-            var modelScope = new ModelScope<TModel>(isValid, Error.CreateValidOrNull(message, args));
+            var modelScope = new ModelScope<TModel>(isValid);
 
-            _scopes.Add(modelScope);
+            AddCommand(modelScope);
 
             return this;
         }
 
-        public ISpecificationBuilder<TModel> WithSummaryError(string message, IReadOnlyCollection<IMessageArg> args = null)
+        public ISpecificationBuilder<TModel> SetSingleError(string message)
         {
-            if (message == null)
-            {
-                throw new ArgumentNullException(nameof(message));
-            }
-
-            if (SummaryError != null)
-            {
-                throw new InvalidOperationException($"{nameof(WithSummaryError)} can be set only once");
-            }
-
-            SummaryError = new Error(message, args);
+            AddCommand(new SetSingleErrorCommand(message));
 
             return this;
         }
 
-        public Error SummaryError { get; private set; }
+        public ISpecificationBuilder<TModel> WithMessage(string message)
+        {
+            AddCommand(new WithMessageCommand(message));
 
-        public IReadOnlyCollection<IValidationScope<TModel>> Scopes => _scopes;
+            return this;
+        }
 
         private static PropertyInfo GetPropertyInfo<TSource, TProperty>(Expression<Func<TSource, TProperty>> memberSelector)
         {
@@ -85,6 +80,21 @@ namespace CoreValidation.Specifications
             }
 
             return propInfo;
+        }
+
+        public void AddCommand(ICommand command)
+        {
+            if (command == null)
+            {
+                throw new ArgumentNullException(nameof(command));
+            }
+
+            if (_commands == null)
+            {
+                _commands = new List<ICommand>();
+            }
+
+            _commands.Add(command);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using CoreValidation.Specifications;
+using CoreValidation.Errors.Args;
+using CoreValidation.Tests;
 using Xunit;
 
 namespace CoreValidation.UnitTests.PredefinedRules.Times
@@ -19,13 +20,18 @@ namespace CoreValidation.UnitTests.PredefinedRules.Times
 
         [Theory]
         [MemberData(nameof(EqualTo_Should_CollectError_Data))]
-        public void EqualTo_Should_CollectError(DateTimeOffset model, DateTimeOffset value, bool expectedIsValid)
+        public void EqualTo_Should_CollectError(DateTimeOffset memberValue, DateTimeOffset value, bool expectedIsValid)
         {
-            var builder = new MemberSpecificationBuilder<object, DateTimeOffset?>();
-
-            builder.EqualTo(value);
-
-            RulesHelper.AssertErrorCompilation<DateTimeOffset?>(model, builder.Rules, expectedIsValid, Phrases.Keys.Times.EqualTo);
+            Tester.TestSingleMemberRule<DateTimeOffset?>(
+                m => m.EqualTo(value),
+                memberValue,
+                expectedIsValid,
+                Phrases.Keys.Times.EqualTo,
+                new IMessageArg[]
+                {
+                    TimeArg.Create("value", value),
+                    new EnumArg<TimeComparison>("timeComparison", TimeComparison.All)
+                });
         }
 
         public static IEnumerable<object[]> NotEqualTo_Should_CollectError_Data()
@@ -38,13 +44,18 @@ namespace CoreValidation.UnitTests.PredefinedRules.Times
 
         [Theory]
         [MemberData(nameof(NotEqualTo_Should_CollectError_Data))]
-        public void NotEqualTo_Should_CollectError(DateTimeOffset model, DateTimeOffset value, bool expectedIsValid)
+        public void NotEqualTo_Should_CollectError(DateTimeOffset memberValue, DateTimeOffset value, bool expectedIsValid)
         {
-            var builder = new MemberSpecificationBuilder<object, DateTimeOffset?>();
-
-            builder.NotEqualTo(value);
-
-            RulesHelper.AssertErrorCompilation<DateTimeOffset?>(model, builder.Rules, expectedIsValid, Phrases.Keys.Times.NotEqualTo);
+            Tester.TestSingleMemberRule<DateTimeOffset?>(
+                m => m.NotEqualTo(value),
+                memberValue,
+                expectedIsValid,
+                Phrases.Keys.Times.NotEqualTo,
+                new IMessageArg[]
+                {
+                    TimeArg.Create("value", value),
+                    new EnumArg<TimeComparison>("timeComparison", TimeComparison.All)
+                });
         }
 
         public static IEnumerable<object[]> After_Should_CollectError_Data()
@@ -57,13 +68,18 @@ namespace CoreValidation.UnitTests.PredefinedRules.Times
 
         [Theory]
         [MemberData(nameof(After_Should_CollectError_Data))]
-        public void After_Should_CollectError(DateTimeOffset model, DateTimeOffset value, bool expectedIsValid)
+        public void After_Should_CollectError(DateTimeOffset memberValue, DateTimeOffset min, bool expectedIsValid)
         {
-            var builder = new MemberSpecificationBuilder<object, DateTimeOffset?>();
-
-            builder.After(value);
-
-            RulesHelper.AssertErrorCompilation<DateTimeOffset?>(model, builder.Rules, expectedIsValid, Phrases.Keys.Times.After);
+            Tester.TestSingleMemberRule<DateTimeOffset?>(
+                m => m.After(min),
+                memberValue,
+                expectedIsValid,
+                Phrases.Keys.Times.After,
+                new IMessageArg[]
+                {
+                    TimeArg.Create("min", min),
+                    new EnumArg<TimeComparison>("timeComparison", TimeComparison.All)
+                });
         }
 
         public static IEnumerable<object[]> AfterOrEqualTo_Should_CollectError_Data()
@@ -76,13 +92,18 @@ namespace CoreValidation.UnitTests.PredefinedRules.Times
 
         [Theory]
         [MemberData(nameof(AfterOrEqualTo_Should_CollectError_Data))]
-        public void AfterOrEqualTo_Should_CollectError(DateTimeOffset model, DateTimeOffset value, bool expectedIsValid)
+        public void AfterOrEqualTo_Should_CollectError(DateTimeOffset memberValue, DateTimeOffset min, bool expectedIsValid)
         {
-            var builder = new MemberSpecificationBuilder<object, DateTimeOffset?>();
-
-            builder.AfterOrEqualTo(value);
-
-            RulesHelper.AssertErrorCompilation<DateTimeOffset?>(model, builder.Rules, expectedIsValid, Phrases.Keys.Times.AfterOrEqualTo);
+            Tester.TestSingleMemberRule<DateTimeOffset?>(
+                m => m.AfterOrEqualTo(min),
+                memberValue,
+                expectedIsValid,
+                Phrases.Keys.Times.AfterOrEqualTo,
+                new IMessageArg[]
+                {
+                    TimeArg.Create("min", min),
+                    new EnumArg<TimeComparison>("timeComparison", TimeComparison.All)
+                });
         }
 
         public static IEnumerable<object[]> Before_Should_CollectError_Data()
@@ -95,13 +116,18 @@ namespace CoreValidation.UnitTests.PredefinedRules.Times
 
         [Theory]
         [MemberData(nameof(Before_Should_CollectError_Data))]
-        public void Before_Should_CollectError(DateTimeOffset model, DateTimeOffset max, bool expectedIsValid)
+        public void Before_Should_CollectError(DateTimeOffset memberValue, DateTimeOffset max, bool expectedIsValid)
         {
-            var builder = new MemberSpecificationBuilder<object, DateTimeOffset?>();
-
-            builder.Before(max);
-
-            RulesHelper.AssertErrorCompilation<DateTimeOffset?>(model, builder.Rules, expectedIsValid, Phrases.Keys.Times.Before);
+            Tester.TestSingleMemberRule<DateTimeOffset?>(
+                m => m.Before(max),
+                memberValue,
+                expectedIsValid,
+                Phrases.Keys.Times.Before,
+                new IMessageArg[]
+                {
+                    TimeArg.Create("max", max),
+                    new EnumArg<TimeComparison>("timeComparison", TimeComparison.All)
+                });
         }
 
         public static IEnumerable<object[]> BeforeOrEqualTo_Should_CollectError_Data()
@@ -114,13 +140,18 @@ namespace CoreValidation.UnitTests.PredefinedRules.Times
 
         [Theory]
         [MemberData(nameof(BeforeOrEqualTo_Should_CollectError_Data))]
-        public void BeforeOrEqualTo_Should_CollectError(DateTimeOffset model, DateTimeOffset max, bool expectedIsValid)
+        public void BeforeOrEqualTo_Should_CollectError(DateTimeOffset memberValue, DateTimeOffset max, bool expectedIsValid)
         {
-            var builder = new MemberSpecificationBuilder<object, DateTimeOffset?>();
-
-            builder.BeforeOrEqualTo(max);
-
-            RulesHelper.AssertErrorCompilation<DateTimeOffset?>(model, builder.Rules, expectedIsValid, Phrases.Keys.Times.BeforeOrEqualTo);
+            Tester.TestSingleMemberRule<DateTimeOffset?>(
+                m => m.BeforeOrEqualTo(max),
+                memberValue,
+                expectedIsValid,
+                Phrases.Keys.Times.BeforeOrEqualTo,
+                new IMessageArg[]
+                {
+                    TimeArg.Create("max", max),
+                    new EnumArg<TimeComparison>("timeComparison", TimeComparison.All)
+                });
         }
 
         public static IEnumerable<object[]> Between_Should_CollectError_Data()
@@ -133,13 +164,19 @@ namespace CoreValidation.UnitTests.PredefinedRules.Times
 
         [Theory]
         [MemberData(nameof(Between_Should_CollectError_Data))]
-        public void Between_Should_CollectError(DateTimeOffset min, DateTimeOffset model, DateTimeOffset max, bool expectedIsValid)
+        public void Between_Should_CollectError(DateTimeOffset min, DateTimeOffset memberValue, DateTimeOffset max, bool expectedIsValid)
         {
-            var builder = new MemberSpecificationBuilder<object, DateTimeOffset?>();
-
-            builder.Between(min, max);
-
-            RulesHelper.AssertErrorCompilation<DateTimeOffset?>(model, builder.Rules, expectedIsValid, Phrases.Keys.Times.Between);
+            Tester.TestSingleMemberRule<DateTimeOffset?>(
+                m => m.Between(min, max),
+                memberValue,
+                expectedIsValid,
+                Phrases.Keys.Times.Between,
+                new IMessageArg[]
+                {
+                    TimeArg.Create("min", min),
+                    TimeArg.Create("max", max),
+                    new EnumArg<TimeComparison>("timeComparison", TimeComparison.All)
+                });
         }
 
         public static IEnumerable<object[]> BetweenOrEqualTo_Should_CollectError_Data()
@@ -152,13 +189,19 @@ namespace CoreValidation.UnitTests.PredefinedRules.Times
 
         [Theory]
         [MemberData(nameof(BetweenOrEqualTo_Should_CollectError_Data))]
-        public void BetweenOrEqualTo_Should_CollectError(DateTimeOffset min, DateTimeOffset model, DateTimeOffset max, bool expectedIsValid)
+        public void BetweenOrEqualTo_Should_CollectError(DateTimeOffset min, DateTimeOffset memberValue, DateTimeOffset max, bool expectedIsValid)
         {
-            var builder = new MemberSpecificationBuilder<object, DateTimeOffset?>();
-
-            builder.BetweenOrEqualTo(min, max);
-
-            RulesHelper.AssertErrorCompilation<DateTimeOffset?>(model, builder.Rules, expectedIsValid, Phrases.Keys.Times.BetweenOrEqualTo);
+            Tester.TestSingleMemberRule<DateTimeOffset?>(
+                m => m.BetweenOrEqualTo(min, max),
+                memberValue,
+                expectedIsValid,
+                Phrases.Keys.Times.BetweenOrEqualTo,
+                new IMessageArg[]
+                {
+                    TimeArg.Create("min", min),
+                    TimeArg.Create("max", max),
+                    new EnumArg<TimeComparison>("timeComparison", TimeComparison.All)
+                });
         }
 
         public class ComparisonModesTests
@@ -188,13 +231,18 @@ namespace CoreValidation.UnitTests.PredefinedRules.Times
 
             [Theory]
             [MemberData(nameof(EqualTo_Should_CollectError_When_TimeComparisonSet_Data))]
-            public void EqualTo_Should_CollectError_When_TimeComparisonSet(DateTimeOffset model, DateTimeOffset value, TimeComparison timeComparison, bool expectedIsValid)
+            public void EqualTo_Should_CollectError_When_TimeComparisonSet(DateTimeOffset memberValue, DateTimeOffset value, TimeComparison timeComparison, bool expectedIsValid)
             {
-                var builder = new MemberSpecificationBuilder<object, DateTimeOffset?>();
-
-                builder.EqualTo(value, timeComparison);
-
-                RulesHelper.AssertErrorCompilation<DateTimeOffset?>(model, builder.Rules, expectedIsValid, Phrases.Keys.Times.EqualTo);
+                Tester.TestSingleMemberRule<DateTimeOffset?>(
+                    m => m.EqualTo(value, timeComparison),
+                    memberValue,
+                    expectedIsValid,
+                    Phrases.Keys.Times.EqualTo,
+                    new IMessageArg[]
+                    {
+                        TimeArg.Create("value", value),
+                        new EnumArg<TimeComparison>("timeComparison", timeComparison)
+                    });
             }
 
             public static IEnumerable<object[]> NotEqualTo_Should_CollectError_When_TimeComparisonSet_Data()
@@ -222,13 +270,18 @@ namespace CoreValidation.UnitTests.PredefinedRules.Times
 
             [Theory]
             [MemberData(nameof(NotEqualTo_Should_CollectError_When_TimeComparisonSet_Data))]
-            public void NotEqualTo_Should_CollectError_When_TimeComparisonSet(DateTimeOffset model, DateTimeOffset value, TimeComparison timeComparison, bool expectedIsValid)
+            public void NotEqualTo_Should_CollectError_When_TimeComparisonSet(DateTimeOffset memberValue, DateTimeOffset value, TimeComparison timeComparison, bool expectedIsValid)
             {
-                var builder = new MemberSpecificationBuilder<object, DateTimeOffset?>();
-
-                builder.NotEqualTo(value, timeComparison);
-
-                RulesHelper.AssertErrorCompilation<DateTimeOffset?>(model, builder.Rules, expectedIsValid, Phrases.Keys.Times.NotEqualTo);
+                Tester.TestSingleMemberRule<DateTimeOffset?>(
+                    m => m.NotEqualTo(value, timeComparison),
+                    memberValue,
+                    expectedIsValid,
+                    Phrases.Keys.Times.NotEqualTo,
+                    new IMessageArg[]
+                    {
+                        TimeArg.Create("value", value),
+                        new EnumArg<TimeComparison>("timeComparison", timeComparison)
+                    });
             }
 
             public static IEnumerable<object[]> After_Should_CollectError_When_TimeComparisonSet_Data()
@@ -271,13 +324,18 @@ namespace CoreValidation.UnitTests.PredefinedRules.Times
 
             [Theory]
             [MemberData(nameof(After_Should_CollectError_When_TimeComparisonSet_Data))]
-            public void After_Should_CollectError_When_TimeComparisonSet(DateTimeOffset model, DateTimeOffset value, TimeComparison timeComparison, bool expectedIsValid)
+            public void After_Should_CollectError_When_TimeComparisonSet(DateTimeOffset memberValue, DateTimeOffset min, TimeComparison timeComparison, bool expectedIsValid)
             {
-                var builder = new MemberSpecificationBuilder<object, DateTimeOffset?>();
-
-                builder.After(value, timeComparison);
-
-                RulesHelper.AssertErrorCompilation<DateTimeOffset?>(model, builder.Rules, expectedIsValid, Phrases.Keys.Times.After);
+                Tester.TestSingleMemberRule<DateTimeOffset?>(
+                    m => m.After(min, timeComparison),
+                    memberValue,
+                    expectedIsValid,
+                    Phrases.Keys.Times.After,
+                    new IMessageArg[]
+                    {
+                        TimeArg.Create("min", min),
+                        new EnumArg<TimeComparison>("timeComparison", timeComparison)
+                    });
             }
 
             public static IEnumerable<object[]> AfterOrEqualTo_Should_CollectError_When_TimeComparisonSet_Data()
@@ -320,13 +378,18 @@ namespace CoreValidation.UnitTests.PredefinedRules.Times
 
             [Theory]
             [MemberData(nameof(AfterOrEqualTo_Should_CollectError_When_TimeComparisonSet_Data))]
-            public void AfterOrEqualTo_Should_CollectError_When_TimeComparisonSet(DateTimeOffset model, DateTimeOffset value, TimeComparison timeComparison, bool expectedIsValid)
+            public void AfterOrEqualTo_Should_CollectError_When_TimeComparisonSet(DateTimeOffset memberValue, DateTimeOffset min, TimeComparison timeComparison, bool expectedIsValid)
             {
-                var builder = new MemberSpecificationBuilder<object, DateTimeOffset?>();
-
-                builder.AfterOrEqualTo(value, timeComparison);
-
-                RulesHelper.AssertErrorCompilation<DateTimeOffset?>(model, builder.Rules, expectedIsValid, Phrases.Keys.Times.AfterOrEqualTo);
+                Tester.TestSingleMemberRule<DateTimeOffset?>(
+                    m => m.AfterOrEqualTo(min, timeComparison),
+                    memberValue,
+                    expectedIsValid,
+                    Phrases.Keys.Times.AfterOrEqualTo,
+                    new IMessageArg[]
+                    {
+                        TimeArg.Create("min", min),
+                        new EnumArg<TimeComparison>("timeComparison", timeComparison)
+                    });
             }
 
             public static IEnumerable<object[]> Before_Should_CollectError_When_TimeComparisonSet_Data()
@@ -369,13 +432,18 @@ namespace CoreValidation.UnitTests.PredefinedRules.Times
 
             [Theory]
             [MemberData(nameof(Before_Should_CollectError_When_TimeComparisonSet_Data))]
-            public void Before_Should_CollectError_When_TimeComparisonSet(DateTimeOffset model, DateTimeOffset max, TimeComparison timeComparison, bool expectedIsValid)
+            public void Before_Should_CollectError_When_TimeComparisonSet(DateTimeOffset memberValue, DateTimeOffset max, TimeComparison timeComparison, bool expectedIsValid)
             {
-                var builder = new MemberSpecificationBuilder<object, DateTimeOffset?>();
-
-                builder.Before(max, timeComparison);
-
-                RulesHelper.AssertErrorCompilation<DateTimeOffset?>(model, builder.Rules, expectedIsValid, Phrases.Keys.Times.Before);
+                Tester.TestSingleMemberRule<DateTimeOffset?>(
+                    m => m.Before(max, timeComparison),
+                    memberValue,
+                    expectedIsValid,
+                    Phrases.Keys.Times.Before,
+                    new IMessageArg[]
+                    {
+                        TimeArg.Create("max", max),
+                        new EnumArg<TimeComparison>("timeComparison", timeComparison)
+                    });
             }
 
             public static IEnumerable<object[]> BeforeOrEqualTo_Should_CollectError_When_TimeComparisonSet_Data()
@@ -418,13 +486,18 @@ namespace CoreValidation.UnitTests.PredefinedRules.Times
 
             [Theory]
             [MemberData(nameof(BeforeOrEqualTo_Should_CollectError_When_TimeComparisonSet_Data))]
-            public void BeforeOrEqualTo_Should_CollectError_When_TimeComparisonSet(DateTimeOffset model, DateTimeOffset max, TimeComparison timeComparison, bool expectedIsValid)
+            public void BeforeOrEqualTo_Should_CollectError_When_TimeComparisonSet(DateTimeOffset memberValue, DateTimeOffset max, TimeComparison timeComparison, bool expectedIsValid)
             {
-                var builder = new MemberSpecificationBuilder<object, DateTimeOffset?>();
-
-                builder.BeforeOrEqualTo(max, timeComparison);
-
-                RulesHelper.AssertErrorCompilation<DateTimeOffset?>(model, builder.Rules, expectedIsValid, Phrases.Keys.Times.BeforeOrEqualTo);
+                Tester.TestSingleMemberRule<DateTimeOffset?>(
+                    m => m.BeforeOrEqualTo(max, timeComparison),
+                    memberValue,
+                    expectedIsValid,
+                    Phrases.Keys.Times.BeforeOrEqualTo,
+                    new IMessageArg[]
+                    {
+                        TimeArg.Create("max", max),
+                        new EnumArg<TimeComparison>("timeComparison", timeComparison)
+                    });
             }
 
             public static IEnumerable<object[]> Between_Should_CollectError_When_TimeComparisonSet_Data()
@@ -492,13 +565,19 @@ namespace CoreValidation.UnitTests.PredefinedRules.Times
 
             [Theory]
             [MemberData(nameof(Between_Should_CollectError_When_TimeComparisonSet_Data))]
-            public void Between_Should_CollectError_When_TimeComparisonSet(DateTimeOffset min, DateTimeOffset model, DateTimeOffset max, TimeComparison timeComparison, bool expectedIsValid)
+            public void Between_Should_CollectError_When_TimeComparisonSet(DateTimeOffset min, DateTimeOffset memberValue, DateTimeOffset max, TimeComparison timeComparison, bool expectedIsValid)
             {
-                var builder = new MemberSpecificationBuilder<object, DateTimeOffset?>();
-
-                builder.Between(min, max, timeComparison);
-
-                RulesHelper.AssertErrorCompilation<DateTimeOffset?>(model, builder.Rules, expectedIsValid, Phrases.Keys.Times.Between);
+                Tester.TestSingleMemberRule<DateTimeOffset?>(
+                    m => m.Between(min, max, timeComparison),
+                    memberValue,
+                    expectedIsValid,
+                    Phrases.Keys.Times.Between,
+                    new IMessageArg[]
+                    {
+                        TimeArg.Create("min", min),
+                        TimeArg.Create("max", max),
+                        new EnumArg<TimeComparison>("timeComparison", timeComparison)
+                    });
             }
 
             public static IEnumerable<object[]> BetweenOrEqualTo_Should_CollectError_When_TimeComparisonSet_Data()
@@ -566,96 +645,19 @@ namespace CoreValidation.UnitTests.PredefinedRules.Times
 
             [Theory]
             [MemberData(nameof(BetweenOrEqualTo_Should_CollectError_When_TimeComparisonSet_Data))]
-            public void BetweenOrEqualTo_Should_CollectError_When_TimeComparisonSet(DateTimeOffset min, DateTimeOffset model, DateTimeOffset max, TimeComparison timeComparison, bool expectedIsValid)
+            public void BetweenOrEqualTo_Should_CollectError_When_TimeComparisonSet(DateTimeOffset min, DateTimeOffset memberValue, DateTimeOffset max, TimeComparison timeComparison, bool expectedIsValid)
             {
-                var builder = new MemberSpecificationBuilder<object, DateTimeOffset?>();
-
-                builder.BetweenOrEqualTo(min, max, timeComparison);
-
-                RulesHelper.AssertErrorCompilation<DateTimeOffset?>(model, builder.Rules, expectedIsValid, Phrases.Keys.Times.BetweenOrEqualTo);
-            }
-
-            public class MessageTests
-            {
-                [Fact]
-                public void Between_Should_SetCustomMessage()
-                {
-                    var builder = new MemberSpecificationBuilder<object, DateTimeOffset?>();
-
-                    builder.Between(new DateTimeOffset(2020, 09, 21, 15, 0, 1, TimeSpan.Zero), new DateTimeOffset(2020, 09, 21, 15, 0, 3, TimeSpan.Zero), message: "{min} {max} {timeComparison} Overriden error message");
-
-                    RulesHelper.AssertErrorMessage<DateTimeOffset?>(new DateTimeOffset(2020, 09, 21, 15, 0, 4, TimeSpan.Zero), builder.Rules, "{min} {max} {timeComparison} Overriden error message", "2020-09-21 15:00:01 2020-09-21 15:00:03 All Overriden error message");
-                }
-
-                [Fact]
-                public void BetweenOrEqualTo_Should_SetCustomMessage()
-                {
-                    var builder = new MemberSpecificationBuilder<object, DateTimeOffset?>();
-
-                    builder.BetweenOrEqualTo(new DateTimeOffset(2020, 09, 21, 15, 0, 1, TimeSpan.Zero), new DateTimeOffset(2020, 09, 21, 15, 0, 3, TimeSpan.Zero), message: "{min} {max} {timeComparison} Overriden error message");
-
-                    RulesHelper.AssertErrorMessage<DateTimeOffset?>(new DateTimeOffset(2020, 09, 21, 15, 0, 4, TimeSpan.Zero), builder.Rules, "{min} {max} {timeComparison} Overriden error message", "2020-09-21 15:00:01 2020-09-21 15:00:03 All Overriden error message");
-                }
-
-                [Fact]
-                public void EqualTo_Should_SetCustomMessage()
-                {
-                    var builder = new MemberSpecificationBuilder<object, DateTimeOffset?>();
-
-                    builder.EqualTo(new DateTimeOffset(2020, 09, 21, 15, 0, 0, TimeSpan.Zero), message: "{value} {timeComparison} Overriden error message");
-
-                    RulesHelper.AssertErrorMessage<DateTimeOffset?>(new DateTimeOffset(2020, 09, 21, 15, 0, 4, TimeSpan.Zero), builder.Rules, "{value} {timeComparison} Overriden error message", "2020-09-21 15:00:00 All Overriden error message");
-                }
-
-                [Fact]
-                public void GreaterOrEqual_Should_SetCustomMessage()
-                {
-                    var builder = new MemberSpecificationBuilder<object, DateTimeOffset?>();
-
-                    builder.AfterOrEqualTo(new DateTimeOffset(2020, 09, 21, 15, 0, 2, TimeSpan.Zero), message: "{min} {timeComparison} Overriden error message");
-
-                    RulesHelper.AssertErrorMessage<DateTimeOffset?>(new DateTimeOffset(2020, 09, 21, 15, 0, 1, TimeSpan.Zero), builder.Rules, "{min} {timeComparison} Overriden error message", "2020-09-21 15:00:02 All Overriden error message");
-                }
-
-                [Fact]
-                public void GreaterThan_Should_SetCustomMessage()
-                {
-                    var builder = new MemberSpecificationBuilder<object, DateTimeOffset?>();
-
-                    builder.After(new DateTimeOffset(2020, 09, 21, 15, 0, 2, TimeSpan.Zero), message: "{min} {timeComparison} Overriden error message");
-
-                    RulesHelper.AssertErrorMessage<DateTimeOffset?>(new DateTimeOffset(2020, 09, 21, 15, 0, 1, TimeSpan.Zero), builder.Rules, "{min} {timeComparison} Overriden error message", "2020-09-21 15:00:02 All Overriden error message");
-                }
-
-                [Fact]
-                public void LessThan_Should_SetCustomMessage()
-                {
-                    var builder = new MemberSpecificationBuilder<object, DateTimeOffset?>();
-
-                    builder.Before(new DateTimeOffset(2020, 09, 21, 15, 0, 1, TimeSpan.Zero), message: "{max} {timeComparison} Overriden error message");
-
-                    RulesHelper.AssertErrorMessage<DateTimeOffset?>(new DateTimeOffset(2020, 09, 21, 15, 0, 2, TimeSpan.Zero), builder.Rules, "{max} {timeComparison} Overriden error message", "2020-09-21 15:00:01 All Overriden error message");
-                }
-
-                [Fact]
-                public void LessThanOrEqual_Should_SetCustomMessage()
-                {
-                    var builder = new MemberSpecificationBuilder<object, DateTimeOffset?>();
-
-                    builder.BeforeOrEqualTo(new DateTimeOffset(2020, 09, 21, 15, 0, 1, TimeSpan.Zero), message: "{max} {timeComparison} Overriden error message");
-
-                    RulesHelper.AssertErrorMessage<DateTimeOffset?>(new DateTimeOffset(2020, 09, 21, 15, 0, 2, TimeSpan.Zero), builder.Rules, "{max} {timeComparison} Overriden error message", "2020-09-21 15:00:01 All Overriden error message");
-                }
-
-                [Fact]
-                public void NotEqualTo_Should_SetCustomMessage()
-                {
-                    var builder = new MemberSpecificationBuilder<object, DateTimeOffset?>();
-
-                    builder.NotEqualTo(new DateTimeOffset(2020, 09, 21, 15, 0, 4, TimeSpan.Zero), message: "{value} {timeComparison} Overriden error message");
-
-                    RulesHelper.AssertErrorMessage<DateTimeOffset?>(new DateTimeOffset(2020, 09, 21, 15, 0, 4, TimeSpan.Zero), builder.Rules, "{value} {timeComparison} Overriden error message", "2020-09-21 15:00:04 All Overriden error message");
-                }
+                Tester.TestSingleMemberRule<DateTimeOffset?>(
+                    m => m.BetweenOrEqualTo(min, max, timeComparison),
+                    memberValue,
+                    expectedIsValid,
+                    Phrases.Keys.Times.BetweenOrEqualTo,
+                    new IMessageArg[]
+                    {
+                        TimeArg.Create("min", min),
+                        TimeArg.Create("max", max),
+                        new EnumArg<TimeComparison>("timeComparison", timeComparison)
+                    });
             }
         }
     }

@@ -40,12 +40,13 @@ namespace CoreValidation
 
             if (errorsCollection.Errors.Any())
             {
-                listReport.AddRange(errorsCollection.Errors.Select(m =>
-                {
-                    return string.IsNullOrWhiteSpace(path)
+                listReport.AddRange(errorsCollection.Errors
+                    .Select(m => string.IsNullOrWhiteSpace(path)
                         ? translator(m)
-                        : $"{path}: {translator(m)}";
-                }).ToList());
+                        : $"{path}: {translator(m)}")
+                    .Distinct()
+                    .ToList()
+                );
             }
 
             foreach (var memberPair in errorsCollection.Members)

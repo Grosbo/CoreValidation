@@ -3,11 +3,9 @@ using CoreValidation.Options;
 
 namespace CoreValidation.Validators
 {
-    internal interface IExecutionContext
+    internal interface IExecutionContext : IExecutionOptions
     {
-        IExecutionOptions ExecutionOptions { get; }
         IValidatorsFactory ValidatorsFactory { get; }
-        ValidationStrategy ValidationStrategy { get; }
         IErrorsCollection DefaultErrorAsCollection { get; }
     }
 }

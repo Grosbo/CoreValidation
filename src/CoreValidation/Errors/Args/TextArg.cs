@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace CoreValidation.Errors.Args
 {
-    public class TextArg : IMessageArg
+    public class TextArg : IMessageArg<string>
     {
         private static readonly string _caseParameter = "case";
 
@@ -11,46 +11,36 @@ namespace CoreValidation.Errors.Args
 
         private static readonly string _lowerCaseParameterValue = "lower";
 
-        private readonly Func<string, string> _stringify;
-
-        private TextArg(string name, Func<string, string> stringify)
-        {
-            Name = name ?? throw new ArgumentNullException(nameof(name));
-            _stringify = stringify ?? throw new ArgumentNullException(nameof(stringify));
-        }
-
         public TextArg(string name, string value)
-            : this(name, caseValue => Stringify(value, caseValue))
         {
-            if (value == null)
-            {
-                throw new ArgumentNullException(nameof(value));
-            }
+            Value = value ?? throw new ArgumentNullException(nameof(value));
+            Name = name ?? throw new ArgumentNullException(nameof(name));
         }
 
-        public TextArg(string name, char value)
-            : this(name, caseValue => Stringify(value, caseValue))
+        public TextArg(string name, char value) : this(name, value.ToString())
         {
         }
 
         public string Name { get; }
 
+        public string Value { get; }
+
         public IReadOnlyCollection<string> AllowedParameters { get; } = new[] {_caseParameter};
 
         public string ToString(IReadOnlyDictionary<string, string> parameters)
         {
-            var caseValue = parameters?.ContainsKey(_caseParameter) == true
+            var caseParameter = parameters?.ContainsKey(_caseParameter) == true
                 ? parameters[_caseParameter]
                 : null;
 
-            if ((caseValue != null) &&
-                (caseValue != _upperCaseParameterValue) &&
-                (caseValue != _lowerCaseParameterValue))
+            if ((caseParameter != null) &&
+                (caseParameter != _upperCaseParameterValue) &&
+                (caseParameter != _lowerCaseParameterValue))
             {
-                caseValue = null;
+                caseParameter = null;
             }
 
-            return _stringify(caseValue);
+            return Stringify(Value, caseParameter);
         }
 
         private static string Stringify(string value, string caseParameter)
@@ -72,27 +62,6 @@ namespace CoreValidation.Errors.Args
             }
 
             return value;
-        }
-
-        private static string Stringify(char value, string caseParameter)
-        {
-            if (caseParameter == null)
-            {
-                return value.ToString();
-            }
-
-            if (caseParameter == _upperCaseParameterValue)
-            {
-                return char.ToUpper(value).ToString();
-            }
-
-            // ReSharper disable once ConvertIfStatementToReturnStatement
-            if (caseParameter == _lowerCaseParameterValue)
-            {
-                return char.ToLower(value).ToString();
-            }
-
-            return value.ToString();
         }
     }
 }

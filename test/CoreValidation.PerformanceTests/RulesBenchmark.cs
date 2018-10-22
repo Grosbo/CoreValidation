@@ -16,7 +16,7 @@ namespace CoreValidation.PerformanceTests
         private IValidationContext _modelsCollectionValidationContext;
         private IValidationContext _modelValidationContext;
         private IValidationContext _nullableValidationContext;
-        private IValidationContext _relativeValidationContext;
+        private IValidationContext _relationValidationContext;
 
         private IValidationResult<MasterModel>[] _results;
 
@@ -28,16 +28,16 @@ namespace CoreValidation.PerformanceTests
         private void SelfSetup()
         {
             Specification<MasterModel> specification = specs => specs
-                .Valid(m => false, "Error 0")
-                .Valid(m => false, "Error 1")
-                .Valid(m => false, "Error 2")
-                .Valid(m => false, "Error 3")
-                .Valid(m => false, "Error 4")
-                .Valid(m => false, "Error 5")
-                .Valid(m => false, "Error 6")
-                .Valid(m => false, "Error 7")
-                .Valid(m => false, "Error 8")
-                .Valid(m => false, "Error 9");
+                .Valid(m => false)
+                .Valid(m => false)
+                .Valid(m => false)
+                .Valid(m => false)
+                .Valid(m => false)
+                .Valid(m => false)
+                .Valid(m => false)
+                .Valid(m => false)
+                .Valid(m => false)
+                .Valid(m => false);
 
             _selfValidationContext = ValidationContext.Factory.Create(options => options.AddSpecification(specification));
         }
@@ -45,7 +45,7 @@ namespace CoreValidation.PerformanceTests
         private void MemberSetup()
         {
             Specification<MasterModel> specification = specs => specs
-                    .For(m => m.Member, be => be
+                    .Member(m => m.Member, be => be
                         .Valid(m => false, "error 0")
                         .Valid(m => false, "error 1")
                         .Valid(m => false, "error 2")
@@ -62,29 +62,29 @@ namespace CoreValidation.PerformanceTests
             _memberValidationContext = ValidationContext.Factory.Create(options => options.AddSpecification(specification));
         }
 
-        private void RelativeSetup()
+        private void RelationSetup()
         {
             Specification<MasterModel> specification = specs => specs
-                .For(m => m.Member, be => be
-                    .ValidRelative(m => false, "error 0")
-                    .ValidRelative(m => false, "error 1")
-                    .ValidRelative(m => false, "error 2")
-                    .ValidRelative(m => false, "error 3")
-                    .ValidRelative(m => false, "error 4")
-                    .ValidRelative(m => false, "error 5")
-                    .ValidRelative(m => false, "error 6")
-                    .ValidRelative(m => false, "error 7")
-                    .ValidRelative(m => false, "error 8")
-                    .ValidRelative(m => false, "error 9")
+                .Member(m => m.Member, be => be
+                    .AsRelative(m => false)
+                    .AsRelative(m => false)
+                    .AsRelative(m => false)
+                    .AsRelative(m => false)
+                    .AsRelative(m => false)
+                    .AsRelative(m => false)
+                    .AsRelative(m => false)
+                    .AsRelative(m => false)
+                    .AsRelative(m => false)
+                    .AsRelative(m => false)
                 );
 
-            _relativeValidationContext = ValidationContext.Factory.Create(options => options.AddSpecification(specification));
+            _relationValidationContext = ValidationContext.Factory.Create(options => options.AddSpecification(specification));
         }
 
         private void NullableSetup()
         {
             Specification<MasterModel> specification = specs => specs
-                .For(m => m.NullableMember, be => be.ValidNullable(m => m
+                .Member(m => m.NullableMember, be => be.AsNullable(m => m
                         .Valid(m1 => false, "error 0")
                         .Valid(m1 => false, "error 1")
                         .Valid(m1 => false, "error 2")
@@ -104,17 +104,17 @@ namespace CoreValidation.PerformanceTests
         private void ModelSetup()
         {
             Specification<MasterModel> specification = specs => specs
-                .For(m => m.ModelMember, be => be.ValidModel(m => m
-                    .Valid(m1 => false, "error 0")
-                    .Valid(m1 => false, "error 1")
-                    .Valid(m1 => false, "error 2")
-                    .Valid(m1 => false, "error 3")
-                    .Valid(m1 => false, "error 4")
-                    .Valid(m1 => false, "error 5")
-                    .Valid(m1 => false, "error 6")
-                    .Valid(m1 => false, "error 7")
-                    .Valid(m1 => false, "error 8")
-                    .Valid(m1 => false, "error 9")
+                .Member(m => m.ModelMember, be => be.AsModel(m => m
+                    .Valid(m1 => false)
+                    .Valid(m1 => false)
+                    .Valid(m1 => false)
+                    .Valid(m1 => false)
+                    .Valid(m1 => false)
+                    .Valid(m1 => false)
+                    .Valid(m1 => false)
+                    .Valid(m1 => false)
+                    .Valid(m1 => false)
+                    .Valid(m1 => false)
                 ));
 
             _modelValidationContext = ValidationContext.Factory.Create(options => options.AddSpecification(specification));
@@ -123,7 +123,7 @@ namespace CoreValidation.PerformanceTests
         private void CollectionSetup()
         {
             Specification<MasterModel> specification = specs => specs
-                .For(m => m.Collection, be => be.ValidCollection(m => m
+                .Member(m => m.Collection, be => be.AsCollection(m => m
                     .Valid(m1 => false, "error 0")
                     .Valid(m1 => false, "error 1")
                 ));
@@ -134,9 +134,9 @@ namespace CoreValidation.PerformanceTests
         private void ModelsCollectionSetup()
         {
             Specification<MasterModel> specification = specs => specs
-                .For(m => m.CollectionOfModels, be => be.ValidModelsCollection(m => m
-                    .Valid(m1 => false, "error 0")
-                    .Valid(m1 => false, "error 1")
+                .Member(m => m.CollectionOfModels, be => be.AsModelsCollection(m => m
+                    .Valid(m1 => false)
+                    .Valid(m1 => false)
                 ));
 
             _modelsCollectionValidationContext = ValidationContext.Factory.Create(options => options.AddSpecification(specification));
@@ -147,7 +147,7 @@ namespace CoreValidation.PerformanceTests
         {
             SelfSetup();
             MemberSetup();
-            RelativeSetup();
+            RelationSetup();
             NullableSetup();
             ModelSetup();
             CollectionSetup();
@@ -214,9 +214,9 @@ namespace CoreValidation.PerformanceTests
         }
 
         [Benchmark]
-        public void Relative()
+        public void Relation()
         {
-            RunContext(_relativeValidationContext);
+            RunContext(_relationValidationContext);
         }
 
         [Benchmark]

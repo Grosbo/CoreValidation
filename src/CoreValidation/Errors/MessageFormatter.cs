@@ -15,23 +15,23 @@ namespace CoreValidation.Errors
                 throw new ArgumentNullException(nameof(message));
             }
 
-            var messageBuilder = new StringBuilder(message);
-
             if ((messageArgs == null) || !messageArgs.Any())
             {
                 return message;
             }
 
+            var messageBuilder = new StringBuilder(message);
+
             if (messageArgs.Contains(null))
             {
-                throw new ArgumentNullException(nameof(messageArgs), "Contains null");
+                throw new ArgumentException("Contains null", nameof(messageArgs));
             }
 
             var uniqueNames = messageArgs.Select(m => m.Name).Distinct().Count();
 
             if (uniqueNames != messageArgs.Count)
             {
-                throw new ArgumentException($"Duplicate {nameof(IMessageArg.Name)} in {nameof(messageArgs)}");
+                throw new ArgumentException($"Duplicate {nameof(IMessageArg.Name)} in {nameof(messageArgs)}", nameof(messageArgs));
             }
 
             var messageVariables = MessageVariablesParser.Parse(message);

@@ -17,11 +17,11 @@ namespace CoreValidation.UnitTests.Errors
 
         [Theory]
         [MemberData(nameof(AddError_Should_ThrowException_When_ErrorIsNull_Data))]
-        public void AddError_Should_ThrowException_When_ErrorIsNull(string memberName, Error error)
+        public void AddError_Should_ThrowException_When_ErrorIsNull(string memberName, object error)
         {
             var errorsCollection = new ErrorsCollection();
 
-            Assert.Throws<ArgumentNullException>(() => { errorsCollection.AddError(memberName, error); });
+            Assert.Throws<ArgumentNullException>(() => { errorsCollection.AddError(memberName, (Error)error); });
         }
 
         public static IEnumerable<object[]> AddError_Should_ThrowException_When_CollectionIsNull_Data()
@@ -44,7 +44,7 @@ namespace CoreValidation.UnitTests.Errors
         {
             public bool IsEmpty => (Errors?.Any() == false) && (Members?.Any() == false);
 
-            public IReadOnlyCollection<Error> Errors { get; set; } = new Error[] { };
+            public IReadOnlyCollection<IError> Errors { get; set; } = new Error[] { };
 
             public IReadOnlyDictionary<string, IErrorsCollection> Members { get; set; } = new Dictionary<string, IErrorsCollection>();
         }
@@ -77,7 +77,7 @@ namespace CoreValidation.UnitTests.Errors
         }
 
         [Fact]
-        public void AddError_Should_Add_WithoutDuplicates()
+        public void AddError_Should_Add_WithDuplicates()
         {
             var errorsCollection = new ErrorsCollection();
 
@@ -86,7 +86,7 @@ namespace CoreValidation.UnitTests.Errors
             errorsCollection.AddError(new Error("foo"));
             errorsCollection.AddError(new Error("foo"));
 
-            ErrorsCollectionTestsHelpers.ExpectErrors(errorsCollection, new[] {"test123", "foo"});
+            ErrorsCollectionTestsHelpers.ExpectErrors(errorsCollection, new[] {"test123", "test123", "foo", "foo"});
 
             Assert.False(errorsCollection.IsEmpty);
         }
@@ -201,7 +201,7 @@ namespace CoreValidation.UnitTests.Errors
             errorsCollection.AddError("test", innerCollection2);
 
             ErrorsCollectionTestsHelpers.ExpectMembers(errorsCollection, new[] {"test"});
-            ErrorsCollectionTestsHelpers.ExpectErrors(errorsCollection.Members["test"], new[] {"test123", "test321", "foo", "bar"});
+            ErrorsCollectionTestsHelpers.ExpectErrors(errorsCollection.Members["test"], new[] {"test123", "test321", "foo", "foo", "bar", "test123"});
 
             Assert.False(errorsCollection.IsEmpty);
         }
@@ -226,7 +226,7 @@ namespace CoreValidation.UnitTests.Errors
 
             ErrorsCollectionTestsHelpers.ExpectMembers(errorsCollection, new[] {"test"});
             ErrorsCollectionTestsHelpers.ExpectMembers(errorsCollection.Members["test"], new[] {"inner"});
-            ErrorsCollectionTestsHelpers.ExpectErrors(errorsCollection.Members["test"].Members["inner"], new[] {"test321", "foo", "bar", "test123"});
+            ErrorsCollectionTestsHelpers.ExpectErrors(errorsCollection.Members["test"].Members["inner"], new[] {"test321", "foo", "bar", "test123", "test321", "foo"});
 
             Assert.False(errorsCollection.IsEmpty);
         }
@@ -292,7 +292,7 @@ namespace CoreValidation.UnitTests.Errors
         }
 
         [Fact]
-        public void AddError_Should_AddToMember_WithoutDuplicates()
+        public void AddError_Should_AddToMember_WithDuplicates()
         {
             var errorsCollection = new ErrorsCollection();
 
@@ -302,7 +302,7 @@ namespace CoreValidation.UnitTests.Errors
             errorsCollection.AddError("test", new Error("test321"));
 
             ErrorsCollectionTestsHelpers.ExpectMembers(errorsCollection, new[] {"test"});
-            ErrorsCollectionTestsHelpers.ExpectErrors(errorsCollection.Members["test"], new[] {"test123", "test321"});
+            ErrorsCollectionTestsHelpers.ExpectErrors(errorsCollection.Members["test"], new[] {"test123", "test123", "test321", "test321"});
 
             Assert.False(errorsCollection.IsEmpty);
         }
@@ -412,11 +412,11 @@ namespace CoreValidation.UnitTests.Errors
 
             ErrorsCollectionTestsHelpers.ExpectMembers(errorsCollection.Members["foo"], new[] {"arg1"});
 
-            ErrorsCollectionTestsHelpers.ExpectErrors(errorsCollection.Members["foo"].Members["arg1"], new[] {"val11", "val12", "val13"});
+            ErrorsCollectionTestsHelpers.ExpectErrors(errorsCollection.Members["foo"].Members["arg1"], new[] {"val11", "val12", "val12", "val13"});
             ErrorsCollectionTestsHelpers.ExpectMembers(errorsCollection.Members["foo"].Members["arg1"], new[] {"arg11", "arg12", "arg13"});
 
             ErrorsCollectionTestsHelpers.ExpectErrors(errorsCollection.Members["foo"].Members["arg1"].Members["arg11"], new[] {"val111", "val112"});
-            ErrorsCollectionTestsHelpers.ExpectErrors(errorsCollection.Members["foo"].Members["arg1"].Members["arg12"], new[] {"val121", "val122", "val123"});
+            ErrorsCollectionTestsHelpers.ExpectErrors(errorsCollection.Members["foo"].Members["arg1"].Members["arg12"], new[] {"val121", "val122", "val122", "val123"});
             ErrorsCollectionTestsHelpers.ExpectErrors(errorsCollection.Members["foo"].Members["arg1"].Members["arg13"], new[] {"val131", "val132"});
         }
 
@@ -552,11 +552,11 @@ namespace CoreValidation.UnitTests.Errors
 
             ErrorsCollectionTestsHelpers.ExpectMembers(errorsCollection.Members["foo"], new[] {"arg1"});
 
-            ErrorsCollectionTestsHelpers.ExpectErrors(errorsCollection.Members["foo"].Members["arg1"], new[] {"val11", "val12", "val13"});
+            ErrorsCollectionTestsHelpers.ExpectErrors(errorsCollection.Members["foo"].Members["arg1"], new[] {"val11", "val12", "val12", "val13"});
             ErrorsCollectionTestsHelpers.ExpectMembers(errorsCollection.Members["foo"].Members["arg1"], new[] {"arg11", "arg12", "arg13"});
 
             ErrorsCollectionTestsHelpers.ExpectErrors(errorsCollection.Members["foo"].Members["arg1"].Members["arg11"], new[] {"val111", "val112"});
-            ErrorsCollectionTestsHelpers.ExpectErrors(errorsCollection.Members["foo"].Members["arg1"].Members["arg12"], new[] {"val121", "val122", "val123"});
+            ErrorsCollectionTestsHelpers.ExpectErrors(errorsCollection.Members["foo"].Members["arg1"].Members["arg12"], new[] {"val121", "val122", "val122", "val123"});
             ErrorsCollectionTestsHelpers.ExpectErrors(errorsCollection.Members["foo"].Members["arg1"].Members["arg13"], new[] {"val131", "val132"});
         }
 

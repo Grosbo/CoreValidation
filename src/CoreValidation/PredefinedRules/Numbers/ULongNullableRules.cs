@@ -1,56 +1,56 @@
-﻿using CoreValidation.Specifications;
+using CoreValidation.Specifications;
 
 // ReSharper disable once CheckNamespace
 namespace CoreValidation
 {
     public static class ULongNullableRules
     {
-        public static IMemberSpecificationBuilder<TModel, ulong?> EqualTo<TModel>(this IMemberSpecificationBuilder<TModel, ulong?> @this, ulong value, string message = null)
+        public static IMemberSpecificationBuilder<TModel, ulong?> EqualTo<TModel>(this IMemberSpecificationBuilder<TModel, ulong?> @this, ulong value)
             where TModel : class
         {
-            return @this.ValidNullable(m => m.EqualTo(value, message));
+            return @this.AsNullable(m => m.EqualTo(value));
         }
 
-        public static IMemberSpecificationBuilder<TModel, ulong?> NotEqualTo<TModel>(this IMemberSpecificationBuilder<TModel, ulong?> @this, ulong value, string message = null)
+        public static IMemberSpecificationBuilder<TModel, ulong?> NotEqualTo<TModel>(this IMemberSpecificationBuilder<TModel, ulong?> @this, ulong value)
             where TModel : class
         {
-            return @this.ValidNullable(m => m.NotEqualTo(value, message));
+            return @this.AsNullable(m => m.NotEqualTo(value));
         }
 
-        public static IMemberSpecificationBuilder<TModel, ulong?> GreaterThan<TModel>(this IMemberSpecificationBuilder<TModel, ulong?> @this, ulong min, string message = null)
+        public static IMemberSpecificationBuilder<TModel, ulong?> GreaterThan<TModel>(this IMemberSpecificationBuilder<TModel, ulong?> @this, ulong min)
             where TModel : class
         {
-            return @this.ValidNullable(m => m.GreaterThan(min, message));
+            return @this.AsNullable(m => m.GreaterThan(min));
         }
 
-        public static IMemberSpecificationBuilder<TModel, ulong?> GreaterOrEqualTo<TModel>(this IMemberSpecificationBuilder<TModel, ulong?> @this, ulong min, string message = null)
+        public static IMemberSpecificationBuilder<TModel, ulong?> GreaterOrEqualTo<TModel>(this IMemberSpecificationBuilder<TModel, ulong?> @this, ulong min)
             where TModel : class
         {
-            return @this.ValidNullable(m => m.GreaterOrEqualTo(min, message));
+            return @this.AsNullable(m => m.GreaterOrEqualTo(min));
         }
 
-        public static IMemberSpecificationBuilder<TModel, ulong?> LessThan<TModel>(this IMemberSpecificationBuilder<TModel, ulong?> @this, ulong max, string message = null)
+        public static IMemberSpecificationBuilder<TModel, ulong?> LessThan<TModel>(this IMemberSpecificationBuilder<TModel, ulong?> @this, ulong max)
             where TModel : class
         {
-            return @this.ValidNullable(m => m.LessThan(max, message));
+            return @this.AsNullable(m => m.LessThan(max));
         }
 
-        public static IMemberSpecificationBuilder<TModel, ulong?> LessOrEqualTo<TModel>(this IMemberSpecificationBuilder<TModel, ulong?> @this, ulong max, string message = null)
+        public static IMemberSpecificationBuilder<TModel, ulong?> LessOrEqualTo<TModel>(this IMemberSpecificationBuilder<TModel, ulong?> @this, ulong max)
             where TModel : class
         {
-            return @this.ValidNullable(m => m.LessOrEqualTo(max, message));
+            return @this.AsNullable(m => m.LessOrEqualTo(max));
         }
 
-        public static IMemberSpecificationBuilder<TModel, ulong?> Between<TModel>(this IMemberSpecificationBuilder<TModel, ulong?> @this, ulong min, ulong max, string message = null)
+        public static IMemberSpecificationBuilder<TModel, ulong?> Between<TModel>(this IMemberSpecificationBuilder<TModel, ulong?> @this, ulong min, ulong max)
             where TModel : class
         {
-            return @this.ValidNullable(m => m.Between(min, max, message));
+            return @this.AsNullable(m => m.Between(min, max));
         }
 
-        public static IMemberSpecificationBuilder<TModel, ulong?> BetweenOrEqualTo<TModel>(this IMemberSpecificationBuilder<TModel, ulong?> @this, ulong min, ulong max, string message = null)
+        public static IMemberSpecificationBuilder<TModel, ulong?> BetweenOrEqualTo<TModel>(this IMemberSpecificationBuilder<TModel, ulong?> @this, ulong min, ulong max)
             where TModel : class
         {
-            return @this.ValidNullable(m => m.BetweenOrEqualTo(min, max, message));
+            return @this.AsNullable(m => m.BetweenOrEqualTo(min, max));
         }
     }
 }
