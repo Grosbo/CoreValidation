@@ -4,8 +4,8 @@
     <LangVersion>7.2</LangVersion>
     <PackageId>CoreValidation</PackageId>
     <Authors>Bartosz Lenar</Authors>
-    <PackageTags>validation,validator,model,contract,fluent-api</PackageTags>
-    <Description>Advanced model validation for the modern dotnet world</Description>
+    <PackageTags>validation,validator,model,specification,contract,fluent-api</PackageTags>
+    <Description>Advanced model validation library for the modern dotnet world</Description>
     <PackageProjectUrl>https://github.com/bartoszlenar/CoreValidation</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/bartoszlenar/CoreValidation/blob/master/LICENSE</PackageLicenseUrl>
     <PackageIconUrl>https://github.com/bartoszlenar/CoreValidation/raw/master/logo/icon.png</PackageIconUrl>

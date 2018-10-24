@@ -29,25 +29,25 @@
 Briefly:
 
 * Fluent API everywhere
-  * no need of creating separate classes with just validation logic (although [it's supported](https://github.com/bartoszlenar/CoreValidation/wiki) as well)
+  * no need of creating separate classes with just validation logic (although it's supported as well)
 * Validates complex models
-  * [classes](https://github.com/bartoszlenar/CoreValidation/wiki), [value types](https://github.com/bartoszlenar/CoreValidation/wiki), [nullables](https://github.com/bartoszlenar/CoreValidation/wiki), [nested models](https://github.com/bartoszlenar/CoreValidation/wiki), [collections](https://github.com/bartoszlenar/CoreValidation/wiki) and [relations](https://github.com/bartoszlenar/CoreValidation/wiki) between them all
-  * all [combinations](https://github.com/bartoszlenar/CoreValidation/wiki) of the above
-* [Strategies](https://github.com/bartoszlenar/CoreValidation/wiki)
-  * including [Force](https://github.com/bartoszlenar/CoreValidation/wiki) which can help with documentation by collecting all theoretically possible errors
-* Global [model errors](https://github.com/bartoszlenar/CoreValidation/wiki)
+  * classes, value types, nullables, nested models, collections and relations between them all
+  * all combinations of the above
+* Strategies
+  * including Force which can help with documentation by collecting all theoretically possible errors
+* Global model errors
   * ability to assign an error to the model itself instead of its members
-* [Predefined rules](https://github.com/bartoszlenar/CoreValidation/wiki)
-  * validate [numbers](https://github.com/bartoszlenar/CoreValidation/wiki), [strings](https://github.com/bartoszlenar/CoreValidation/wiki), [dates](https://github.com/bartoszlenar/CoreValidation/wiki) and [times](https://github.com/bartoszlenar/CoreValidation/wiki) out-of-the box
-* [Localizations](https://github.com/bartoszlenar/CoreValidation/wiki)
-  * with [custom translations](https://github.com/bartoszlenar/CoreValidation/wiki) and [formattable parameters](https://github.com/bartoszlenar/CoreValidation/wiki)
-* [Reporting](https://github.com/bartoszlenar/CoreValidation/wiki)
-  * different types (e.g. [model-shaped](https://github.com/bartoszlenar/CoreValidation/wiki) for JSON API response or [list of messages](https://github.com/bartoszlenar/CoreValidation/wiki) for the logs)
+* Predefined rules
+  * validate numbers, strings, dates and times out-of-the box
+* Localizations
+  * with custom translations and formattable parameters
+* Reporting
+  * different types (e.g. model-shaped for JSON API response or list of messages for the logs)
   * independent from validation process (validate once - produce many different reports in different formats and languages)
-* [Partial validation](https://github.com/bartoszlenar/CoreValidation/wiki)
+* Partial validation
   * handy when validation process involves remote calls or multiple threads
-* [Extendable](https://github.com/bartoszlenar/CoreValidation/wiki)
-  * create your own [reusable rules](https://github.com/bartoszlenar/CoreValidation/wiki), [reports](https://github.com/bartoszlenar/CoreValidation/wiki), [translations](https://github.com/bartoszlenar/CoreValidation/wiki), etc.
+* Extendable
+  * create your own reusable rules, reports, translations, etc.
 
 Technically:
 
@@ -68,7 +68,7 @@ dotnet add package CoreValidation
 ### Versioning
 
 * Version numbers strictly follow the [semantic versioning](https://semver.org/spec/v2.0.0.html) rules.
-* All changes are detailly logged in the separate [release notes document](https://github.com/bartoszlenar/CoreValidation/wiki).
+* All changes are detailly logged in the separate release notes document.
 
 ## Quickstart
 
@@ -77,55 +77,66 @@ dotnet add package CoreValidation
 ``` csharp
 class SignUpModel
 {
-    public string Email { get; set; }
-    public string Password { get; set; }
-    public string PasswordConfirmation { get; set; }
-    public bool? TermsAndConditionsConsent { get; set; }
+  public string Email { get; set; }
+  public string Password { get; set; }
+  public string PasswordConfirmation { get; set; }
+  public bool? TermsAndConditionsConsent { get; set; }
 }
 ```
 
-Classic model for signing up the user. Just one nullable `bool?` and three `string` fields.
+Classic model for signing up the user. Just one nullable `bool?` and three `string` fields. All with rather self-descriptive names.
 
 ### 2. Specify its valid state
 
 ``` csharp
-Specification<SignUpModel> signUpModelSpecification = s => s
-
-    .Member(m => m.Email, m => m
-        .Email()
-        .MaxLength(40))
-
-    .Member(m => m.Password, m => m
-        .MinLength(min: 10).WithMessage("Password should contain at least {min} characters")
-        .Valid(p => p.Any(char.IsDigit)).WithMessage("Password should contain at least one digit"))
-
-    .Member(m => m.PasswordConfirmation, m => m
-        .AsRelative(n => n.Password == n.PasswordConfirmation).WithMessage("Invalid confirmation"))
-
-    .Member(m => m.TermsAndConditionsConsent)
-
-    .Valid(m => m.TermsAndConditionsConsent == true).WithMessage("Without the consent, sign up is invalid");
-
+using CoreValidation;
 ```
 
-#### `Member` - specification for member fields:
+``` csharp
+Specification<SignUpModel> signUpModelSpecification = s => s
 
-* `Email` has two [predefined rules](https://github.com/bartoszlenar/CoreValidation/wiki) with rather self-descriptive names (you can also [create your own](https://github.com/bartoszlenar/CoreValidation/wiki)).
-* `Password` has two rules:
-  * Predefined `MinLength` with `min` [parameter](https://github.com/bartoszlenar/CoreValidation/wiki) which is also used as a [placeholder](https://github.com/bartoszlenar/CoreValidation/wiki) in the [message](https://github.com/bartoszlenar/CoreValidation/wiki) that overrides the default one.
-  * `Valid` - the way to include an in-line predicate as a [custom rule](https://github.com/bartoszlenar/CoreValidation/wiki), also [with a message](https://github.com/bartoszlenar/CoreValidation/wiki).
-* `PasswordConfirmation` - `AsRelative` delivers the parent model so you can [validate the relations](https://github.com/bartoszlenar/CoreValidation/wiki) between its fields.
-* `TermsAndConditionsConsent` has no rules, but everything listed in `Specification` will be marked as required by default.
+  .Member(m => m.Email, m => m
+    .Email()
+    .MaxLength(40))
 
-#### `Valid` - Specification for the model itself
+  .Member(m => m.Password, m => m
+    .MinLength(min: 10).WithMessage("Password should contain at least {min} characters")
+    .Valid(p => p.Any(char.IsDigit)).WithMessage("Password should contain at least one digit"))
 
-* A single custom rule for the model as a whole.
+  .Member(m => m.PasswordConfirmation, m => m
+    .AsRelative(n => n.Password == n.PasswordConfirmation).WithMessage("Invalid confirmation"))
+
+  .Member(m => m.TermsAndConditionsConsent)
+
+  .Valid(m => m.TermsAndConditionsConsent == true).WithMessage("Without the consent, sign up is invalid");
+```
+
+#### `Member` - member scope
+
+Errors in member scope are assigned to the selected members
+
+* Until explicitly set as optional, by default everything listed in specification is marked as required
+* `Email` needs to be a valid email address, and contain maximum 40 characters
+* `Password` needs to contain minimum 10 characters and at least one digit
+  * `MinLength` rule accepts the argument, which name (`min`) could be used in `WithMessage` to override the default error message
+  * `Valid` is the way to set custom validation logic
+* `PasswordConfirmation` needs to be the same as `Password`
+  * `AsRelative` rule exposes the parent model so you can validate the relations between its fields
+* `TermsAndConditionsConsent` has no rules, but it's required (cannot be null)
+
+
+#### `Valid` - model scope
+
+Errors will be assigned to the global model scope
+
+* Same as in member scope, `Valid` accepts the predicate that can hold a custom validation logic
+* `TermsAndConditionsConsent` needs to be `true` or else the entire model doesn't have any sense and it's invalid
 
 ### 3. Create validation context
 
 ``` csharp
 var validationContext = ValidationContext.Factory.Create(options => options
-    .AddSpecification(signUpModelSpecification)
+  .AddSpecification(signUpModelSpecification)
 );
 ```
 
@@ -158,7 +169,7 @@ var validationResult = validationContext.Validate(signUpModel);
 
 ### 5. Process the result
 
-Having the `IValidationResult` instance, you can check if the model is valid using `IsValid`:
+Having the result (`IValidationResult` instance), you can check if the model is valid using `IsValid` property:
 
 ``` csharp
 var isSignUpModelValid = validationResult.IsValid; // false
@@ -181,10 +192,10 @@ PasswordConfirmation: Confirmation doesn't match the password
 TermsAndConditionsConsent: Required
 ```
 
-Call `ToModelReport` to get the report that could be serialized and returned in the HTTP response (and lets twist it a little bit by using Polish translation):
+Call `ToModelReport` to get the report that could be serialized and returned in the HTTP response:
 
 ``` csharp
-var modelReport = validationResult.ToModelReport(translationName: nameof(Phrases.Polish));
+var modelReport = validationResult.ToModelReport();
 ```
 
 `JsonConvert.SerializeObject(modelReport)` output:
@@ -196,7 +207,7 @@ var modelReport = validationResult.ToModelReport(translationName: nameof(Phrases
   ],
   "Password": [
     "Password should contain at least 10 characters",
-    "Password should contain at least one digit",
+    "Password should contain at least one digit"
   ],
   "PasswordConfirmation": [
     "Confirmation doesn't match the password"
@@ -213,15 +224,17 @@ var modelReport = validationResult.ToModelReport(translationName: nameof(Phrases
 
 ### 6. Debug it yourself!
 
-Each example lives as a functional test. To navigate to it, look for the green check mark next to the filename:
+Each example (here and in [documentation](https://github.com/bartoszlenar/CoreValidation/wiki)) lives as a functional test. To navigate to it, look for the green check mark next to the filename:
 
 [:heavy_check_mark: SignUp.cs](test/CoreValidation.FunctionalTests/QuickStart/SignUp.cs)
 
-### 7. Discover more
-
-For more advanced scenarios of usage, follow to [this page](https://github.com/bartoszlenar/CoreValidation/wiki).
+## Documentation
 
 The documentation is hosted as a [GitHub wiki](https://github.com/bartoszlenar/CoreValidation/wiki).
+
+Shortcuts:
+* More advanced scenarios described step-by-step
+* Contributor guide
 
 ## Author
 
