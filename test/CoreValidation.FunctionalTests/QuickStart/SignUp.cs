@@ -1,6 +1,6 @@
-using System.Collections.Generic;
 using System.Linq;
 using CoreValidation.Factory.Specifications;
+using CoreValidation.Results;
 using CoreValidation.Specifications;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -60,6 +60,13 @@ namespace CoreValidation.FunctionalTests.QuickStart
             var isLogInModelValid = validationResult.IsValid;
 
             Assert.False(isLogInModelValid);
+
+            var exception = Assert.Throws<InvalidModelResultException<SignUpModel>>(() =>
+            {
+                validationResult.ThrowResultIfInvalid();
+            });
+
+            Assert.Same(validationResult, exception.ValidationResult);
 
             var listReport = validationResult.ToListReport();
 

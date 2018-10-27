@@ -169,11 +169,23 @@ var validationResult = validationContext.Validate(signUpModel);
 
 ### 5. Process the result
 
+#### Predicate
+
 Having the result (`IValidationResult` instance), you can check if the model is valid using `IsValid` property:
 
 ``` csharp
 var isSignUpModelValid = validationResult.IsValid; // false
 ```
+
+#### Exception
+
+Or block the code execution by throwing result in the exception:
+
+``` csharp
+validationResult.ThrowResultIfInvalid(); // throws InvalidModelResultException<SignUpModel>
+```
+
+#### List Report
 
 Call `ToListReport` to get a list of error messages, e.g. to log them:
 
@@ -191,6 +203,8 @@ Password: Password should contain at least one digit
 PasswordConfirmation: Confirmation doesn't match the password
 TermsAndConditionsConsent: Required
 ```
+
+#### Model Report
 
 Call `ToModelReport` to get the report that could be serialized and returned in the HTTP response:
 

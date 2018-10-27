@@ -2,30 +2,30 @@ using System;
 
 namespace CoreValidation.Results
 {
-    public abstract class InvalidModelException : Exception
+    public abstract class InvalidModelException<T> : InvalidModelException
     {
-        public InvalidModelException(Type type, object model)
+        protected InvalidModelException() : base(typeof(T), $"Invalid model of type {typeof(T).FullName}.")
         {
-            Type = type;
-            Model = model;
         }
 
-        public object Model { get; }
-
-        public Type Type { get; }
+        protected InvalidModelException(string message) : base(typeof(T), message)
+        {
+        }
     }
 
-    public sealed class InvalidModelException<T> : InvalidModelException
-        where T : class
+    public abstract class InvalidModelException : Exception
     {
-        public InvalidModelException(IValidationResult<T> validationResult)
-            : base(typeof(T), validationResult.Model)
+        public InvalidModelException(Type type)
         {
-            ValidationResult = validationResult;
+            Type = type;
         }
 
-        public IValidationResult<T> ValidationResult { get; }
+        public InvalidModelException(Type type, string message)
+            : base(message)
+        {
+            Type = type;
+        }
 
-        public new T Model => ValidationResult.Model;
+        public Type Type { get; }
     }
 }

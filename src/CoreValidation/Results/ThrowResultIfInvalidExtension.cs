@@ -4,9 +4,9 @@ using CoreValidation.Results;
 // ReSharper disable once CheckNamespace
 namespace CoreValidation
 {
-    public static class ThrowIfInvalidExtension
+    public static class ThrowResultIfInvalidExtension
     {
-        public static void ThrowIfInvalid<T>(this IValidationResult<T> @this)
+        public static void ThrowResultIfInvalid<T>(this IValidationResult<T> @this)
             where T : class
         {
             if (@this == null)
@@ -16,7 +16,7 @@ namespace CoreValidation
 
             if (!@this.IsValid)
             {
-                throw new InvalidModelException<T>(@this);
+                throw new InvalidModelResultException<T>(@this);
             }
         }
     }

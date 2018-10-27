@@ -243,7 +243,7 @@ DateOfBirth: Date of birth is required
 
             Assert.False(result.IsValid);
 
-            Assert.Throws<InvalidModelException<UserModel>>(() => { result.ThrowIfInvalid(); });
+            Assert.Throws<InvalidModelResultException<UserModel>>(() => { result.ThrowResultIfInvalid(); });
         }
     }
 }

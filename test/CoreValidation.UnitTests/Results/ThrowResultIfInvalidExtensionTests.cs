@@ -8,7 +8,7 @@ using Xunit;
 
 namespace CoreValidation.UnitTests.Results
 {
-    public class ThrowIfInvalidExtensionTests
+    public class ThrowResultIfInvalidExtensionTests
     {
         public class Item
         {
@@ -17,7 +17,7 @@ namespace CoreValidation.UnitTests.Results
         [Theory]
         [InlineData(true)]
         [InlineData(false)]
-        public void Should_ThrowIfInvalid(bool isValid)
+        public void Should_ThrowResultIfInvalid(bool isValid)
         {
             var errorCollection = new ErrorsCollection();
 
@@ -36,17 +36,13 @@ namespace CoreValidation.UnitTests.Results
 
                 try
                 {
-                    varlidationResult.ThrowIfInvalid();
+                    varlidationResult.ThrowResultIfInvalid();
                 }
-                catch (InvalidModelException<Item> exception)
+                catch (InvalidModelResultException<Item> exception)
                 {
                     Assert.Same(model, exception.Model);
                     Assert.Same(varlidationResult, exception.ValidationResult);
                     Assert.Equal(typeof(Item), exception.Type);
-
-                    var general = exception as InvalidModelException;
-
-                    Assert.Same(model, general.Model);
 
                     thrown = true;
                 }
@@ -55,14 +51,14 @@ namespace CoreValidation.UnitTests.Results
             }
             else
             {
-                varlidationResult.ThrowIfInvalid();
+                varlidationResult.ThrowResultIfInvalid();
             }
         }
 
         [Fact]
         public void Should_ThrowException_If_NullThis()
         {
-            Assert.Throws<ArgumentNullException>(() => { (null as IValidationResult<object>).ThrowIfInvalid(); });
+            Assert.Throws<ArgumentNullException>(() => { (null as IValidationResult<object>).ThrowResultIfInvalid(); });
         }
     }
 }
