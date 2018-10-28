@@ -38,7 +38,7 @@ namespace CoreValidation.UnitTests.Results
                 {
                     varlidationResult.ThrowResultIfInvalid();
                 }
-                catch (InvalidModelResultException<Item> exception)
+                catch (ValidationResultException<Item> exception)
                 {
                     Assert.Same(model, exception.Model);
                     Assert.Same(varlidationResult, exception.ValidationResult);

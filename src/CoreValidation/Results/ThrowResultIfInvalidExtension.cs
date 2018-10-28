@@ -16,7 +16,7 @@ namespace CoreValidation
 
             if (!@this.IsValid)
             {
-                throw new InvalidModelResultException<T>(@this);
+                throw new ValidationResultException<T>(@this);
             }
         }
     }

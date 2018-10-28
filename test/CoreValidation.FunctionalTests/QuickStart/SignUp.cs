@@ -61,7 +61,7 @@ namespace CoreValidation.FunctionalTests.QuickStart
 
             Assert.False(isLogInModelValid);
 
-            var exception = Assert.Throws<InvalidModelResultException<SignUpModel>>(() =>
+            var exception = Assert.Throws<ValidationResultException<SignUpModel>>(() =>
             {
                 validationResult.ThrowResultIfInvalid();
             });

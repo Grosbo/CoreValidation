@@ -169,7 +169,7 @@ var validationResult = validationContext.Validate(signUpModel);
 
 ### 5. Process the result
 
-#### Predicate
+#### Flag
 
 Having the result (`IValidationResult` instance), you can check if the model is valid using `IsValid` property:
 
@@ -182,7 +182,7 @@ var isSignUpModelValid = validationResult.IsValid; // false
 Or block the code execution by throwing result in the exception:
 
 ``` csharp
-validationResult.ThrowResultIfInvalid(); // throws InvalidModelResultException<SignUpModel>
+validationResult.ThrowResultIfInvalid(); // throws ValidationResultException<SignUpModel>
 ```
 
 #### List Report
