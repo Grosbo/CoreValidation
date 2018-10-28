@@ -78,14 +78,14 @@ namespace CoreValidation.UnitTests.Results
 
             another.AddError("foo", anotherNested1);
 
-            Assert.False(validationResult.ContainsMergedErrors);
+            Assert.False(validationResult.IsMergeResult);
             Assert.Same(errorsCollection, validationResult.ErrorsCollection);
 
             var mergedResult = validationResult.Merge(another);
 
             Assert.NotSame(mergedResult, validationResult);
             Assert.NotSame(mergedResult, another);
-            Assert.True(mergedResult.ContainsMergedErrors);
+            Assert.True(mergedResult.IsMergeResult);
             Assert.NotSame(errorsCollection, mergedResult.ErrorsCollection);
 
             ErrorsCollectionTestsHelpers.ExpectMembers(mergedResult.ErrorsCollection, new[] {"foo"});
@@ -117,7 +117,7 @@ namespace CoreValidation.UnitTests.Results
 
             var result = new ValidationResult<object>(guid, new TranslationProxy(e => e.ToFormattedMessage(), new TranslatorsRepository(Array.Empty<Translation>())), new ExecutionContextStub(), new object(), new ErrorsCollection());
 
-            Assert.Equal(guid, result.CoreValidatorId);
+            Assert.Equal(guid, result.ValidationContextId);
         }
 
         [Fact]

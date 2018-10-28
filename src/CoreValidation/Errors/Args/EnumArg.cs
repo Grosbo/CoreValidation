@@ -10,7 +10,6 @@ namespace CoreValidation.Errors.Args
 
         private static readonly string _defaultFormat = "G";
 
-
         public EnumArg(string name, T value)
         {
             Name = name ?? throw new ArgumentNullException(nameof(name));

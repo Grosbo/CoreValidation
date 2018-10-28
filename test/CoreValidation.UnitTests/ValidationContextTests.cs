@@ -5,7 +5,6 @@ using CoreValidation.Errors;
 using CoreValidation.Errors.Args;
 using CoreValidation.Exceptions;
 using CoreValidation.Factory;
-using CoreValidation.Factory.Specifications;
 using CoreValidation.Options;
 using CoreValidation.Specifications;
 using CoreValidation.Translations;
@@ -118,9 +117,9 @@ namespace CoreValidation.UnitTests
                 var result = validationContext.Validate(new User {Name = ""});
 
                 Assert.NotNull(result);
-                Assert.Equal(validationContext.Id, result.CoreValidatorId);
+                Assert.Equal(validationContext.Id, result.ValidationContextId);
                 Assert.Equal(validationContext.Options.ValidationOptions, result.ExecutionOptions);
-                Assert.False(result.ContainsMergedErrors);
+                Assert.False(result.IsMergeResult);
                 Assert.NotNull(result.ErrorsCollection);
                 Assert.Empty(result.ErrorsCollection.Errors);
                 Assert.Equal("error {arg|case=upper}", result.ErrorsCollection.Members["Name"].Errors.Single().Message);
@@ -164,9 +163,9 @@ namespace CoreValidation.UnitTests
                 var result = validationContext.Validate(new User {Name = ""}, o => o.SetTranslationDisabled());
 
                 Assert.NotNull(result);
-                Assert.Equal(validationContext.Id, result.CoreValidatorId);
+                Assert.Equal(validationContext.Id, result.ValidationContextId);
                 Assert.Equal(validationContext.Options.ValidationOptions, result.ExecutionOptions);
-                Assert.False(result.ContainsMergedErrors);
+                Assert.False(result.IsMergeResult);
                 Assert.NotNull(result.ErrorsCollection);
                 Assert.Empty(result.ErrorsCollection.Errors);
                 Assert.Equal("error {arg|case=upper}", result.ErrorsCollection.Members["Name"].Errors.Single().Message);
@@ -210,9 +209,9 @@ namespace CoreValidation.UnitTests
                 var result = validationContext.Validate(new User {Name = ""}, o => o.SetTranslationName("test2"));
 
                 Assert.NotNull(result);
-                Assert.Equal(validationContext.Id, result.CoreValidatorId);
+                Assert.Equal(validationContext.Id, result.ValidationContextId);
                 Assert.Equal(validationContext.Options.ValidationOptions, result.ExecutionOptions);
-                Assert.False(result.ContainsMergedErrors);
+                Assert.False(result.IsMergeResult);
                 Assert.NotNull(result.ErrorsCollection);
                 Assert.Empty(result.ErrorsCollection.Errors);
                 Assert.Equal("error {arg|case=upper}", result.ErrorsCollection.Members["Name"].Errors.Single().Message);
@@ -252,9 +251,9 @@ namespace CoreValidation.UnitTests
                 var result = validationContext.Validate(new User {Name = ""});
 
                 Assert.NotNull(result);
-                Assert.Equal(validationContext.Id, result.CoreValidatorId);
+                Assert.Equal(validationContext.Id, result.ValidationContextId);
                 Assert.Equal(validationContext.Options.ValidationOptions, result.ExecutionOptions);
-                Assert.False(result.ContainsMergedErrors);
+                Assert.False(result.IsMergeResult);
                 Assert.NotNull(result.ErrorsCollection);
                 Assert.Empty(result.ErrorsCollection.Errors);
                 Assert.Equal("error {arg|case=upper}", result.ErrorsCollection.Members["Name"].Errors.Single().Message);
@@ -408,9 +407,9 @@ namespace CoreValidation.UnitTests
                 var result = validationContext.Validate(new User {Name = ""});
 
                 Assert.NotNull(result);
-                Assert.Equal(validationContext.Id, result.CoreValidatorId);
+                Assert.Equal(validationContext.Id, result.ValidationContextId);
                 Assert.Equal(validationContext.Options.ValidationOptions, result.ExecutionOptions);
-                Assert.False(result.ContainsMergedErrors);
+                Assert.False(result.IsMergeResult);
                 Assert.Equal(validationContext.TranslatorsRepository, result.TranslationProxy.TranslatorsRepository);
                 Assert.Equal(validationContext.TranslatorsRepository.GetOriginal(), result.TranslationProxy.DefaultTranslator);
                 Assert.NotNull(result.ErrorsCollection);
@@ -439,9 +438,9 @@ namespace CoreValidation.UnitTests
                 var result = validationContext.Validate(new User {Address = new Address {Street = ""}});
 
                 Assert.NotNull(result);
-                Assert.Equal(validationContext.Id, result.CoreValidatorId);
+                Assert.Equal(validationContext.Id, result.ValidationContextId);
                 Assert.Equal(validationContext.Options.ValidationOptions, result.ExecutionOptions);
-                Assert.False(result.ContainsMergedErrors);
+                Assert.False(result.IsMergeResult);
                 Assert.Equal(validationContext.TranslatorsRepository, result.TranslationProxy.TranslatorsRepository);
                 Assert.Equal(validationContext.TranslatorsRepository.GetOriginal(), result.TranslationProxy.DefaultTranslator);
                 Assert.NotNull(result.ErrorsCollection);
@@ -468,9 +467,9 @@ namespace CoreValidation.UnitTests
                 var result = validationContext.Validate(new User {Address = new Address {Street = ""}});
 
                 Assert.NotNull(result);
-                Assert.Equal(validationContext.Id, result.CoreValidatorId);
+                Assert.Equal(validationContext.Id, result.ValidationContextId);
                 Assert.Equal(validationContext.Options.ValidationOptions, result.ExecutionOptions);
-                Assert.False(result.ContainsMergedErrors);
+                Assert.False(result.IsMergeResult);
                 Assert.Equal(validationContext.TranslatorsRepository, result.TranslationProxy.TranslatorsRepository);
                 Assert.Equal(validationContext.TranslatorsRepository.GetOriginal(), result.TranslationProxy.DefaultTranslator);
                 Assert.NotNull(result.ErrorsCollection);

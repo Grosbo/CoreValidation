@@ -2,7 +2,7 @@
 
 namespace CoreValidation.Options
 {
-    public sealed class ValidationOptions : IValidationOptions
+    internal sealed class ValidationOptions : IValidationOptions
     {
         public string TranslationName { get; set; }
 

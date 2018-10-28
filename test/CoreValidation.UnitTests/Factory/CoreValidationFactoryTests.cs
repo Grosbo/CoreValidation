@@ -707,7 +707,7 @@ namespace CoreValidation.UnitTests.Factory
             [Fact]
             public static void Create_Should_ThrowException_When_NegativeMaxDepth()
             {
-                Assert.Throws<InvalidOperationException>(() => { new ValidationContextFactory().Create(options => options.SetMaxDepth(-1)); });
+                Assert.Throws<ArgumentOutOfRangeException>(() => { new ValidationContextFactory().Create(options => options.SetMaxDepth(-1)); });
             }
         }
 

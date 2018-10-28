@@ -9,6 +9,13 @@ namespace CoreValidation
 {
     public static class AsCollectionExtension
     {
+        /// <summary>
+        /// Sets the validation logic for the member as a collection.
+        /// </summary>
+        /// <typeparam name="TModel">Type of the parent model.</typeparam>
+        /// <typeparam name="TMember">Type of the collection.</typeparam>
+        /// <typeparam name="TItem">Type of the items in the collection.</typeparam>
+        /// <param name="itemSpecification">The specification for the single item in the collection.</param>
         public static IMemberSpecificationBuilder<TModel, TMember> AsCollection<TModel, TMember, TItem>(this IMemberSpecificationBuilder<TModel, TMember> @this, MemberSpecification<TModel, TItem> itemSpecification)
             where TModel : class
             where TMember : class, IEnumerable<TItem>
@@ -20,6 +27,12 @@ namespace CoreValidation
             return @this;
         }
 
+        /// <summary>
+        /// Sets the validation logic for the member as a collection.
+        /// </summary>
+        /// <typeparam name="TModel">Type of the parent model.</typeparam>
+        /// <typeparam name="TItem">Type of the items in the collection.</typeparam>
+        /// <param name="itemSpecification">The specification for the single item in the collection.</param>
         public static IMemberSpecificationBuilder<TModel, TItem[]> AsCollection<TModel, TItem>(this IMemberSpecificationBuilder<TModel, TItem[]> @this, MemberSpecification<TModel, TItem> itemSpecification)
             where TModel : class
         {
@@ -30,6 +43,12 @@ namespace CoreValidation
             return @this;
         }
 
+        /// <summary>
+        /// Sets the validation logic for the member as a collection.
+        /// </summary>
+        /// <typeparam name="TModel">Type of the parent model.</typeparam>
+        /// <typeparam name="TItem">Type of the items in the collection.</typeparam>
+        /// <param name="itemSpecification">The specification for the single item in the collection.</param>
         public static IMemberSpecificationBuilder<TModel, IEnumerable<TItem>> AsCollection<TModel, TItem>(this IMemberSpecificationBuilder<TModel, IEnumerable<TItem>> @this, MemberSpecification<TModel, TItem> itemSpecification)
             where TModel : class
         {
@@ -40,6 +59,12 @@ namespace CoreValidation
             return @this;
         }
 
+        /// <summary>
+        /// Sets the validation logic for the member as a collection.
+        /// </summary>
+        /// <typeparam name="TModel">Type of the parent model.</typeparam>
+        /// <typeparam name="TItem">Type of the items in the collection.</typeparam>
+        /// <param name="itemSpecification">The specification for the single item in the collection.</param>
         public static IMemberSpecificationBuilder<TModel, ICollection<TItem>> AsCollection<TModel, TItem>(this IMemberSpecificationBuilder<TModel, ICollection<TItem>> @this, MemberSpecification<TModel, TItem> itemSpecification)
             where TModel : class
         {
@@ -50,6 +75,12 @@ namespace CoreValidation
             return @this;
         }
 
+        /// <summary>
+        /// Sets the validation logic for the member as a collection.
+        /// </summary>
+        /// <typeparam name="TModel">Type of the parent model.</typeparam>
+        /// <typeparam name="TItem">Type of the items in the collection.</typeparam>
+        /// <param name="itemSpecification">The specification for the single item in the collection.</param>
         public static IMemberSpecificationBuilder<TModel, Collection<TItem>> AsCollection<TModel, TItem>(this IMemberSpecificationBuilder<TModel, Collection<TItem>> @this, MemberSpecification<TModel, TItem> itemSpecification)
             where TModel : class
         {
@@ -60,6 +91,12 @@ namespace CoreValidation
             return @this;
         }
 
+        /// <summary>
+        /// Sets the validation logic for the member as a collection.
+        /// </summary>
+        /// <typeparam name="TModel">Type of the parent model.</typeparam>
+        /// <typeparam name="TItem">Type of the items in the collection.</typeparam>
+        /// <param name="itemSpecification">The specification for the single item in the collection.</param>
         public static IMemberSpecificationBuilder<TModel, IReadOnlyCollection<TItem>> AsCollection<TModel, TItem>(this IMemberSpecificationBuilder<TModel, IReadOnlyCollection<TItem>> @this, MemberSpecification<TModel, TItem> itemSpecification)
             where TModel : class
         {
@@ -70,6 +107,12 @@ namespace CoreValidation
             return @this;
         }
 
+        /// <summary>
+        /// Sets the validation logic for the member as a collection.
+        /// </summary>
+        /// <typeparam name="TModel">Type of the parent model.</typeparam>
+        /// <typeparam name="TItem">Type of the items in the collection.</typeparam>
+        /// <param name="itemSpecification">The specification for the single item in the collection.</param>
         public static IMemberSpecificationBuilder<TModel, ReadOnlyCollection<TItem>> AsCollection<TModel, TItem>(this IMemberSpecificationBuilder<TModel, ReadOnlyCollection<TItem>> @this, MemberSpecification<TModel, TItem> itemSpecification)
             where TModel : class
         {
@@ -80,6 +123,12 @@ namespace CoreValidation
             return @this;
         }
 
+        /// <summary>
+        /// Sets the validation logic for the member as a collection.
+        /// </summary>
+        /// <typeparam name="TModel">Type of the parent model.</typeparam>
+        /// <typeparam name="TItem">Type of the items in the collection.</typeparam>
+        /// <param name="itemSpecification">The specification for the single item in the collection.</param>
         public static IMemberSpecificationBuilder<TModel, IList<TItem>> AsCollection<TModel, TItem>(this IMemberSpecificationBuilder<TModel, IList<TItem>> @this, MemberSpecification<TModel, TItem> itemSpecification)
             where TModel : class
         {
@@ -90,6 +139,12 @@ namespace CoreValidation
             return @this;
         }
 
+        /// <summary>
+        /// Sets the validation logic for the member as a collection.
+        /// </summary>
+        /// <typeparam name="TModel">Type of the parent model.</typeparam>
+        /// <typeparam name="TItem">Type of the items in the collection.</typeparam>
+        /// <param name="itemSpecification">The specification for the single item in the collection.</param>
         public static IMemberSpecificationBuilder<TModel, List<TItem>> AsCollection<TModel, TItem>(this IMemberSpecificationBuilder<TModel, List<TItem>> @this, MemberSpecification<TModel, TItem> itemSpecification)
             where TModel : class
         {

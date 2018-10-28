@@ -1,5 +1,4 @@
-﻿using CoreValidation.Factory.Specifications;
-using CoreValidation.Specifications;
+﻿using CoreValidation.Specifications;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Xunit;

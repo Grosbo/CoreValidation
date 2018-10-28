@@ -1,5 +1,4 @@
-﻿using CoreValidation.Factory.Specifications;
-using CoreValidation.WorkloadTests.Models;
+﻿using CoreValidation.WorkloadTests.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CoreValidation.WorkloadTests.Controllers

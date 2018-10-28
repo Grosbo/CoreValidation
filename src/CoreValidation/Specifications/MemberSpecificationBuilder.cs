@@ -46,7 +46,12 @@ namespace CoreValidation.Specifications
                 throw new ArgumentNullException(nameof(isValid));
             }
 
-            AddCommand(new ValidRule<TMember>(isValid, Error.CreateValidOrNull(message, args)));
+            if (message == null)
+            {
+                throw new ArgumentNullException(nameof(message));
+            }
+
+            AddCommand(new ValidRule<TMember>(isValid, new Error(message, args)));
 
             return this;
         }

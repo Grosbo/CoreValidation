@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using CoreValidation.Errors;
 using CoreValidation.Options;
@@ -9,14 +9,14 @@ namespace CoreValidation.Results
     public sealed class ValidationResult<T> : IValidationResult<T>
         where T : class
     {
-        internal ValidationResult(Guid coreValidatorId, ITranslationProxy translationProxy, IExecutionOptions executionOptions, T model = null, IErrorsCollection errorsCollection = null)
+        internal ValidationResult(Guid validationContextId, ITranslationProxy translationProxy, IExecutionOptions executionOptions, T model = null, IErrorsCollection errorsCollection = null)
         {
             TranslationProxy = translationProxy ?? throw new ArgumentNullException(nameof(translationProxy));
             ErrorsCollection = errorsCollection ?? Errors.ErrorsCollection.Empty;
             ExecutionOptions = executionOptions ?? throw new ArgumentNullException(nameof(executionOptions));
 
             ValidationDate = DateTime.UtcNow;
-            CoreValidatorId = coreValidatorId;
+            ValidationContextId = validationContextId;
 
             Model = model;
         }
@@ -46,9 +46,9 @@ namespace CoreValidation.Results
                 mergedErrorsCollection.Include(errorsCollection);
             }
 
-            return new ValidationResult<T>(CoreValidatorId, TranslationProxy, ExecutionOptions, Model, mergedErrorsCollection)
+            return new ValidationResult<T>(ValidationContextId, TranslationProxy, ExecutionOptions, Model, mergedErrorsCollection)
             {
-                ContainsMergedErrors = true
+                IsMergeResult = true
             };
         }
 
@@ -56,11 +56,11 @@ namespace CoreValidation.Results
 
         public bool IsValid => ErrorsCollection.IsEmpty;
 
-        public Guid CoreValidatorId { get; }
+        public Guid ValidationContextId { get; }
 
         public DateTime ValidationDate { get; }
 
-        public bool ContainsMergedErrors { get; set; }
+        public bool IsMergeResult { get; set; }
 
         public IErrorsCollection ErrorsCollection { get; }
     }

@@ -27,20 +27,5 @@ namespace CoreValidation.Errors
         }
 
         public IReadOnlyCollection<IMessageArg> Arguments { get; }
-
-        public static Error CreateValidOrNull(string message, IReadOnlyCollection<IMessageArg> args)
-        {
-            if ((message == null) && (args == null))
-            {
-                return null;
-            }
-
-            if ((message == null) && (args != null))
-            {
-                throw new ArgumentException($"Defining {nameof(args)} not allowed if {nameof(message)} is null");
-            }
-
-            return new Error(message, args);
-        }
     }
 }

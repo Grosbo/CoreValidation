@@ -4,7 +4,7 @@ using CoreValidation.Translations;
 
 namespace CoreValidation.Options
 {
-    public sealed class ValidationContextOptions : IValidationContextOptions
+    internal sealed class ValidationContextOptions : IValidationContextOptions
     {
         public IReadOnlyCollection<Translation> Translations { get; set; } = new List<Translation>();
 

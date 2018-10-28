@@ -5,6 +5,7 @@ namespace CoreValidation.Errors.Args
 {
     public class MessageArg<T> : IMessageArg<T>
     {
+
         public MessageArg(string name, T value)
         {
             if (value == null)

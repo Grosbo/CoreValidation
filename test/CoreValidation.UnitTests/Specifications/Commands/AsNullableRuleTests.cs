@@ -33,6 +33,12 @@ namespace CoreValidation.UnitTests.Specifications.Commands
         {
             if (ruleType == RuleType.Validate)
             {
+                if (message == null && args == null)
+                {
+                    // ReSharper disable once ImplicitlyCapturedClosure
+                    return be => be.Valid(m => isValid);
+                }
+
                 return be => be.Valid(m => isValid, message, args);
             }
 

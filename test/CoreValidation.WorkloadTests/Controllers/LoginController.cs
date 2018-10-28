@@ -1,4 +1,3 @@
-using CoreValidation.Factory.Specifications;
 using CoreValidation.WorkloadTests.Models;
 using Microsoft.AspNetCore.Mvc;
 

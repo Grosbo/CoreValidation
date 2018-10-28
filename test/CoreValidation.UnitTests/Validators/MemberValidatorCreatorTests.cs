@@ -17,7 +17,6 @@ namespace CoreValidation.UnitTests.Validators
 
             yield return new object[] {"message", args};
             yield return new object[] {"message", null};
-            yield return new object[] {null, null};
         }
 
         public class SetSingleError
@@ -182,7 +181,7 @@ namespace CoreValidation.UnitTests.Validators
             [Fact]
             public void Should_ThrowException_When_Valid_And_ArgsWithoutMessage()
             {
-                Assert.Throws<ArgumentException>(() =>
+                Assert.Throws<ArgumentNullException>(() =>
                 {
                     MemberValidatorCreator.Create<object, object>(b => b
                         .Valid(c => true, null, new IMessageArg[] {NumberArg.Create("test", 1)})

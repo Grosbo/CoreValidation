@@ -184,7 +184,7 @@ namespace CoreValidation.UnitTests.Specifications
                 Predicate<int> isValid = c => true;
                 var args = new IMessageArg[] {new MessageArg("n", "v")};
 
-                Assert.Throws<ArgumentException>(() => { builder.Valid(isValid, null, args); });
+                Assert.Throws<ArgumentNullException>(() => { builder.Valid(isValid, null, args); });
             }
 
             [Fact]

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using CoreValidation.Errors;
 using CoreValidation.Exceptions;
 using CoreValidation.Options;
@@ -11,9 +12,21 @@ namespace CoreValidation
 {
     public static class ToListReportExtension
     {
+        /// <summary>
+        /// Creates List Report. Report is a list of error messages. ToString() returns them in a single string.
+        /// </summary>
+        /// <param name="this"></param>
+        /// <param name="translationName">Name of the translation to be used in the report. If null, using the default one set in the validation context.</param>
+        /// <typeparam name="T">Type of the validated model.</typeparam>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="this"/> is null.</exception>
         public static ListReport ToListReport<T>(this IValidationResult<T> @this, string translationName = null)
             where T : class
         {
+            if (@this == null)
+            {
+                throw new ArgumentNullException(nameof(@this));
+            }
+
             var listReport = new ListReport();
 
             var translator = translationName == null

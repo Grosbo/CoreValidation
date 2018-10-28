@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using CoreValidation.Factory.Specifications;
 using CoreValidation.Results;
 using CoreValidation.Specifications;
 using Newtonsoft.Json.Linq;
@@ -68,7 +67,7 @@ namespace CoreValidation.FunctionalTests.Readme
                     .MinLength(6)
                     .NotWhiteSpace()
                     .Valid(v => v.Any(char.IsUpper) && v.Any(char.IsDigit))
-                    // If any rule in the chain fails, only the SingleError is recorded:
+                    // If any rule in the chain fails, only the SingleError is added:
                     .SetSingleError("Minimum 6 characters, at least one upper case and one digit"))
 
                 // Validate relations with other members:

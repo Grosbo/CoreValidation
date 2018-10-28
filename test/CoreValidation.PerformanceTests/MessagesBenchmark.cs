@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using BenchmarkDotNet.Attributes;
 using CoreValidation.Errors.Args;
-using CoreValidation.Factory.Specifications;
 using CoreValidation.Results;
 using CoreValidation.Specifications;
 

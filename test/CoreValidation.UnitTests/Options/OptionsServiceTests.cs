@@ -358,7 +358,7 @@ namespace CoreValidation.UnitTests.Options
 
         public class GetVerifiedValidationOptions
         {
-            public static ValidationOptions ExampleNullCollectionForceKey = new ValidationOptions
+            public static object ExampleNullCollectionForceKey = new ValidationOptions
             {
                 NullRootStrategy = NullRootStrategy.ArgumentNullException,
                 ValidationStrategy = ValidationStrategy.FailFast,
@@ -368,7 +368,7 @@ namespace CoreValidation.UnitTests.Options
                 MaxDepth = 10
             };
 
-            public static ValidationOptions ExampleNegativeMaxDepth = new ValidationOptions
+            public static object ExampleNegativeMaxDepth = new ValidationOptions
             {
                 NullRootStrategy = NullRootStrategy.ArgumentNullException,
                 ValidationStrategy = ValidationStrategy.FailFast,
@@ -378,7 +378,7 @@ namespace CoreValidation.UnitTests.Options
                 MaxDepth = -1
             };
 
-            public static ValidationOptions ExampleNullRequiredError = new ValidationOptions
+            public static object ExampleNullRequiredError = new ValidationOptions
             {
                 NullRootStrategy = NullRootStrategy.ArgumentNullException,
                 ValidationStrategy = ValidationStrategy.FailFast,
@@ -433,8 +433,10 @@ namespace CoreValidation.UnitTests.Options
 
             [Theory]
             [MemberData(nameof(GetVerifiedValidationOptions_Should_VerifyPositive_Data))]
-            public void GetVerifiedValidationOptions_Should_VerifyPositive(ValidationOptions validationOptions)
+            public void GetVerifiedValidationOptions_Should_VerifyPositive(object validationOptionsObject)
             {
+                var validationOptions = (ValidationOptions)validationOptionsObject;
+
                 var result = OptionsService.GetVerifiedValidationOptions(validationOptions);
 
                 Assert.NotSame(validationOptions, result);
@@ -449,7 +451,7 @@ namespace CoreValidation.UnitTests.Options
             [Fact]
             public void GetVerifiedValidationOptions_Should_ThrowException_When_NegativeMaxDepth()
             {
-                Assert.Throws<InvalidOperationException>(() => { OptionsService.GetVerifiedValidationOptions(ExampleNegativeMaxDepth); });
+                Assert.Throws<InvalidOperationException>(() => { OptionsService.GetVerifiedValidationOptions((ValidationOptions)ExampleNegativeMaxDepth); });
             }
 
 
@@ -462,14 +464,14 @@ namespace CoreValidation.UnitTests.Options
             [Fact]
             public void GetVerifiedValidationOptions_Should_ThrowException_When_NullCollectionForceKey()
             {
-                Assert.Throws<InvalidOperationException>(() => { OptionsService.GetVerifiedValidationOptions(ExampleNullCollectionForceKey); });
+                Assert.Throws<InvalidOperationException>(() => { OptionsService.GetVerifiedValidationOptions((ValidationOptions)ExampleNullCollectionForceKey); });
             }
 
 
             [Fact]
             public void GetVerifiedValidationOptions_Should_ThrowException_When_NullRequiredError()
             {
-                Assert.Throws<InvalidOperationException>(() => { OptionsService.GetVerifiedValidationOptions(ExampleNullRequiredError); });
+                Assert.Throws<InvalidOperationException>(() => { OptionsService.GetVerifiedValidationOptions((ValidationOptions)ExampleNullRequiredError); });
             }
         }
 
@@ -518,8 +520,10 @@ namespace CoreValidation.UnitTests.Options
 
             [Theory]
             [MemberData(nameof(GetMerged_Should_ThrowException_When_InvalidValidationOptions_Data))]
-            public void GetMerged_Should_ThrowException_When_InvalidValidationOptions(ValidationOptions validationOptions, bool inBaseOptions)
+            public void GetMerged_Should_ThrowException_When_InvalidValidationOptions(object validationOptionsObject, bool inBaseOptions)
             {
+                var validationOptions = (ValidationOptions)validationOptionsObject;
+
                 var baseOptions = new ValidationContextOptions
                 {
                     Translations = new[]
@@ -848,7 +852,7 @@ namespace CoreValidation.UnitTests.Options
         {
             [Theory]
             [MemberData(nameof(GetInvalidValidationOptions), MemberType = typeof(OptionsServiceTests))]
-            public void GetVerifiedValidationContextOptions_Should_ThrowException_When_InvalidValidationOptions(ValidationOptions validationOptions)
+            public void GetVerifiedValidationContextOptions_Should_ThrowException_When_InvalidValidationOptions(object validationOptions)
             {
                 var specifications = new Dictionary<Type, object>
                 {
@@ -887,7 +891,7 @@ namespace CoreValidation.UnitTests.Options
                 {
                     Specifications = specifications,
                     Translations = translations,
-                    ValidationOptions = validationOptions
+                    ValidationOptions = (ValidationOptions)validationOptions
                 };
 
                 Assert.ThrowsAny<InvalidOperationException>(() => OptionsService.GetVerifiedValidationContextOptions(options));

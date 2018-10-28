@@ -12,6 +12,13 @@ namespace CoreValidation
 {
     public static class ToModelReportExtension
     {
+        /// <summary>
+        /// Creates model report. Error messages are structured as the original validated model. Perfect for JSON serialization.
+        /// </summary>
+        /// <param name="this"></param>
+        /// <param name="translationName">Name of the translation to be used in the report. If null, using the default one set in the validation context.</param>
+        /// <typeparam name="T">Type of the validated model.</typeparam>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="this"/> is null.</exception>
         public static IModelReport ToModelReport<T>(this IValidationResult<T> @this, string translationName = null)
             where T : class
         {

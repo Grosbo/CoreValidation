@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using BenchmarkDotNet.Attributes;
-using CoreValidation.Factory.Specifications;
 using CoreValidation.Results;
 using CoreValidation.Specifications;
 
