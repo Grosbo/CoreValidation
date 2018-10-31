@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using CoreValidation.Errors;
 using CoreValidation.Errors.Args;
+using CoreValidation.Exceptions;
 using CoreValidation.Translations;
 using Xunit;
 
@@ -37,7 +38,7 @@ namespace CoreValidation.UnitTests.Translations
         public void Constructor_Should_ThrowException_When_DuplicateTranslations(IReadOnlyCollection<Translation> translations)
         {
             // ReSharper disable once ObjectCreationAsStatement
-            Assert.Throws<InvalidOperationException>(() => { new TranslatorsRepository(translations); });
+            Assert.Throws<DuplicateTranslationException>(() => { new TranslatorsRepository(translations); });
         }
 
         public static IEnumerable<object[]> TranslationsNames_Should_GroupTranslationNames_Data()

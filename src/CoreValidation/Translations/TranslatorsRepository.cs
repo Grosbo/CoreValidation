@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using CoreValidation.Errors;
+using CoreValidation.Exceptions;
 
 namespace CoreValidation.Translations
 {
@@ -56,7 +57,7 @@ namespace CoreValidation.Translations
 
             if (duplicateName != null)
             {
-                throw new InvalidOperationException($"Duplicate dictionary name {duplicateName}");
+                throw new DuplicateTranslationException($"Duplicate dictionary name {duplicateName}");
             }
         }
     }

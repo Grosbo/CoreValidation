@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using CoreValidation.Exceptions;
 using CoreValidation.Options;
 using CoreValidation.Specifications;
 
@@ -40,7 +41,7 @@ namespace CoreValidation.Factory.Specifications
 
             if (!specifiedTypes.Any())
             {
-                throw new InvalidOperationException($"Type passed as {nameof(specificationsHolder)} should implement at least one {typeof(ISpecificationHolder<>).Name} type");
+                throw new InvalidSpecificationHolderException($"Type passed as {nameof(specificationsHolder)} should implement at least one {typeof(ISpecificationHolder<>).Name} type");
             }
 
             foreach (var specifiedType in specifiedTypes)

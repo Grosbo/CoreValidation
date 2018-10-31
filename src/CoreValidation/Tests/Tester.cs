@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using CoreValidation.Errors;
 using CoreValidation.Errors.Args;
+using CoreValidation.Exceptions;
 using CoreValidation.Specifications;
 using CoreValidation.Specifications.Commands;
 using CoreValidation.Validators;
@@ -50,7 +51,7 @@ namespace CoreValidation.Tests
             }
             else
             {
-                throw new InvalidOperationException($"Only Valid and AsNullable can be tested in {nameof(TestSingleMemberRule)}");
+                throw new UntestableException($"Only Valid and AsNullable can be tested in {nameof(TestSingleMemberRule)}");
             }
 
             if (expectedIsValid)

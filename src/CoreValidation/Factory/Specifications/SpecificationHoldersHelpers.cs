@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using CoreValidation.Exceptions;
 using CoreValidation.Options;
 
 namespace CoreValidation.Factory.Specifications
@@ -20,7 +21,7 @@ namespace CoreValidation.Factory.Specifications
             }
             catch (Exception ex)
             {
-                if (ex.InnerException is InvalidOperationException)
+                if (ex.InnerException is InvalidSpecificationHolderException)
                 {
                     throw ex.InnerException;
                 }
@@ -34,7 +35,7 @@ namespace CoreValidation.Factory.Specifications
         {
             if (specificationHolder?.Specification == null)
             {
-                throw new InvalidOperationException("Invalid (null?) specification from holders");
+                throw new InvalidSpecificationHolderException("Invalid (null?) specification from holders");
             }
 
             options.AddSpecification(specificationHolder.Specification);

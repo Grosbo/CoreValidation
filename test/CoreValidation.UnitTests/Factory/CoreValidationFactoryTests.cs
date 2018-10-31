@@ -533,13 +533,13 @@ namespace CoreValidation.UnitTests.Factory
             [Fact]
             public void Create_Should_ThrowException_When_AddHolderWithNoSpecifications()
             {
-                Assert.Throws<InvalidOperationException>(() => new ValidationContextFactory().Create(o => o.AddSpecificationsFromHolder(new InvalidEmptySpecificationHolder())));
+                Assert.Throws<InvalidSpecificationHolderException>(() => new ValidationContextFactory().Create(o => o.AddSpecificationsFromHolder(new InvalidEmptySpecificationHolder())));
             }
 
             [Fact]
             public void Create_Should_ThrowException_When_AddHolderWithNullSpecification()
             {
-                Assert.Throws<InvalidOperationException>(() => new ValidationContextFactory().Create(o => o.AddSpecificationsFromHolder(new InvalidNullSpecificationHolder())));
+                Assert.Throws<InvalidSpecificationHolderException>(() => new ValidationContextFactory().Create(o => o.AddSpecificationsFromHolder(new InvalidNullSpecificationHolder())));
             }
 
             [Fact]

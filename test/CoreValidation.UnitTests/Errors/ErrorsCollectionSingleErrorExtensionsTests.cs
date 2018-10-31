@@ -1,5 +1,6 @@
 using System;
 using CoreValidation.Errors;
+using CoreValidation.Exceptions;
 using Xunit;
 
 namespace CoreValidation.UnitTests.Errors
@@ -60,7 +61,7 @@ namespace CoreValidation.UnitTests.Errors
                 errorsCollection.AddError(new Error("test1234"));
                 errorsCollection.AddError(new Error("test12345"));
 
-                Assert.Throws<InvalidOperationException>(() => { errorsCollection.GetSingleError(); });
+                Assert.Throws<NoSingleErrorCollectionException>(() => { errorsCollection.GetSingleError(); });
             }
 
             [Fact]
@@ -70,7 +71,7 @@ namespace CoreValidation.UnitTests.Errors
 
                 errorsCollection.AddError("member", new Error("test123"));
 
-                Assert.Throws<InvalidOperationException>(() => { errorsCollection.GetSingleError(); });
+                Assert.Throws<NoSingleErrorCollectionException>(() => { errorsCollection.GetSingleError(); });
             }
 
             [Fact]
@@ -78,7 +79,7 @@ namespace CoreValidation.UnitTests.Errors
             {
                 var errorsCollection = new ErrorsCollection();
 
-                Assert.Throws<InvalidOperationException>(() => { errorsCollection.GetSingleError(); });
+                Assert.Throws<NoSingleErrorCollectionException>(() => { errorsCollection.GetSingleError(); });
             }
 
             [Fact]

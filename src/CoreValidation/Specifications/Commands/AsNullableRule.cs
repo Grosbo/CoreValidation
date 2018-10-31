@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using CoreValidation.Errors;
+using CoreValidation.Exceptions;
 using CoreValidation.Validators;
 
 namespace CoreValidation.Specifications.Commands
@@ -39,7 +40,7 @@ namespace CoreValidation.Specifications.Commands
 
             if (invalidCommand != null)
             {
-                throw new InvalidOperationException($"Command {invalidCommand.Name} is not allowed within {Name}");
+                throw new InvalidCommandException($"Command {invalidCommand.Name} is not allowed within {Name}");
             }
         }
 

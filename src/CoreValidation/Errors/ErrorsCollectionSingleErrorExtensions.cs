@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using CoreValidation.Exceptions;
 
 namespace CoreValidation.Errors
 {
@@ -14,7 +15,7 @@ namespace CoreValidation.Errors
         {
             if (!@this.ContainsSingleError())
             {
-                throw new InvalidOperationException("Collection doesn't hold a single error");
+                throw new NoSingleErrorCollectionException();
             }
 
             return @this.Errors.Single();

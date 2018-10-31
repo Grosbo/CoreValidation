@@ -1,5 +1,6 @@
 using System;
 using CoreValidation.Errors.Args;
+using CoreValidation.Exceptions;
 using CoreValidation.Tests;
 using Xunit;
 
@@ -178,7 +179,7 @@ namespace CoreValidation.UnitTests.Tests
             [Fact]
             public void Should_ThrowException_When_InvalidRule()
             {
-                Assert.Throws<InvalidOperationException>(() =>
+                Assert.Throws<UntestableException>(() =>
                 {
                     Tester.TestSingleMemberRule(
                         m => m.AsModel(),

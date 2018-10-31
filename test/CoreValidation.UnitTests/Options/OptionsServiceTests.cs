@@ -587,7 +587,7 @@ namespace CoreValidation.UnitTests.Options
                     newOptions.ValidationOptions = validationOptions;
                 }
 
-                Assert.Throws<InvalidOperationException>(() => { OptionsService.GetMerged(baseOptions, newOptions); });
+                Assert.ThrowsAny<InvalidOperationException>(() => { OptionsService.GetMerged(baseOptions, newOptions); });
             }
 
             [Fact]
@@ -890,7 +890,7 @@ namespace CoreValidation.UnitTests.Options
                     ValidationOptions = validationOptions
                 };
 
-                Assert.Throws<InvalidOperationException>(() => OptionsService.GetVerifiedValidationContextOptions(options));
+                Assert.ThrowsAny<InvalidOperationException>(() => OptionsService.GetVerifiedValidationContextOptions(options));
             }
 
             [Fact]
