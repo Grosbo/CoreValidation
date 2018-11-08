@@ -43,7 +43,6 @@ namespace CoreValidation.UnitTests.Specifications.Extensions
                 null
             };
 
-
             foreach (var specification in specifications)
             {
                 yield return new[]

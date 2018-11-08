@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using CoreValidation.Errors.Args;
 using CoreValidation.Exceptions;
 using CoreValidation.Specifications;
 using CoreValidation.Specifications.Commands;
@@ -93,7 +92,7 @@ namespace CoreValidation.UnitTests.Validators
             public void Should_AddMemberScope_When_Member()
             {
                 Predicate<string> isValid = c => true;
-                var args = new IMessageArg[] {new MessageArg("test", "test123")};
+                var args = new[] {Arg.Text("test", "test123")};
 
                 MemberSpecification<MemberClass, string> memberSpecification = c => c.Valid(isValid, "message", args);
 

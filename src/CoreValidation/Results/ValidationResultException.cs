@@ -1,7 +1,7 @@
 namespace CoreValidation.Results
 {
     /// <summary>
-    /// The exception that is thrown when the model is invalid.
+    ///     The exception that is thrown when the model is invalid.
     /// </summary>
     /// <typeparam name="T">Type of the validated model.</typeparam>
     public sealed class ValidationResultException<T> : InvalidModelException<T>
@@ -14,12 +14,12 @@ namespace CoreValidation.Results
         }
 
         /// <summary>
-        /// Validation result.
+        ///     Validation result.
         /// </summary>
         public IValidationResult<T> ValidationResult { get; }
 
         /// <summary>
-        /// The validated model.
+        ///     The validated model.
         /// </summary>
         public T Model => ValidationResult.Model;
     }

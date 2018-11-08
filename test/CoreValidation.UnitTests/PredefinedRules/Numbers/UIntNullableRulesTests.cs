@@ -1,6 +1,5 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using CoreValidation.Errors.Args;
 using CoreValidation.Tests;
 using Xunit;
 
@@ -27,9 +26,9 @@ namespace CoreValidation.UnitTests.PredefinedRules.Numbers
                 memberValue,
                 expectedIsValid,
                 Phrases.Keys.Numbers.EqualTo,
-                new IMessageArg[]
+                new[]
                 {
-                    NumberArg.Create("value", argValue)
+                    Arg.Number("value", argValue)
                 });
         }
 
@@ -50,9 +49,9 @@ namespace CoreValidation.UnitTests.PredefinedRules.Numbers
                 memberValue,
                 expectedIsValid,
                 Phrases.Keys.Numbers.NotEqualTo,
-                new IMessageArg[]
+                new[]
                 {
-                    NumberArg.Create("value", argValue)
+                    Arg.Number("value", argValue)
                 });
         }
 
@@ -73,9 +72,9 @@ namespace CoreValidation.UnitTests.PredefinedRules.Numbers
                 memberValue,
                 expectedIsValid,
                 Phrases.Keys.Numbers.GreaterThan,
-                new IMessageArg[]
+                new[]
                 {
-                    NumberArg.Create("min", min)
+                    Arg.Number("min", min)
                 });
         }
 
@@ -96,9 +95,9 @@ namespace CoreValidation.UnitTests.PredefinedRules.Numbers
                 memberValue,
                 expectedIsValid,
                 Phrases.Keys.Numbers.GreaterOrEqualTo,
-                new IMessageArg[]
+                new[]
                 {
-                    NumberArg.Create("min", min)
+                    Arg.Number("min", min)
                 });
         }
 
@@ -119,9 +118,9 @@ namespace CoreValidation.UnitTests.PredefinedRules.Numbers
                 memberValue,
                 expectedIsValid,
                 Phrases.Keys.Numbers.LessThan,
-                new IMessageArg[]
+                new[]
                 {
-                    NumberArg.Create("max", max)
+                    Arg.Number("max", max)
                 });
         }
 
@@ -142,9 +141,9 @@ namespace CoreValidation.UnitTests.PredefinedRules.Numbers
                 memberValue,
                 expectedIsValid,
                 Phrases.Keys.Numbers.LessOrEqualTo,
-                new IMessageArg[]
+                new[]
                 {
-                    NumberArg.Create("max", max)
+                    Arg.Number("max", max)
                 });
         }
 
@@ -165,10 +164,10 @@ namespace CoreValidation.UnitTests.PredefinedRules.Numbers
                 memberValue,
                 expectedIsValid,
                 Phrases.Keys.Numbers.Between,
-                new IMessageArg[]
+                new[]
                 {
-                    NumberArg.Create("min", min),
-                    NumberArg.Create("max", max)
+                    Arg.Number("min", min),
+                    Arg.Number("max", max)
                 });
         }
 
@@ -189,10 +188,10 @@ namespace CoreValidation.UnitTests.PredefinedRules.Numbers
                 memberValue,
                 expectedIsValid,
                 Phrases.Keys.Numbers.BetweenOrEqualTo,
-                new IMessageArg[]
+                new[]
                 {
-                    NumberArg.Create("min", min),
-                    NumberArg.Create("max", max)
+                    Arg.Number("min", min),
+                    Arg.Number("max", max)
                 });
         }
     }

@@ -1,6 +1,5 @@
-﻿using System.Linq;
+using System.Linq;
 using BenchmarkDotNet.Attributes;
-using CoreValidation.Errors.Args;
 using CoreValidation.Results;
 using CoreValidation.Specifications;
 
@@ -101,16 +100,16 @@ namespace CoreValidation.PerformanceTests
         {
             Specification<Model> specification = specs => specs
                 .Member(m => m.Member, be => be
-                    .Valid(v => false, "{title} {id}", new IMessageArg[] {new TextArg("title", "Message"), NumberArg.Create("id", 0)})
-                    .Valid(v => false, "{title} {id}", new IMessageArg[] {new TextArg("title", "Message"), NumberArg.Create("id", 1)})
-                    .Valid(v => false, "{title} {id}", new IMessageArg[] {new TextArg("title", "Message"), NumberArg.Create("id", 2)})
-                    .Valid(v => false, "{title} {id}", new IMessageArg[] {new TextArg("title", "Message"), NumberArg.Create("id", 3)})
-                    .Valid(v => false, "{title} {id}", new IMessageArg[] {new TextArg("title", "Message"), NumberArg.Create("id", 4)})
-                    .Valid(v => false, "{title} {id}", new IMessageArg[] {new TextArg("title", "Message"), NumberArg.Create("id", 5)})
-                    .Valid(v => false, "{title} {id}", new IMessageArg[] {new TextArg("title", "Message"), NumberArg.Create("id", 6)})
-                    .Valid(v => false, "{title} {id}", new IMessageArg[] {new TextArg("title", "Message"), NumberArg.Create("id", 7)})
-                    .Valid(v => false, "{title} {id}", new IMessageArg[] {new TextArg("title", "Message"), NumberArg.Create("id", 8)})
-                    .Valid(v => false, "{title} {id}", new IMessageArg[] {new TextArg("title", "Message"), NumberArg.Create("id", 9)})
+                    .Valid(v => false, "{title} {id}", new[] {Arg.Text("title", "Message"), Arg.Number("id", 0)})
+                    .Valid(v => false, "{title} {id}", new[] {Arg.Text("title", "Message"), Arg.Number("id", 1)})
+                    .Valid(v => false, "{title} {id}", new[] {Arg.Text("title", "Message"), Arg.Number("id", 2)})
+                    .Valid(v => false, "{title} {id}", new[] {Arg.Text("title", "Message"), Arg.Number("id", 3)})
+                    .Valid(v => false, "{title} {id}", new[] {Arg.Text("title", "Message"), Arg.Number("id", 4)})
+                    .Valid(v => false, "{title} {id}", new[] {Arg.Text("title", "Message"), Arg.Number("id", 5)})
+                    .Valid(v => false, "{title} {id}", new[] {Arg.Text("title", "Message"), Arg.Number("id", 6)})
+                    .Valid(v => false, "{title} {id}", new[] {Arg.Text("title", "Message"), Arg.Number("id", 7)})
+                    .Valid(v => false, "{title} {id}", new[] {Arg.Text("title", "Message"), Arg.Number("id", 8)})
+                    .Valid(v => false, "{title} {id}", new[] {Arg.Text("title", "Message"), Arg.Number("id", 9)})
                 );
 
             _argsValidationContext = ValidationContext.Factory.Create(options => options.AddSpecification(specification));
@@ -120,16 +119,16 @@ namespace CoreValidation.PerformanceTests
         {
             Specification<Model> specification = specs => specs
                 .Member(m => m.Member, be => be
-                    .Valid(v => false, "{title|case=upper} {id|format=0.0}", new IMessageArg[] {new TextArg("title", "Message"), NumberArg.Create("id", 0)})
-                    .Valid(v => false, "{title|case=upper} {id|format=0.0}", new IMessageArg[] {new TextArg("title", "Message"), NumberArg.Create("id", 1)})
-                    .Valid(v => false, "{title|case=upper} {id|format=0.0}", new IMessageArg[] {new TextArg("title", "Message"), NumberArg.Create("id", 2)})
-                    .Valid(v => false, "{title|case=upper} {id|format=0.0}", new IMessageArg[] {new TextArg("title", "Message"), NumberArg.Create("id", 3)})
-                    .Valid(v => false, "{title|case=upper} {id|format=0.0}", new IMessageArg[] {new TextArg("title", "Message"), NumberArg.Create("id", 4)})
-                    .Valid(v => false, "{title|case=upper} {id|format=0.0}", new IMessageArg[] {new TextArg("title", "Message"), NumberArg.Create("id", 5)})
-                    .Valid(v => false, "{title|case=lower} {id|format=000.0}", new IMessageArg[] {new TextArg("title", "Message"), NumberArg.Create("id", 6)})
-                    .Valid(v => false, "{title|case=lower} {id|format=000.0}", new IMessageArg[] {new TextArg("title", "Message"), NumberArg.Create("id", 7)})
-                    .Valid(v => false, "{title|case=lower} {id|format=000.0}", new IMessageArg[] {new TextArg("title", "Message"), NumberArg.Create("id", 8)})
-                    .Valid(v => false, "{title|case=lower} {id|format=000.0}", new IMessageArg[] {new TextArg("title", "Message"), NumberArg.Create("id", 9)})
+                    .Valid(v => false, "{title|case=upper} {id|format=0.0}", new[] {Arg.Text("title", "Message"), Arg.Number("id", 0)})
+                    .Valid(v => false, "{title|case=upper} {id|format=0.0}", new[] {Arg.Text("title", "Message"), Arg.Number("id", 1)})
+                    .Valid(v => false, "{title|case=upper} {id|format=0.0}", new[] {Arg.Text("title", "Message"), Arg.Number("id", 2)})
+                    .Valid(v => false, "{title|case=upper} {id|format=0.0}", new[] {Arg.Text("title", "Message"), Arg.Number("id", 3)})
+                    .Valid(v => false, "{title|case=upper} {id|format=0.0}", new[] {Arg.Text("title", "Message"), Arg.Number("id", 4)})
+                    .Valid(v => false, "{title|case=upper} {id|format=0.0}", new[] {Arg.Text("title", "Message"), Arg.Number("id", 5)})
+                    .Valid(v => false, "{title|case=lower} {id|format=000.0}", new[] {Arg.Text("title", "Message"), Arg.Number("id", 6)})
+                    .Valid(v => false, "{title|case=lower} {id|format=000.0}", new[] {Arg.Text("title", "Message"), Arg.Number("id", 7)})
+                    .Valid(v => false, "{title|case=lower} {id|format=000.0}", new[] {Arg.Text("title", "Message"), Arg.Number("id", 8)})
+                    .Valid(v => false, "{title|case=lower} {id|format=000.0}", new[] {Arg.Text("title", "Message"), Arg.Number("id", 9)})
                 );
 
             _formatsValidationContext = ValidationContext.Factory.Create(options => options.AddSpecification(specification));

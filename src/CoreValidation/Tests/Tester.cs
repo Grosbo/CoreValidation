@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using CoreValidation.Errors;
 using CoreValidation.Errors.Args;
-using CoreValidation.Exceptions;
 using CoreValidation.Specifications;
 using CoreValidation.Specifications.Commands;
 using CoreValidation.Validators;

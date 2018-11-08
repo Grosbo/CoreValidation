@@ -12,18 +12,18 @@ namespace CoreValidation.UnitTests.Errors.Args
     {
         public static IEnumerable<object[]> Should_Stringify_Numbers_WithFormatAndCulture_Data()
         {
-            yield return new object[] {NumberArg.Create("name", 123), "0.00", "pl-PL", "123,00"};
-            yield return new object[] {NumberArg.Create("name", (uint)123), "0.00", "pl-PL", "123,00"};
-            yield return new object[] {NumberArg.Create("name", (short)123), "0.00", "pl-PL", "123,00"};
-            yield return new object[] {NumberArg.Create("name", (ushort)123), "0.00", "pl-PL", "123,00"};
-            yield return new object[] {NumberArg.Create("name", (long)123), "0.00", "pl-PL", "123,00"};
-            yield return new object[] {NumberArg.Create("name", (ulong)123), "0.00", "pl-PL", "123,00"};
-            yield return new object[] {NumberArg.Create("name", (byte)123), "0.00", "pl-PL", "123,00"};
-            yield return new object[] {NumberArg.Create("name", (sbyte)123), "0.00", "pl-PL", "123,00"};
+            yield return new object[] {Arg.Number("name", 123), "0.00", "pl-PL", "123,00"};
+            yield return new object[] {Arg.Number("name", (uint)123), "0.00", "pl-PL", "123,00"};
+            yield return new object[] {Arg.Number("name", (short)123), "0.00", "pl-PL", "123,00"};
+            yield return new object[] {Arg.Number("name", (ushort)123), "0.00", "pl-PL", "123,00"};
+            yield return new object[] {Arg.Number("name", (long)123), "0.00", "pl-PL", "123,00"};
+            yield return new object[] {Arg.Number("name", (ulong)123), "0.00", "pl-PL", "123,00"};
+            yield return new object[] {Arg.Number("name", (byte)123), "0.00", "pl-PL", "123,00"};
+            yield return new object[] {Arg.Number("name", (sbyte)123), "0.00", "pl-PL", "123,00"};
 
-            yield return new object[] {NumberArg.Create("name", (decimal)123.987), "0.00", "pl-PL", "123,99"};
-            yield return new object[] {NumberArg.Create("name", 123.987), "0.00", "pl-PL", "123,99"};
-            yield return new object[] {NumberArg.Create("name", (float)123.987), "0.00", "pl-PL", "123,99"};
+            yield return new object[] {Arg.Number("name", (decimal)123.987), "0.00", "pl-PL", "123,99"};
+            yield return new object[] {Arg.Number("name", 123.987), "0.00", "pl-PL", "123,99"};
+            yield return new object[] {Arg.Number("name", (float)123.987), "0.00", "pl-PL", "123,99"};
         }
 
         [Theory]
@@ -37,18 +37,18 @@ namespace CoreValidation.UnitTests.Errors.Args
 
         public static IEnumerable<object[]> Should_Stringify_Dates_WithCulture_Data()
         {
-            yield return new object[] {NumberArg.Create("name", 123), "pl-PL", "123"};
-            yield return new object[] {NumberArg.Create("name", (uint)123), "pl-PL", "123"};
-            yield return new object[] {NumberArg.Create("name", (short)123), "pl-PL", "123"};
-            yield return new object[] {NumberArg.Create("name", (ushort)123), "pl-PL", "123"};
-            yield return new object[] {NumberArg.Create("name", (long)123), "pl-PL", "123"};
-            yield return new object[] {NumberArg.Create("name", (ulong)123), "pl-PL", "123"};
-            yield return new object[] {NumberArg.Create("name", (byte)123), "pl-PL", "123"};
-            yield return new object[] {NumberArg.Create("name", (sbyte)123), "pl-PL", "123"};
+            yield return new object[] {Arg.Number("name", 123), "pl-PL", "123"};
+            yield return new object[] {Arg.Number("name", (uint)123), "pl-PL", "123"};
+            yield return new object[] {Arg.Number("name", (short)123), "pl-PL", "123"};
+            yield return new object[] {Arg.Number("name", (ushort)123), "pl-PL", "123"};
+            yield return new object[] {Arg.Number("name", (long)123), "pl-PL", "123"};
+            yield return new object[] {Arg.Number("name", (ulong)123), "pl-PL", "123"};
+            yield return new object[] {Arg.Number("name", (byte)123), "pl-PL", "123"};
+            yield return new object[] {Arg.Number("name", (sbyte)123), "pl-PL", "123"};
 
-            yield return new object[] {NumberArg.Create("name", (decimal)123.987), "pl-PL", "123,987"};
-            yield return new object[] {NumberArg.Create("name", 123.987), "pl-PL", "123,987"};
-            yield return new object[] {NumberArg.Create("name", (float)123.987), "pl-PL", "123,987"};
+            yield return new object[] {Arg.Number("name", (decimal)123.987), "pl-PL", "123,987"};
+            yield return new object[] {Arg.Number("name", 123.987), "pl-PL", "123,987"};
+            yield return new object[] {Arg.Number("name", (float)123.987), "pl-PL", "123,987"};
         }
 
         [Theory]
@@ -62,18 +62,18 @@ namespace CoreValidation.UnitTests.Errors.Args
 
         public static IEnumerable<object[]> Should_Stringify_WithFormat_Data()
         {
-            yield return new object[] {NumberArg.Create("name", 123), "0.00", "123.00"};
-            yield return new object[] {NumberArg.Create("name", (uint)123), "0.00", "123.00"};
-            yield return new object[] {NumberArg.Create("name", (short)123), "0.00", "123.00"};
-            yield return new object[] {NumberArg.Create("name", (ushort)123), "0.00", "123.00"};
-            yield return new object[] {NumberArg.Create("name", (long)123), "0.00", "123.00"};
-            yield return new object[] {NumberArg.Create("name", (ulong)123), "0.00", "123.00"};
-            yield return new object[] {NumberArg.Create("name", (byte)123), "0.00", "123.00"};
-            yield return new object[] {NumberArg.Create("name", (sbyte)123), "0.00", "123.00"};
+            yield return new object[] {Arg.Number("name", 123), "0.00", "123.00"};
+            yield return new object[] {Arg.Number("name", (uint)123), "0.00", "123.00"};
+            yield return new object[] {Arg.Number("name", (short)123), "0.00", "123.00"};
+            yield return new object[] {Arg.Number("name", (ushort)123), "0.00", "123.00"};
+            yield return new object[] {Arg.Number("name", (long)123), "0.00", "123.00"};
+            yield return new object[] {Arg.Number("name", (ulong)123), "0.00", "123.00"};
+            yield return new object[] {Arg.Number("name", (byte)123), "0.00", "123.00"};
+            yield return new object[] {Arg.Number("name", (sbyte)123), "0.00", "123.00"};
 
-            yield return new object[] {NumberArg.Create("name", (decimal)123.987), "0.00", "123.99"};
-            yield return new object[] {NumberArg.Create("name", 123.987), "0.00", "123.99"};
-            yield return new object[] {NumberArg.Create("name", (float)123.987), "0.00", "123.99"};
+            yield return new object[] {Arg.Number("name", (decimal)123.987), "0.00", "123.99"};
+            yield return new object[] {Arg.Number("name", 123.987), "0.00", "123.99"};
+            yield return new object[] {Arg.Number("name", (float)123.987), "0.00", "123.99"};
         }
 
         [Theory]
@@ -87,18 +87,18 @@ namespace CoreValidation.UnitTests.Errors.Args
 
         public static IEnumerable<object[]> Should_Stringify_Default_Data()
         {
-            yield return new object[] {NumberArg.Create("name", 123), "123"};
-            yield return new object[] {NumberArg.Create("name", (uint)123), "123"};
-            yield return new object[] {NumberArg.Create("name", (short)123), "123"};
-            yield return new object[] {NumberArg.Create("name", (ushort)123), "123"};
-            yield return new object[] {NumberArg.Create("name", (long)123), "123"};
-            yield return new object[] {NumberArg.Create("name", (ulong)123), "123"};
-            yield return new object[] {NumberArg.Create("name", (byte)123), "123"};
-            yield return new object[] {NumberArg.Create("name", (sbyte)123), "123"};
+            yield return new object[] {Arg.Number("name", 123), "123"};
+            yield return new object[] {Arg.Number("name", (uint)123), "123"};
+            yield return new object[] {Arg.Number("name", (short)123), "123"};
+            yield return new object[] {Arg.Number("name", (ushort)123), "123"};
+            yield return new object[] {Arg.Number("name", (long)123), "123"};
+            yield return new object[] {Arg.Number("name", (ulong)123), "123"};
+            yield return new object[] {Arg.Number("name", (byte)123), "123"};
+            yield return new object[] {Arg.Number("name", (sbyte)123), "123"};
 
-            yield return new object[] {NumberArg.Create("name", (decimal)123.987), "123.987"};
-            yield return new object[] {NumberArg.Create("name", 123.987), "123.987"};
-            yield return new object[] {NumberArg.Create("name", (float)123.987), "123.987"};
+            yield return new object[] {Arg.Number("name", (decimal)123.987), "123.987"};
+            yield return new object[] {Arg.Number("name", 123.987), "123.987"};
+            yield return new object[] {Arg.Number("name", (float)123.987), "123.987"};
         }
 
         [Theory]
@@ -113,7 +113,7 @@ namespace CoreValidation.UnitTests.Errors.Args
         [Fact]
         public void Should_Initialize()
         {
-            var arg = NumberArg.Create("name", 1);
+            var arg = Arg.Number("name", 1);
 
             Assert.Equal("name", arg.Name);
             Assert.Equal(2, arg.AllowedParameters.Count);
@@ -124,17 +124,17 @@ namespace CoreValidation.UnitTests.Errors.Args
         [Fact]
         public void Should_ThrowException_When_NullName()
         {
-            Assert.Throws<ArgumentNullException>(() => { NumberArg.Create(null, 0); });
-            Assert.Throws<ArgumentNullException>(() => { NumberArg.Create(null, (uint)0); });
-            Assert.Throws<ArgumentNullException>(() => { NumberArg.Create(null, (short)0); });
-            Assert.Throws<ArgumentNullException>(() => { NumberArg.Create(null, (ushort)0); });
-            Assert.Throws<ArgumentNullException>(() => { NumberArg.Create(null, (long)0); });
-            Assert.Throws<ArgumentNullException>(() => { NumberArg.Create(null, (ulong)0); });
-            Assert.Throws<ArgumentNullException>(() => { NumberArg.Create(null, (double)0); });
-            Assert.Throws<ArgumentNullException>(() => { NumberArg.Create(null, (float)0); });
-            Assert.Throws<ArgumentNullException>(() => { NumberArg.Create(null, (byte)0); });
-            Assert.Throws<ArgumentNullException>(() => { NumberArg.Create(null, (sbyte)0); });
-            Assert.Throws<ArgumentNullException>(() => { NumberArg.Create(null, (decimal)0); });
+            Assert.Throws<ArgumentNullException>(() => { Arg.Number(null, 0); });
+            Assert.Throws<ArgumentNullException>(() => { Arg.Number(null, (uint)0); });
+            Assert.Throws<ArgumentNullException>(() => { Arg.Number(null, (short)0); });
+            Assert.Throws<ArgumentNullException>(() => { Arg.Number(null, (ushort)0); });
+            Assert.Throws<ArgumentNullException>(() => { Arg.Number(null, (long)0); });
+            Assert.Throws<ArgumentNullException>(() => { Arg.Number(null, (ulong)0); });
+            Assert.Throws<ArgumentNullException>(() => { Arg.Number(null, (double)0); });
+            Assert.Throws<ArgumentNullException>(() => { Arg.Number(null, (float)0); });
+            Assert.Throws<ArgumentNullException>(() => { Arg.Number(null, (byte)0); });
+            Assert.Throws<ArgumentNullException>(() => { Arg.Number(null, (sbyte)0); });
+            Assert.Throws<ArgumentNullException>(() => { Arg.Number(null, (decimal)0); });
         }
     }
 }

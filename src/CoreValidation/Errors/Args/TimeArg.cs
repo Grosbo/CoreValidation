@@ -53,32 +53,8 @@ namespace CoreValidation.Errors.Args
 
         protected CultureInfo DefaultCultureInfo { get; set; } = CultureInfo.InvariantCulture;
 
-        protected string DefaultFormat { get; set; } = string.Empty;
+        internal string DefaultFormat { get; set; } = string.Empty;
 
         public abstract string ToString(IReadOnlyDictionary<string, string> parameters);
-
-        public static TimeArg<DateTime> Create(string name, DateTime value)
-        {
-            return new TimeArg<DateTime>(name, value, (v, format, cultureInfo) => v.ToString(format, cultureInfo))
-            {
-                DefaultFormat = DateTimeFormats.DateAndTimeFormat
-            };
-        }
-
-        public static TimeArg<DateTimeOffset> Create(string name, DateTimeOffset value)
-        {
-            return new TimeArg<DateTimeOffset>(name, value, (v, format, cultureInfo) => v.ToString(format, cultureInfo))
-            {
-                DefaultFormat = DateTimeFormats.DateAndTimeFormat
-            };
-        }
-
-        public static TimeArg<TimeSpan> Create(string name, TimeSpan value)
-        {
-            return new TimeArg<TimeSpan>(name, value, (v, format, cultureInfo) => v.ToString(format, cultureInfo))
-            {
-                DefaultFormat = DateTimeFormats.TimeSpanFormat
-            };
-        }
     }
 }

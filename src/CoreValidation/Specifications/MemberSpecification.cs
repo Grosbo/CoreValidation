@@ -1,7 +1,8 @@
 namespace CoreValidation.Specifications
 {
     /// <summary>
-    /// Specification (Fluent API) for the member (of type <typeparamref name="TMember"/>) belonging to the model (of type <typeparamref name="TModel"/>).
+    ///     Specification (Fluent API) for the member (of type <typeparamref name="TMember" />) belonging to the model (of type
+    ///     <typeparamref name="TModel" />).
     /// </summary>
     /// <typeparam name="TModel">Type of the model that the member belongs to.</typeparam>
     /// <typeparam name="TMember">Type of the member to be specified.</typeparam>

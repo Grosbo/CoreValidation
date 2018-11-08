@@ -12,12 +12,18 @@ namespace CoreValidation
     public static class TranslationsOptionsExtension
     {
         /// <summary>
-        /// Adds translation.
+        ///     Adds translation.
         /// </summary>
         /// <param name="options"></param>
         /// <param name="name">Name of the translation. Usually the language name.</param>
-        /// <param name="dictionary">Dictionary with all translation entries. Keys are the original phrases. Values are the translations.</param>
-        /// <param name="asDefault">If true, sets the translations as the default one. The default is used to create <see cref="ITranslationProxy.DefaultTranslator"/> in the <see cref="IValidationResult{T}"/>.</param>
+        /// <param name="dictionary">
+        ///     Dictionary with all translation entries. Keys are the original phrases. Values are the
+        ///     translations.
+        /// </param>
+        /// <param name="asDefault">
+        ///     If true, sets the translations as the default one. The default is used to create
+        ///     <see cref="ITranslationProxy.DefaultTranslator" /> in the <see cref="IValidationResult{T}" />.
+        /// </param>
         /// <returns></returns>
         public static IValidationContextOptions AddTranslation(this IValidationContextOptions options, string name, IDictionary<string, string> dictionary, bool asDefault = false)
         {
@@ -34,11 +40,14 @@ namespace CoreValidation
         }
 
         /// <summary>
-        /// Add translations from a <see cref="TranslationsPackage"/>.
+        ///     Add translations from a <see cref="TranslationsPackage" />.
         /// </summary>
         /// <param name="options"></param>
-        /// <param name="translationsPackage">Translations package. Key is the name of the translation. Value is the dictionary in which key is the original phrase and the value is the translated one.</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="translationsPackage"/> is null.</exception>
+        /// <param name="translationsPackage">
+        ///     Translations package. Key is the name of the translation. Value is the dictionary in
+        ///     which key is the original phrase and the value is the translated one.
+        /// </param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="translationsPackage" /> is null.</exception>
         public static IValidationContextOptions AddTranslations(this IValidationContextOptions options, TranslationsPackage translationsPackage)
         {
             if (translationsPackage == null)

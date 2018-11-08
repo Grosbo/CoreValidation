@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using CoreValidation.Errors.Args;
 using CoreValidation.Specifications;
 
 // ReSharper disable once CheckNamespace
@@ -32,7 +31,7 @@ namespace CoreValidation
                 throw new ArgumentOutOfRangeException(nameof(size), size, "Exact size cannot be less than zero");
             }
 
-            return @this.Valid(m => m.Count() == size, Phrases.Keys.Collections.ExactCollectionSize, new[] {NumberArg.Create(nameof(size), size)});
+            return @this.Valid(m => m.Count() == size, Phrases.Keys.Collections.ExactCollectionSize, new[] {Arg.Number(nameof(size), size)});
         }
 
         public static IMemberSpecificationBuilder<TModel, TMember> ExactCollectionSize<TModel, TMember, TItem>(this IMemberSpecificationBuilder<TModel, TMember> @this, long size)
@@ -44,7 +43,7 @@ namespace CoreValidation
                 throw new ArgumentOutOfRangeException(nameof(size), size, "Exact size cannot be less than zero");
             }
 
-            return @this.Valid(m => m.LongCount() == size, Phrases.Keys.Collections.ExactCollectionSize, new[] {NumberArg.Create(nameof(size), size)});
+            return @this.Valid(m => m.LongCount() == size, Phrases.Keys.Collections.ExactCollectionSize, new[] {Arg.Number(nameof(size), size)});
         }
 
         public static IMemberSpecificationBuilder<TModel, TMember> MaxCollectionSize<TModel, TMember, TItem>(this IMemberSpecificationBuilder<TModel, TMember> @this, int max)
@@ -56,7 +55,7 @@ namespace CoreValidation
                 throw new ArgumentOutOfRangeException(nameof(max), max, "Max size cannot be less than zero");
             }
 
-            return @this.Valid(m => m.Count() <= max, Phrases.Keys.Collections.MaxCollectionSize, new[] {NumberArg.Create(nameof(max), max)});
+            return @this.Valid(m => m.Count() <= max, Phrases.Keys.Collections.MaxCollectionSize, new[] {Arg.Number(nameof(max), max)});
         }
 
         public static IMemberSpecificationBuilder<TModel, TMember> MaxCollectionSize<TModel, TMember, TItem>(this IMemberSpecificationBuilder<TModel, TMember> @this, long max)
@@ -68,7 +67,7 @@ namespace CoreValidation
                 throw new ArgumentOutOfRangeException(nameof(max), max, "Max size cannot be less than zero");
             }
 
-            return @this.Valid(m => m.LongCount() <= max, Phrases.Keys.Collections.MaxCollectionSize, new[] {NumberArg.Create(nameof(max), max)});
+            return @this.Valid(m => m.LongCount() <= max, Phrases.Keys.Collections.MaxCollectionSize, new[] {Arg.Number(nameof(max), max)});
         }
 
         public static IMemberSpecificationBuilder<TModel, TMember> MinCollectionSize<TModel, TMember, TItem>(this IMemberSpecificationBuilder<TModel, TMember> @this, int min)
@@ -80,7 +79,7 @@ namespace CoreValidation
                 throw new ArgumentOutOfRangeException(nameof(min), min, "Max size cannot be less than zero");
             }
 
-            return @this.Valid(m => m.Count() >= min, Phrases.Keys.Collections.MinCollectionSize, new[] {NumberArg.Create(nameof(min), min)});
+            return @this.Valid(m => m.Count() >= min, Phrases.Keys.Collections.MinCollectionSize, new[] {Arg.Number(nameof(min), min)});
         }
 
         public static IMemberSpecificationBuilder<TModel, TMember> MinCollectionSize<TModel, TMember, TItem>(this IMemberSpecificationBuilder<TModel, TMember> @this, long min)
@@ -92,7 +91,7 @@ namespace CoreValidation
                 throw new ArgumentOutOfRangeException(nameof(min), min, "Min size cannot be less than zero");
             }
 
-            return @this.Valid(m => m.LongCount() >= min, Phrases.Keys.Collections.MinCollectionSize, new[] {NumberArg.Create(nameof(min), min)});
+            return @this.Valid(m => m.LongCount() >= min, Phrases.Keys.Collections.MinCollectionSize, new[] {Arg.Number(nameof(min), min)});
         }
 
         public static IMemberSpecificationBuilder<TModel, TMember> CollectionSizeBetween<TModel, TMember, TItem>(this IMemberSpecificationBuilder<TModel, TMember> @this, int min, int max)
@@ -121,7 +120,7 @@ namespace CoreValidation
                     return (count >= min) && (count <= max);
                 },
                 Phrases.Keys.Collections.CollectionSizeBetween,
-                new[] {NumberArg.Create(nameof(min), min), NumberArg.Create(nameof(max), max)});
+                new[] {Arg.Number(nameof(min), min), Arg.Number(nameof(max), max)});
         }
 
         public static IMemberSpecificationBuilder<TModel, TMember> CollectionSizeBetween<TModel, TMember, TItem>(this IMemberSpecificationBuilder<TModel, TMember> @this, long min, long max)
@@ -149,7 +148,7 @@ namespace CoreValidation
 
                     return (count >= min) && (count <= max);
                 }, Phrases.Keys.Collections.CollectionSizeBetween,
-                new[] {NumberArg.Create(nameof(min), min), NumberArg.Create(nameof(max), max)});
+                new[] {Arg.Number(nameof(min), min), Arg.Number(nameof(max), max)});
         }
     }
 }

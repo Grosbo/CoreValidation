@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using CoreValidation.Errors;
-using CoreValidation.Errors.Args;
 using CoreValidation.Options;
 using CoreValidation.Specifications;
 using CoreValidation.Translations;
@@ -413,7 +412,7 @@ namespace CoreValidation.UnitTests.Options
                         TranslationName = null,
                         CollectionForceKey = "[]",
                         MaxDepth = 0,
-                        RequiredError = new Error("required {arg}!", new IMessageArg[] {new MessageArg("arg", "value")})
+                        RequiredError = new Error("required {arg}!", new[] {Arg.Text("arg", "value")})
                     }
                 };
 

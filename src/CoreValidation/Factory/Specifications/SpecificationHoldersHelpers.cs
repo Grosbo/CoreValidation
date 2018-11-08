@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using CoreValidation.Exceptions;
 using CoreValidation.Options;
 
 namespace CoreValidation.Factory.Specifications

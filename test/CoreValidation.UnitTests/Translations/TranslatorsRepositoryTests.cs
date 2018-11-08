@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using CoreValidation.Errors;
-using CoreValidation.Errors.Args;
-using CoreValidation.Exceptions;
 using CoreValidation.Translations;
 using Xunit;
 
@@ -111,7 +109,7 @@ namespace CoreValidation.UnitTests.Translations
 
             Assert.Equal("phrase123", translator(new Error("phrase123")));
             Assert.Equal("some_phrase", translator(new Error("some_phrase")));
-            Assert.Equal("some_another_phrase_123", translator(new Error("some_another_phrase_{0}", new[] {new MessageArg("0", "123")})));
+            Assert.Equal("some_another_phrase_123", translator(new Error("some_another_phrase_{0}", new[] {Arg.Text("0", "123")})));
         }
 
         [Fact]
@@ -140,11 +138,11 @@ namespace CoreValidation.UnitTests.Translations
 
             Assert.Equal("PHRASE_1", translator1(new Error("phrase1")));
             Assert.Equal("PHRASE_2", translator1(new Error("phrase2")));
-            Assert.Equal("PHRASE_123", translator1(new Error("phrase{0}", new[] {new MessageArg("0", "123")})));
+            Assert.Equal("PHRASE_123", translator1(new Error("phrase{0}", new[] {Arg.Text("0", "123")})));
 
             Assert.Equal("PHRASE=1", translator2(new Error("phrase1")));
             Assert.Equal("PHRASE=2", translator2(new Error("phrase2")));
-            Assert.Equal("PHRASE=123", translator2(new Error("phrase{0}", new[] {new MessageArg("0", "123")})));
+            Assert.Equal("PHRASE=123", translator2(new Error("phrase{0}", new[] {Arg.Text("0", "123")})));
         }
 
         [Fact]

@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using CoreValidation.Errors.Args;
 using CoreValidation.Specifications;
 using CoreValidation.Specifications.Commands;
 using Xunit;
@@ -104,7 +103,7 @@ namespace CoreValidation.UnitTests.Specifications
 
                 Predicate<string> isValid = c => true;
 
-                var args = new IMessageArg[] {new MessageArg("test", "test123")};
+                var args = new[] {Arg.Text("test", "test123")};
 
                 builder.Member(m => m.Property, m => m.Valid(isValid, "message", args));
 

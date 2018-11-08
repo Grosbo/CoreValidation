@@ -5,6 +5,10 @@ namespace CoreValidation.UnitTests.Results
 {
     public class InvalidModelExceptionTests
     {
+        private class SomeClass
+        {
+        }
+
         [Fact]
         public void Should_Assign_MessageAndType()
         {
@@ -12,11 +16,6 @@ namespace CoreValidation.UnitTests.Results
 
             Assert.Equal("some message", exception.Message);
             Assert.Equal(typeof(SomeClass), exception.Type);
-        }
-
-        class SomeClass
-        {
-
         }
     }
 }

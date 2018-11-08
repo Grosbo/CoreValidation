@@ -33,7 +33,7 @@ namespace CoreValidation.UnitTests.Specifications.Commands
         {
             if (ruleType == RuleType.Validate)
             {
-                if (message == null && args == null)
+                if ((message == null) && (args == null))
                 {
                     // ReSharper disable once ImplicitlyCapturedClosure
                     return be => be.Valid(m => isValid);
@@ -58,7 +58,7 @@ namespace CoreValidation.UnitTests.Specifications.Commands
             [MemberData(nameof(OptionsData), new[] {ValidationStrategy.Complete, ValidationStrategy.FailFast, ValidationStrategy.Force}, new[] {RuleType.Validate, RuleType.AsRelative}, MemberType = typeof(AsNullableRuleTests))]
             public void Should_AddError_When_Invalid(ValidationStrategy validationStrategy, RuleType ruleType)
             {
-                var args = new[] {new MessageArg("key", "value")};
+                var args = new[] {Arg.Text("key", "value")};
                 var memberSpecification = GetSingleRuleMemberSpecification(ruleType, false, "message", args);
 
                 AsNullableRule rule = new AsNullableRule<object, int>(memberSpecification);
@@ -147,7 +147,7 @@ namespace CoreValidation.UnitTests.Specifications.Commands
             [MemberData(nameof(OptionsData), new[] {ValidationStrategy.Force}, new[] {RuleType.Validate, RuleType.AsRelative}, MemberType = typeof(AsNullableRuleTests))]
             public void Should_AddError_When_NullMember_And_Force(ValidationStrategy validationStrategy, RuleType ruleType)
             {
-                var args = new[] {new MessageArg("key", "value")};
+                var args = new[] {Arg.Text("key", "value")};
                 var memberSpecification = GetSingleRuleMemberSpecification(ruleType, false, "message", args);
 
                 AsNullableRule rule = new AsNullableRule<object, int>(memberSpecification);
@@ -176,7 +176,7 @@ namespace CoreValidation.UnitTests.Specifications.Commands
             [MemberData(nameof(OptionsData), new[] {ValidationStrategy.Force}, new[] {RuleType.Validate, RuleType.AsRelative}, MemberType = typeof(AsNullableRuleTests))]
             public void Should_AddError_When_Valid_And_Force(ValidationStrategy validationStrategy, RuleType ruleType)
             {
-                var args = new[] {new MessageArg("key", "value")};
+                var args = new[] {Arg.Text("key", "value")};
                 var memberSpecification = GetSingleRuleMemberSpecification(ruleType, true, "message", args);
 
                 AsNullableRule rule = new AsNullableRule<object, int>(memberSpecification);
@@ -232,7 +232,7 @@ namespace CoreValidation.UnitTests.Specifications.Commands
             [MemberData(nameof(OptionsData), new[] {ValidationStrategy.Complete, ValidationStrategy.FailFast, ValidationStrategy.Force}, new[] {RuleType.Validate, RuleType.AsRelative}, MemberType = typeof(AsNullableRuleTests))]
             public void Should_AddDefaultError_When_Invalid_And_NoError(ValidationStrategy validationStrategy, RuleType ruleType)
             {
-                var args = new[] {new MessageArg("key", "value")};
+                var args = new[] {Arg.Text("key", "value")};
                 var message = "default error {arg}";
                 var memberSpecification = GetSingleRuleMemberSpecification(ruleType, false);
 
@@ -257,15 +257,15 @@ namespace CoreValidation.UnitTests.Specifications.Commands
             [Fact]
             public void Should_AddErrors_When_Chain_And_Complete()
             {
-                var args3 = new[] {new MessageArg("key3", "value3")};
-                var args7 = new[] {new MessageArg("key7", "value7")};
+                var args3 = new[] {Arg.Text("key3", "value3")};
+                var args7 = new[] {Arg.Text("key7", "value7")};
 
                 var rule = new AsNullableRule<object, int>(be => be
-                    .Valid(m => true, "message1", new[] {new MessageArg("key1", "value1")})
+                    .Valid(m => true, "message1", new[] {Arg.Text("key1", "value1")})
                     .AsRelative(m => true).WithMessage("message2")
                     .Valid(m => false, "message3", args3)
                     .AsRelative(m => false).WithMessage("message4")
-                    .Valid(m => true, "message5", new[] {new MessageArg("key5", "value5")})
+                    .Valid(m => true, "message5", new[] {Arg.Text("key5", "value5")})
                     .AsRelative(m => false).WithMessage("message6")
                     .Valid(m => false, "message7", args7)
                     .AsRelative(m => true).WithMessage("message8")
@@ -298,15 +298,15 @@ namespace CoreValidation.UnitTests.Specifications.Commands
             [Fact]
             public void Should_AddErrors_When_Chain_And_FailFast()
             {
-                var args3 = new[] {new MessageArg("key3", "value3")};
-                var args7 = new[] {new MessageArg("key7", "value7")};
+                var args3 = new[] {Arg.Text("key3", "value3")};
+                var args7 = new[] {Arg.Text("key7", "value7")};
 
                 var rule = new AsNullableRule<object, int>(be => be
-                    .Valid(m => true, "message1", new[] {new MessageArg("key1", "value1")})
+                    .Valid(m => true, "message1", new[] {Arg.Text("key1", "value1")})
                     .AsRelative(m => true).WithMessage("message2")
                     .Valid(m => false, "message3", args3)
                     .AsRelative(m => false).WithMessage("message4")
-                    .Valid(m => true, "message5", new[] {new MessageArg("key5", "value5")})
+                    .Valid(m => true, "message5", new[] {Arg.Text("key5", "value5")})
                     .AsRelative(m => false).WithMessage("message6")
                     .Valid(m => false, "message7", args7)
                     .AsRelative(m => true).WithMessage("message8")
@@ -330,10 +330,10 @@ namespace CoreValidation.UnitTests.Specifications.Commands
             [Fact]
             public void Should_AddErrors_When_Chain_And_Force()
             {
-                var args1 = new[] {new MessageArg("key1", "value1")};
-                var args3 = new[] {new MessageArg("key3", "value3")};
-                var args5 = new[] {new MessageArg("key5", "value5")};
-                var args7 = new[] {new MessageArg("key7", "value7")};
+                var args1 = new[] {Arg.Text("key1", "value1")};
+                var args3 = new[] {Arg.Text("key3", "value3")};
+                var args5 = new[] {Arg.Text("key5", "value5")};
+                var args7 = new[] {Arg.Text("key7", "value7")};
 
                 var rule = new AsNullableRule<object, int>(be => be
                     .Valid(m => true, "message1", args1)
@@ -389,7 +389,7 @@ namespace CoreValidation.UnitTests.Specifications.Commands
             [MemberData(nameof(OptionsData), new[] {ValidationStrategy.Complete, ValidationStrategy.FailFast, ValidationStrategy.Force}, new[] {RuleType.Validate, RuleType.AsRelative}, MemberType = typeof(AsNullableRuleTests))]
             public void Should_OverrideErrorMessage_When_Invalid(ValidationStrategy validationStrategy, RuleType ruleType)
             {
-                var memberSpecification = GetSingleRuleMemberSpecification(ruleType, false, "message", new[] {new MessageArg("key", "value")});
+                var memberSpecification = GetSingleRuleMemberSpecification(ruleType, false, "message", new[] {Arg.Text("key", "value")});
 
                 var rule = new AsNullableRule<object, int>(c => memberSpecification(c).SetSingleError("message_overriden"));
 
@@ -410,7 +410,7 @@ namespace CoreValidation.UnitTests.Specifications.Commands
             [MemberData(nameof(OptionsData), new[] {ValidationStrategy.Complete, ValidationStrategy.FailFast}, new[] {RuleType.Validate, RuleType.AsRelative}, MemberType = typeof(AsNullableRuleTests))]
             public void Should_NotOverrideErrorMessage_When_Valid(ValidationStrategy validationStrategy, RuleType ruleType)
             {
-                var memberSpecification = GetSingleRuleMemberSpecification(ruleType, true, "message", new[] {new MessageArg("key", "value")});
+                var memberSpecification = GetSingleRuleMemberSpecification(ruleType, true, "message", new[] {Arg.Text("key", "value")});
 
                 var rule = new AsNullableRule<object, int>(c => memberSpecification(c).SetSingleError("message_overriden"));
 
@@ -431,7 +431,7 @@ namespace CoreValidation.UnitTests.Specifications.Commands
             [MemberData(nameof(OptionsData), new[] {ValidationStrategy.Force}, new[] {RuleType.Validate, RuleType.AsRelative}, MemberType = typeof(AsNullableRuleTests))]
             public void Should_OverrideErrorMessage_When_Valid_And_Force(ValidationStrategy validationStrategy, RuleType ruleType)
             {
-                var memberSpecification = GetSingleRuleMemberSpecification(ruleType, true, "message", new[] {new MessageArg("key", "value")});
+                var memberSpecification = GetSingleRuleMemberSpecification(ruleType, true, "message", new[] {Arg.Text("key", "value")});
 
                 var rule = new AsNullableRule<object, int>(c => memberSpecification(c).SetSingleError("message_overriden"));
 
@@ -455,13 +455,13 @@ namespace CoreValidation.UnitTests.Specifications.Commands
             public void Should_OverrideErrorMessage_When_Chain(ValidationStrategy validationStrategy)
             {
                 var rule = new AsNullableRule<object, int>(be => be
-                    .Valid(m => true, "message1", new[] {new MessageArg("key1", "value1")})
+                    .Valid(m => true, "message1", new[] {Arg.Text("key1", "value1")})
                     .AsRelative(m => true).WithMessage("message2")
-                    .Valid(m => false, "message3", new[] {new MessageArg("key3", "value3")})
+                    .Valid(m => false, "message3", new[] {Arg.Text("key3", "value3")})
                     .AsRelative(m => false).WithMessage("message4")
-                    .Valid(m => true, "message5", new[] {new MessageArg("key5", "value5")})
+                    .Valid(m => true, "message5", new[] {Arg.Text("key5", "value5")})
                     .AsRelative(m => false).WithMessage("message6")
-                    .Valid(m => false, "message7", new[] {new MessageArg("key7", "value7")})
+                    .Valid(m => false, "message7", new[] {Arg.Text("key7", "value7")})
                     .AsRelative(m => true).WithMessage("message8")
                     .SetSingleError("message_overriden")
                 );
@@ -492,7 +492,7 @@ namespace CoreValidation.UnitTests.Specifications.Commands
                         executionCounter++;
 
                         return true;
-                    }, "message1", new[] {new MessageArg("key1", "value1")})
+                    }, "message1", new[] {Arg.Text("key1", "value1")})
                     .AsRelative(m =>
                     {
                         executionCounter++;
@@ -504,7 +504,7 @@ namespace CoreValidation.UnitTests.Specifications.Commands
                         executionCounter++;
 
                         return false;
-                    }, "message3", new[] {new MessageArg("key3", "value3")})
+                    }, "message3", new[] {Arg.Text("key3", "value3")})
                     .AsRelative(m =>
                     {
                         executionCounter++;
@@ -516,7 +516,7 @@ namespace CoreValidation.UnitTests.Specifications.Commands
                         executionCounter++;
 
                         return true;
-                    }, "message5", new[] {new MessageArg("key5", "value5")})
+                    }, "message5", new[] {Arg.Text("key5", "value5")})
                     .AsRelative(m =>
                     {
                         executionCounter++;
@@ -528,7 +528,7 @@ namespace CoreValidation.UnitTests.Specifications.Commands
                         executionCounter++;
 
                         return false;
-                    }, "message7", new[] {new MessageArg("key7", "value7")})
+                    }, "message7", new[] {Arg.Text("key7", "value7")})
                     .AsRelative(m =>
                     {
                         executionCounter++;
@@ -813,7 +813,7 @@ namespace CoreValidation.UnitTests.Specifications.Commands
             [MemberData(nameof(OptionsData), new[] {ValidationStrategy.Complete, ValidationStrategy.FailFast, ValidationStrategy.Force}, new[] {RuleType.Validate, RuleType.AsRelative}, MemberType = typeof(AsNullableRuleTests))]
             public void Should_AddRuleSingleError_When_Invalid(ValidationStrategy validationStrategy, RuleType ruleType)
             {
-                var args = new[] {new MessageArg("key", "value")};
+                var args = new[] {Arg.Text("key", "value")};
                 var memberSpecification = GetSingleRuleMemberSpecification(ruleType, false, "message", args);
 
                 AsNullableRule rule = new AsNullableRule<object, int>(memberSpecification);
@@ -879,7 +879,7 @@ namespace CoreValidation.UnitTests.Specifications.Commands
             [MemberData(nameof(OptionsData), new[] {ValidationStrategy.Force}, new[] {RuleType.Validate, RuleType.AsRelative}, MemberType = typeof(AsNullableRuleTests))]
             public void Should_AddRuleSingleError_When_NullMember_And_Force(ValidationStrategy validationStrategy, RuleType ruleType)
             {
-                var args = new[] {new MessageArg("key", "value")};
+                var args = new[] {Arg.Text("key", "value")};
                 var memberSpecification = GetSingleRuleMemberSpecification(ruleType, false, "message", args);
 
                 AsNullableRule rule = new AsNullableRule<object, int>(memberSpecification);
@@ -901,7 +901,7 @@ namespace CoreValidation.UnitTests.Specifications.Commands
             [MemberData(nameof(OptionsData), new[] {ValidationStrategy.Force}, new[] {RuleType.Validate, RuleType.AsRelative}, MemberType = typeof(AsNullableRuleTests))]
             public void Should_AddSingleError_When_Valid_And_Force(ValidationStrategy validationStrategy, RuleType ruleType)
             {
-                var args = new[] {new MessageArg("key", "value")};
+                var args = new[] {Arg.Text("key", "value")};
                 var memberSpecification = GetSingleRuleMemberSpecification(ruleType, true, "message", args);
 
                 AsNullableRule rule = new AsNullableRule<object, int>(memberSpecification);

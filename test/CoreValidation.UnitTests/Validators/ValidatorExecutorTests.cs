@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using CoreValidation.Errors;
-using CoreValidation.Errors.Args;
 using CoreValidation.Exceptions;
 using CoreValidation.Specifications;
 using CoreValidation.Specifications.Commands;
@@ -45,11 +44,11 @@ namespace CoreValidation.UnitTests.Validators
             public void Should_GatherNoErrors_When_AllValid(ValidationStrategy validationStrategy)
             {
                 var validator = ValidatorCreator.Create<User>(u => u
-                    .Member(m => m.Email, be => be.Valid(m => true, "error1 {id}", new IMessageArg[] {NumberArg.Create("id", 1)}))
+                    .Member(m => m.Email, be => be.Valid(m => true, "error1 {id}", new[] {Arg.Number("id", 1)}))
                     .Valid(m => true).WithMessage("error2")
-                    .Member(m => m.Address, be => be.Valid(m => true, "error3 {id}", new IMessageArg[] {NumberArg.Create("id", 3)}))
+                    .Member(m => m.Address, be => be.Valid(m => true, "error3 {id}", new[] {Arg.Number("id", 3)}))
                     .Valid(m => true).WithMessage("error4")
-                    .Member(m => m.FirstLogin, be => be.Valid(m => true, "error5 {id}", new IMessageArg[] {NumberArg.Create("id", 5)}))
+                    .Member(m => m.FirstLogin, be => be.Valid(m => true, "error5 {id}", new[] {Arg.Number("id", 5)}))
                 );
 
                 var user = new User {Email = "", Address = new Address(), FirstLogin = DateTime.UtcNow};
@@ -79,7 +78,7 @@ namespace CoreValidation.UnitTests.Validators
                         executed = true;
 
                         return false;
-                    }, "error1 {id}", new IMessageArg[] {NumberArg.Create("id", 1)}))
+                    }, "error1 {id}", new[] {Arg.Number("id", 1)}))
                 );
 
                 var user = new User();
@@ -89,7 +88,7 @@ namespace CoreValidation.UnitTests.Validators
                     user,
                     new ExecutionContextStub
                     {
-                        RequiredError = new Error("required {arg}", new IMessageArg[] {new TextArg("arg", "error!")})
+                        RequiredError = new Error("required {arg}", new[] {Arg.Text("arg", "error!")})
                     },
                     validationStrategy,
                     0);
@@ -114,7 +113,7 @@ namespace CoreValidation.UnitTests.Validators
                         executed = true;
 
                         return false;
-                    }, "error1 {id}", new IMessageArg[] {NumberArg.Create("id", 1)}))
+                    }, "error1 {id}", new[] {Arg.Number("id", 1)}))
                 );
 
                 var user = new User();
@@ -124,7 +123,7 @@ namespace CoreValidation.UnitTests.Validators
                     user,
                     new ExecutionContextStub
                     {
-                        RequiredError = new Error("required {arg}", new IMessageArg[] {new TextArg("arg", "error!")})
+                        RequiredError = new Error("required {arg}", new[] {Arg.Text("arg", "error!")})
                     },
                     validationStrategy,
                     0);
@@ -148,7 +147,7 @@ namespace CoreValidation.UnitTests.Validators
                             executed = true;
 
                             return false;
-                        }, "error1 {id}", new IMessageArg[] {NumberArg.Create("id", 1)})
+                        }, "error1 {id}", new[] {Arg.Number("id", 1)})
                         .SetRequired("custom required")
                     )
                 );
@@ -180,7 +179,7 @@ namespace CoreValidation.UnitTests.Validators
             public void Should_AddSingleError_When_ErrorCollected(bool memberValid, bool modelValid)
             {
                 var validator = ValidatorCreator.Create<User>(u => u
-                    .Member(m => m.Email, be => be.Valid(m => memberValid, "error1 {id}", new IMessageArg[] {NumberArg.Create("id", 1)}))
+                    .Member(m => m.Email, be => be.Valid(m => memberValid, "error1 {id}", new[] {Arg.Number("id", 1)}))
                     .Valid(m => modelValid).WithMessage("error2")
                     .SetSingleError("summary")
                 );
@@ -227,7 +226,7 @@ namespace CoreValidation.UnitTests.Validators
                     user,
                     new ExecutionContextStub
                     {
-                        DefaultError = new Error("default {arg}", new IMessageArg[] {new TextArg("arg", "error!")})
+                        DefaultError = new Error("default {arg}", new[] {Arg.Text("arg", "error!")})
                     },
                     ValidationStrategy.Complete,
                     0);
@@ -248,7 +247,7 @@ namespace CoreValidation.UnitTests.Validators
                         executed[0] = true;
 
                         return true;
-                    }, "error1 {id}", new IMessageArg[] {NumberArg.Create("id", 1)}))
+                    }, "error1 {id}", new[] {Arg.Number("id", 1)}))
                     .Valid(m =>
                     {
                         executed[1] = true;
@@ -260,7 +259,7 @@ namespace CoreValidation.UnitTests.Validators
                         executed[2] = true;
 
                         return false;
-                    }, "error3 {id}", new IMessageArg[] {NumberArg.Create("id", 3)}))
+                    }, "error3 {id}", new[] {Arg.Number("id", 3)}))
                     .Valid(m =>
                     {
                         executed[3] = true;
@@ -272,7 +271,7 @@ namespace CoreValidation.UnitTests.Validators
                         executed[4] = true;
 
                         return false;
-                    }, "error5 {id}", new IMessageArg[] {NumberArg.Create("id", 5)}))
+                    }, "error5 {id}", new[] {Arg.Number("id", 5)}))
                 );
 
                 var user = new User {Email = "", Address = new Address(), FirstLogin = DateTime.UtcNow};
@@ -303,7 +302,7 @@ namespace CoreValidation.UnitTests.Validators
                             executed = true;
 
                             return false;
-                        }, "error1 {id}", new IMessageArg[] {NumberArg.Create("id", 1)})
+                        }, "error1 {id}", new[] {Arg.Number("id", 1)})
                         .SetRequired("custom required")
                     )
                 );
@@ -338,7 +337,7 @@ namespace CoreValidation.UnitTests.Validators
                         executed = true;
 
                         return false;
-                    }, "error1 {id}", new IMessageArg[] {NumberArg.Create("id", 1)}))
+                    }, "error1 {id}", new[] {Arg.Number("id", 1)}))
                 );
 
                 var user = new User();
@@ -348,7 +347,7 @@ namespace CoreValidation.UnitTests.Validators
                     user,
                     new ExecutionContextStub
                     {
-                        RequiredError = new Error("required {arg}", new IMessageArg[] {new TextArg("arg", "error!")})
+                        RequiredError = new Error("required {arg}", new[] {Arg.Text("arg", "error!")})
                     },
                     ValidationStrategy.Force,
                     0);
@@ -371,7 +370,7 @@ namespace CoreValidation.UnitTests.Validators
                         executed = true;
 
                         return false;
-                    }, "error1 {id}", new IMessageArg[] {NumberArg.Create("id", 1)}))
+                    }, "error1 {id}", new[] {Arg.Number("id", 1)}))
                 );
 
                 var user = new User();
@@ -381,7 +380,7 @@ namespace CoreValidation.UnitTests.Validators
                     user,
                     new ExecutionContextStub
                     {
-                        RequiredError = new Error("required {arg}", new IMessageArg[] {new TextArg("arg", "error!")})
+                        RequiredError = new Error("required {arg}", new[] {Arg.Text("arg", "error!")})
                     },
                     ValidationStrategy.Force,
                     0);
@@ -404,7 +403,7 @@ namespace CoreValidation.UnitTests.Validators
                         executed[0] = true;
 
                         return true;
-                    }, "error1 {id}", new IMessageArg[] {NumberArg.Create("id", 1)}))
+                    }, "error1 {id}", new[] {Arg.Number("id", 1)}))
                     .Valid(m =>
                     {
                         executed[1] = true;
@@ -416,7 +415,7 @@ namespace CoreValidation.UnitTests.Validators
                         executed[2] = true;
 
                         return false;
-                    }, "error3 {id}", new IMessageArg[] {NumberArg.Create("id", 3)}))
+                    }, "error3 {id}", new[] {Arg.Number("id", 3)}))
                     .Valid(m =>
                     {
                         executed[3] = true;
@@ -428,7 +427,7 @@ namespace CoreValidation.UnitTests.Validators
                         executed[4] = true;
 
                         return false;
-                    }, "error5 {id}", new IMessageArg[] {NumberArg.Create("id", 5)}))
+                    }, "error5 {id}", new[] {Arg.Number("id", 5)}))
                 );
 
                 var user = new User {Email = "", Address = new Address(), FirstLogin = DateTime.UtcNow};
@@ -461,7 +460,7 @@ namespace CoreValidation.UnitTests.Validators
                         executed[0] = true;
 
                         return true;
-                    }, "error1 {id}", new IMessageArg[] {NumberArg.Create("id", 1)}))
+                    }, "error1 {id}", new[] {Arg.Number("id", 1)}))
                     .Valid(m =>
                     {
                         executed[1] = true;
@@ -473,7 +472,7 @@ namespace CoreValidation.UnitTests.Validators
                         executed[2] = true;
 
                         return false;
-                    }, "error3 {id}", new IMessageArg[] {NumberArg.Create("id", 3)}))
+                    }, "error3 {id}", new[] {Arg.Number("id", 3)}))
                     .Valid(m =>
                     {
                         executed[3] = true;
@@ -485,7 +484,7 @@ namespace CoreValidation.UnitTests.Validators
                         executed[4] = true;
 
                         return false;
-                    }, "error5 {id}", new IMessageArg[] {NumberArg.Create("id", 5)}))
+                    }, "error5 {id}", new[] {Arg.Number("id", 5)}))
                 );
 
                 var user = new User {Email = "", Address = new Address(), FirstLogin = DateTime.UtcNow};
@@ -518,7 +517,7 @@ namespace CoreValidation.UnitTests.Validators
                         executed[0] = true;
 
                         return true;
-                    }, "error1 {id}", new IMessageArg[] {NumberArg.Create("id", 1)}))
+                    }, "error1 {id}", new[] {Arg.Number("id", 1)}))
                     .Valid(m =>
                     {
                         executed[1] = true;
@@ -530,7 +529,7 @@ namespace CoreValidation.UnitTests.Validators
                         executed[2] = true;
 
                         return false;
-                    }, "error3 {id}", new IMessageArg[] {NumberArg.Create("id", 3)}))
+                    }, "error3 {id}", new[] {Arg.Number("id", 3)}))
                     .Valid(m =>
                     {
                         executed[3] = true;
@@ -542,7 +541,7 @@ namespace CoreValidation.UnitTests.Validators
                         executed[4] = true;
 
                         return false;
-                    }, "error5 {id}", new IMessageArg[] {NumberArg.Create("id", 5)}))
+                    }, "error5 {id}", new[] {Arg.Number("id", 5)}))
                 );
 
                 var user = new User {Email = "", Address = new Address(), FirstLogin = DateTime.UtcNow};
@@ -568,11 +567,11 @@ namespace CoreValidation.UnitTests.Validators
             public void Should_GroupMemberErrors()
             {
                 var validator = ValidatorCreator.Create<User>(u => u
-                    .Member(m => m.Email, be => be.Valid(m => false, "error1 {id}", new IMessageArg[] {NumberArg.Create("id", 1)}))
+                    .Member(m => m.Email, be => be.Valid(m => false, "error1 {id}", new[] {Arg.Number("id", 1)}))
                     .Valid(m => false).WithMessage("error2")
-                    .Member(m => m.Email, be => be.Valid(m => false, "error3 {id}", new IMessageArg[] {NumberArg.Create("id", 3)}))
+                    .Member(m => m.Email, be => be.Valid(m => false, "error3 {id}", new[] {Arg.Number("id", 3)}))
                     .Valid(m => false).WithMessage("error4")
-                    .Member(m => m.Email, be => be.Valid(m => false, "error5 {id}", new IMessageArg[] {NumberArg.Create("id", 5)}))
+                    .Member(m => m.Email, be => be.Valid(m => false, "error5 {id}", new[] {Arg.Number("id", 5)}))
                 );
 
                 var user = new User {Email = "", Address = new Address(), FirstLogin = DateTime.UtcNow};
@@ -629,7 +628,7 @@ namespace CoreValidation.UnitTests.Validators
                                 executed[0] = true;
 
                                 return true;
-                            }, "error1 {arg}", new[] {NumberArg.Create("arg", 1)})
+                            }, "error1 {arg}", new[] {Arg.Number("arg", 1)})
                             .AsRelative(n =>
                             {
                                 executed[1] = true;
@@ -641,7 +640,7 @@ namespace CoreValidation.UnitTests.Validators
                                 executed[2] = true;
 
                                 return false;
-                            }, "error3 {arg}", new[] {NumberArg.Create("arg", 3)})
+                            }, "error3 {arg}", new[] {Arg.Number("arg", 3)})
                         ))
                 );
 
@@ -691,7 +690,7 @@ namespace CoreValidation.UnitTests.Validators
 
                 var validator = ValidatorCreator.Create<User>(u => u
                     .Member(m => m.FirstLogin, be => be.AsNullable(m => m
-                        .Valid(n => memberValid, "error1 {id}", new IMessageArg[] {NumberArg.Create("id", 1)})
+                        .Valid(n => memberValid, "error1 {id}", new[] {Arg.Number("id", 1)})
                         .AsRelative(n => modelValid).WithMessage("error2")
                         .SetSingleError("single error")
                     ))
@@ -1050,7 +1049,7 @@ namespace CoreValidation.UnitTests.Validators
                     user,
                     new ExecutionContextStub
                     {
-                        DefaultError = new Error("custom default {arg}", new[] {new TextArg("arg", "error")}),
+                        DefaultError = new Error("custom default {arg}", new[] {Arg.Text("arg", "error")}),
                         ValidatorsFactory = new ValidatorsFactory(specificationsRepositoryMock.Object)
                     },
                     ValidationStrategy.Complete,
@@ -1076,7 +1075,7 @@ namespace CoreValidation.UnitTests.Validators
                     user,
                     new ExecutionContextStub
                     {
-                        RequiredError = new Error("custom required {arg}", new[] {new TextArg("arg", "error")}),
+                        RequiredError = new Error("custom required {arg}", new[] {Arg.Text("arg", "error")}),
                         ValidatorsFactory = new ValidatorsFactory(specificationsRepositoryMock.Object)
                     },
                     ValidationStrategy.Complete,
@@ -1181,21 +1180,21 @@ namespace CoreValidation.UnitTests.Validators
                                 executed[itemIndex][0] = true;
 
                                 return isValid[itemIndex][0];
-                            }, "error1 {arg}", new[] {NumberArg.Create("arg", 1)})
+                            }, "error1 {arg}", new[] {Arg.Number("arg", 1)})
                             .Valid(n =>
                             {
                                 var itemIndex = Array.IndexOf(pastAddresses, n);
                                 executed[itemIndex][1] = true;
 
                                 return isValid[itemIndex][1];
-                            }, "error2 {arg}", new[] {NumberArg.Create("arg", 2)})
+                            }, "error2 {arg}", new[] {Arg.Number("arg", 2)})
                             .Valid(n =>
                             {
                                 var itemIndex = Array.IndexOf(pastAddresses, n);
                                 executed[itemIndex][2] = true;
 
                                 return isValid[itemIndex][2];
-                            }, "error3 {arg}", new[] {NumberArg.Create("arg", 3)})
+                            }, "error3 {arg}", new[] {Arg.Number("arg", 3)})
                         )));
 
                 var specificationsRepositoryMock = new Mock<ISpecificationsRepository>();
@@ -1259,7 +1258,7 @@ namespace CoreValidation.UnitTests.Validators
 
                 var validator = ValidatorCreator.Create<User>(u => u
                     .Member(m => m.PastAddresses, be => be.AsCollection(m => m
-                        .Valid(n => isValid, "error1 {id}", new IMessageArg[] {NumberArg.Create("id", 1)})
+                        .Valid(n => isValid, "error1 {id}", new[] {Arg.Number("id", 1)})
                         .SetSingleError("single error")
                     )));
 
@@ -1453,7 +1452,7 @@ namespace CoreValidation.UnitTests.Validators
                     user,
                     new ExecutionContextStub
                     {
-                        DefaultError = new Error("custom default {arg}", new[] {new TextArg("arg", "error")}),
+                        DefaultError = new Error("custom default {arg}", new[] {Arg.Text("arg", "error")}),
                         ValidatorsFactory = new ValidatorsFactory(specificationsRepositoryMock.Object)
                     },
                     ValidationStrategy.Complete,
@@ -1483,7 +1482,7 @@ namespace CoreValidation.UnitTests.Validators
                     user,
                     new ExecutionContextStub
                     {
-                        RequiredError = new Error("custom required {arg}", new[] {new TextArg("arg", "error")}),
+                        RequiredError = new Error("custom required {arg}", new[] {Arg.Text("arg", "error")}),
                         ValidatorsFactory = new ValidatorsFactory(specificationsRepositoryMock.Object)
                     },
                     ValidationStrategy.Complete,
@@ -1843,7 +1842,7 @@ namespace CoreValidation.UnitTests.Validators
                     user,
                     new ExecutionContextStub
                     {
-                        DefaultError = new Error("custom default {arg}", new[] {new TextArg("arg", "error")}),
+                        DefaultError = new Error("custom default {arg}", new[] {Arg.Text("arg", "error")}),
                         ValidatorsFactory = new ValidatorsFactory(specificationsRepositoryMock.Object)
                     },
                     ValidationStrategy.Complete,
@@ -1873,7 +1872,7 @@ namespace CoreValidation.UnitTests.Validators
                     user,
                     new ExecutionContextStub
                     {
-                        RequiredError = new Error("custom required {arg}", new[] {new TextArg("arg", "error")}),
+                        RequiredError = new Error("custom required {arg}", new[] {Arg.Text("arg", "error")}),
                         ValidatorsFactory = new ValidatorsFactory(specificationsRepositoryMock.Object)
                     },
                     ValidationStrategy.Complete,

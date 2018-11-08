@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using CoreValidation.Errors.Args;
 using CoreValidation.Tests;
 using Xunit;
 
@@ -27,10 +26,10 @@ namespace CoreValidation.UnitTests.PredefinedRules.Times
                 memberValue,
                 expectedIsValid,
                 Phrases.Keys.Times.EqualTo,
-                new IMessageArg[]
+                new[]
                 {
-                    TimeArg.Create("value", value),
-                    new EnumArg<TimeComparison>("timeComparison", TimeComparison.All)
+                    Arg.Time("value", value),
+                    Arg.Enum("timeComparison", TimeComparison.All)
                 });
         }
 
@@ -51,10 +50,10 @@ namespace CoreValidation.UnitTests.PredefinedRules.Times
                 memberValue,
                 expectedIsValid,
                 Phrases.Keys.Times.NotEqualTo,
-                new IMessageArg[]
+                new[]
                 {
-                    TimeArg.Create("value", value),
-                    new EnumArg<TimeComparison>("timeComparison", TimeComparison.All)
+                    Arg.Time("value", value),
+                    Arg.Enum("timeComparison", TimeComparison.All)
                 });
         }
 
@@ -75,10 +74,10 @@ namespace CoreValidation.UnitTests.PredefinedRules.Times
                 memberValue,
                 expectedIsValid,
                 Phrases.Keys.Times.After,
-                new IMessageArg[]
+                new[]
                 {
-                    TimeArg.Create("min", min),
-                    new EnumArg<TimeComparison>("timeComparison", TimeComparison.All)
+                    Arg.Time("min", min),
+                    Arg.Enum("timeComparison", TimeComparison.All)
                 });
         }
 
@@ -99,10 +98,10 @@ namespace CoreValidation.UnitTests.PredefinedRules.Times
                 memberValue,
                 expectedIsValid,
                 Phrases.Keys.Times.AfterOrEqualTo,
-                new IMessageArg[]
+                new[]
                 {
-                    TimeArg.Create("min", min),
-                    new EnumArg<TimeComparison>("timeComparison", TimeComparison.All)
+                    Arg.Time("min", min),
+                    Arg.Enum("timeComparison", TimeComparison.All)
                 });
         }
 
@@ -123,10 +122,10 @@ namespace CoreValidation.UnitTests.PredefinedRules.Times
                 memberValue,
                 expectedIsValid,
                 Phrases.Keys.Times.Before,
-                new IMessageArg[]
+                new[]
                 {
-                    TimeArg.Create("max", max),
-                    new EnumArg<TimeComparison>("timeComparison", TimeComparison.All)
+                    Arg.Time("max", max),
+                    Arg.Enum("timeComparison", TimeComparison.All)
                 });
         }
 
@@ -147,10 +146,10 @@ namespace CoreValidation.UnitTests.PredefinedRules.Times
                 memberValue,
                 expectedIsValid,
                 Phrases.Keys.Times.BeforeOrEqualTo,
-                new IMessageArg[]
+                new[]
                 {
-                    TimeArg.Create("max", max),
-                    new EnumArg<TimeComparison>("timeComparison", TimeComparison.All)
+                    Arg.Time("max", max),
+                    Arg.Enum("timeComparison", TimeComparison.All)
                 });
         }
 
@@ -171,11 +170,11 @@ namespace CoreValidation.UnitTests.PredefinedRules.Times
                 memberValue,
                 expectedIsValid,
                 Phrases.Keys.Times.Between,
-                new IMessageArg[]
+                new[]
                 {
-                    TimeArg.Create("min", min),
-                    TimeArg.Create("max", max),
-                    new EnumArg<TimeComparison>("timeComparison", TimeComparison.All)
+                    Arg.Time("min", min),
+                    Arg.Time("max", max),
+                    Arg.Enum("timeComparison", TimeComparison.All)
                 });
         }
 
@@ -196,11 +195,11 @@ namespace CoreValidation.UnitTests.PredefinedRules.Times
                 memberValue,
                 expectedIsValid,
                 Phrases.Keys.Times.BetweenOrEqualTo,
-                new IMessageArg[]
+                new[]
                 {
-                    TimeArg.Create("min", min),
-                    TimeArg.Create("max", max),
-                    new EnumArg<TimeComparison>("timeComparison", TimeComparison.All)
+                    Arg.Time("min", min),
+                    Arg.Time("max", max),
+                    Arg.Enum("timeComparison", TimeComparison.All)
                 });
         }
 
@@ -238,10 +237,10 @@ namespace CoreValidation.UnitTests.PredefinedRules.Times
                     memberValue,
                     expectedIsValid,
                     Phrases.Keys.Times.EqualTo,
-                    new IMessageArg[]
+                    new[]
                     {
-                        TimeArg.Create("value", value),
-                        new EnumArg<TimeComparison>("timeComparison", timeComparison)
+                        Arg.Time("value", value),
+                        Arg.Enum("timeComparison", timeComparison)
                     });
             }
 
@@ -277,10 +276,10 @@ namespace CoreValidation.UnitTests.PredefinedRules.Times
                     memberValue,
                     expectedIsValid,
                     Phrases.Keys.Times.NotEqualTo,
-                    new IMessageArg[]
+                    new[]
                     {
-                        TimeArg.Create("value", value),
-                        new EnumArg<TimeComparison>("timeComparison", timeComparison)
+                        Arg.Time("value", value),
+                        Arg.Enum("timeComparison", timeComparison)
                     });
             }
 
@@ -331,10 +330,10 @@ namespace CoreValidation.UnitTests.PredefinedRules.Times
                     memberValue,
                     expectedIsValid,
                     Phrases.Keys.Times.After,
-                    new IMessageArg[]
+                    new[]
                     {
-                        TimeArg.Create("min", min),
-                        new EnumArg<TimeComparison>("timeComparison", timeComparison)
+                        Arg.Time("min", min),
+                        Arg.Enum("timeComparison", timeComparison)
                     });
             }
 
@@ -385,10 +384,10 @@ namespace CoreValidation.UnitTests.PredefinedRules.Times
                     memberValue,
                     expectedIsValid,
                     Phrases.Keys.Times.AfterOrEqualTo,
-                    new IMessageArg[]
+                    new[]
                     {
-                        TimeArg.Create("min", min),
-                        new EnumArg<TimeComparison>("timeComparison", timeComparison)
+                        Arg.Time("min", min),
+                        Arg.Enum("timeComparison", timeComparison)
                     });
             }
 
@@ -439,10 +438,10 @@ namespace CoreValidation.UnitTests.PredefinedRules.Times
                     memberValue,
                     expectedIsValid,
                     Phrases.Keys.Times.Before,
-                    new IMessageArg[]
+                    new[]
                     {
-                        TimeArg.Create("max", max),
-                        new EnumArg<TimeComparison>("timeComparison", timeComparison)
+                        Arg.Time("max", max),
+                        Arg.Enum("timeComparison", timeComparison)
                     });
             }
 
@@ -493,10 +492,10 @@ namespace CoreValidation.UnitTests.PredefinedRules.Times
                     memberValue,
                     expectedIsValid,
                     Phrases.Keys.Times.BeforeOrEqualTo,
-                    new IMessageArg[]
+                    new[]
                     {
-                        TimeArg.Create("max", max),
-                        new EnumArg<TimeComparison>("timeComparison", timeComparison)
+                        Arg.Time("max", max),
+                        Arg.Enum("timeComparison", timeComparison)
                     });
             }
 
@@ -572,11 +571,11 @@ namespace CoreValidation.UnitTests.PredefinedRules.Times
                     memberValue,
                     expectedIsValid,
                     Phrases.Keys.Times.Between,
-                    new IMessageArg[]
+                    new[]
                     {
-                        TimeArg.Create("min", min),
-                        TimeArg.Create("max", max),
-                        new EnumArg<TimeComparison>("timeComparison", timeComparison)
+                        Arg.Time("min", min),
+                        Arg.Time("max", max),
+                        Arg.Enum("timeComparison", timeComparison)
                     });
             }
 
@@ -652,11 +651,11 @@ namespace CoreValidation.UnitTests.PredefinedRules.Times
                     memberValue,
                     expectedIsValid,
                     Phrases.Keys.Times.BetweenOrEqualTo,
-                    new IMessageArg[]
+                    new[]
                     {
-                        TimeArg.Create("min", min),
-                        TimeArg.Create("max", max),
-                        new EnumArg<TimeComparison>("timeComparison", timeComparison)
+                        Arg.Time("min", min),
+                        Arg.Time("max", max),
+                        Arg.Enum("timeComparison", timeComparison)
                     });
             }
         }

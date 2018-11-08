@@ -6,7 +6,7 @@ namespace CoreValidation
     public static class SetOptionalExtension
     {
         /// <summary>
-        /// Sets the member as optional. In case of null, no error is added.
+        ///     Sets the member as optional. In case of null, no error is added.
         /// </summary>
         public static IMemberSpecificationBuilder<TModel, TMember> SetOptional<TModel, TMember>(this IMemberSpecificationBuilder<TModel, TMember> memberSpecificationBuilder)
             where TModel : class
@@ -16,7 +16,7 @@ namespace CoreValidation
         }
 
         /// <summary>
-        /// Sets the member as optional. In case of null, no error is added.
+        ///     Sets the member as optional. In case of null, no error is added.
         /// </summary>
         public static IMemberSpecificationBuilder<TModel, TMember?> SetOptional<TModel, TMember>(this IMemberSpecificationBuilder<TModel, TMember?> memberSpecificationBuilder)
             where TModel : class

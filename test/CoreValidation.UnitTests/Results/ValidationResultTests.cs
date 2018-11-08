@@ -27,7 +27,7 @@ namespace CoreValidation.UnitTests.Results
 
             var varlidationResult = new ValidationResult<object>(Guid.NewGuid(), new Mock<ITranslationProxy>().Object, new Mock<IExecutionOptions>().Object, new object(), errorCollection);
 
-            Assert.Equal(isValid, varlidationResult .IsValid);
+            Assert.Equal(isValid, varlidationResult.IsValid);
         }
 
         [Fact]

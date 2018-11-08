@@ -1,7 +1,7 @@
 namespace CoreValidation.Specifications
 {
     /// <summary>
-    /// Specification (Fluent API) for the models of type <typeparamref name="T"/>.
+    ///     Specification (Fluent API) for the models of type <typeparamref name="T" />.
     /// </summary>
     /// <typeparam name="T">Specified type</typeparam>
     /// <param name="specificationBuilder">Builder with all of the Fluent API extensions to build the specification with</param>

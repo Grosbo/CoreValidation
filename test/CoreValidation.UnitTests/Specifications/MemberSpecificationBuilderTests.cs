@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using CoreValidation.Errors.Args;
 using CoreValidation.Specifications;
 using CoreValidation.Specifications.Commands;
 using Xunit;
@@ -159,7 +158,7 @@ namespace CoreValidation.UnitTests.Specifications
                 var builder = new MemberSpecificationBuilder<object, int>();
 
                 Predicate<int> isValid = c => true;
-                var args = new IMessageArg[] {new MessageArg("n", "v")};
+                var args = new[] {Arg.Text("n", "v")};
 
                 builder.Valid(isValid, "message", args);
 
@@ -182,7 +181,7 @@ namespace CoreValidation.UnitTests.Specifications
                 var builder = new MemberSpecificationBuilder<object, int>();
 
                 Predicate<int> isValid = c => true;
-                var args = new IMessageArg[] {new MessageArg("n", "v")};
+                var args = new[] {Arg.Text("n", "v")};
 
                 Assert.Throws<ArgumentNullException>(() => { builder.Valid(isValid, null, args); });
             }
@@ -200,7 +199,7 @@ namespace CoreValidation.UnitTests.Specifications
             {
                 var builder = new MemberSpecificationBuilder<object, int>();
 
-                var args = new IMessageArg[] {new MessageArg("n", "v")};
+                var args = new[] {Arg.Text("n", "v")};
 
                 Assert.Throws<ArgumentNullException>(() => { builder.Valid(null, "message", args); });
             }

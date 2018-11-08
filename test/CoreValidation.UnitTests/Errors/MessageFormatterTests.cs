@@ -241,7 +241,7 @@ namespace CoreValidation.UnitTests.Errors
         [Fact]
         public void Should_ThrowException_When_DuplicateName()
         {
-            Assert.Throws<ArgumentException>(() => { MessageFormatter.Format("test {arg}", new IMessageArg[] {new MessageArg("arg", "value1"), new MessageArg("arg", "value2")}); });
+            Assert.Throws<ArgumentException>(() => { MessageFormatter.Format("test {arg}", new[] {Arg.Text("arg", "value1"), Arg.Text("arg", "value2")}); });
         }
 
         [Fact]

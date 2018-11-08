@@ -1,8 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using CoreValidation.Errors;
-using CoreValidation.Errors.Args;
 using CoreValidation.Exceptions;
 using CoreValidation.Factory;
 using CoreValidation.Options;
@@ -102,7 +101,7 @@ namespace CoreValidation.UnitTests
             {
                 var options = new ValidationContextOptions
                 {
-                    Specifications = new Dictionary<Type, object> {{typeof(User), new Specification<User>(c => c.Member(m => m.Name, m => m.Valid(n => false, "error {arg|case=upper}", new IMessageArg[] {new TextArg("arg", "test")})))}},
+                    Specifications = new Dictionary<Type, object> {{typeof(User), new Specification<User>(c => c.Member(m => m.Name, m => m.Valid(n => false, "error {arg|case=upper}", new[] {Arg.Text("arg", "test")})))}},
                     Translations = new[]
                     {
                         new Translation("test1", new Dictionary<string, string> {{"t1", "T1"}}),
@@ -148,7 +147,7 @@ namespace CoreValidation.UnitTests
             {
                 var options = new ValidationContextOptions
                 {
-                    Specifications = new Dictionary<Type, object> {{typeof(User), new Specification<User>(c => c.Member(m => m.Name, m => m.Valid(n => false, "error {arg|case=upper}", new IMessageArg[] {new TextArg("arg", "test")})))}},
+                    Specifications = new Dictionary<Type, object> {{typeof(User), new Specification<User>(c => c.Member(m => m.Name, m => m.Valid(n => false, "error {arg|case=upper}", new[] {Arg.Text("arg", "test")})))}},
                     Translations = new[]
                     {
                         new Translation("test1", new Dictionary<string, string> {{"t1", "T1"}}),
@@ -194,7 +193,7 @@ namespace CoreValidation.UnitTests
             {
                 var options = new ValidationContextOptions
                 {
-                    Specifications = new Dictionary<Type, object> {{typeof(User), new Specification<User>(c => c.Member(m => m.Name, m => m.Valid(n => false, "error {arg|case=upper}", new IMessageArg[] {new TextArg("arg", "test")})))}},
+                    Specifications = new Dictionary<Type, object> {{typeof(User), new Specification<User>(c => c.Member(m => m.Name, m => m.Valid(n => false, "error {arg|case=upper}", new[] {Arg.Text("arg", "test")})))}},
                     Translations = new[]
                     {
                         new Translation("test1", new Dictionary<string, string> {{"t1", "T1"}}),
@@ -240,7 +239,7 @@ namespace CoreValidation.UnitTests
             {
                 var validationContext = new ValidationContext(new ValidationContextOptions
                 {
-                    Specifications = new Dictionary<Type, object> {{typeof(User), new Specification<User>(c => c.Member(m => m.Name, m => m.Valid(n => false, "error {arg|case=upper}", new IMessageArg[] {new TextArg("arg", "test")})))}},
+                    Specifications = new Dictionary<Type, object> {{typeof(User), new Specification<User>(c => c.Member(m => m.Name, m => m.Valid(n => false, "error {arg|case=upper}", new[] {Arg.Text("arg", "test")})))}},
                     Translations = new[]
                     {
                         new Translation("test1", new Dictionary<string, string> {{"t1", "T1"}}),
@@ -401,7 +400,7 @@ namespace CoreValidation.UnitTests
             {
                 var validationContext = new ValidationContext(new ValidationContextOptions
                 {
-                    Specifications = new Dictionary<Type, object> {{typeof(User), new Specification<User>(c => c.Member(m => m.Name, m => m.Valid(v => false, "error {arg|case=upper}", new IMessageArg[] {new TextArg("arg", "test")})))}}
+                    Specifications = new Dictionary<Type, object> {{typeof(User), new Specification<User>(c => c.Member(m => m.Name, m => m.Valid(v => false, "error {arg|case=upper}", new[] {Arg.Text("arg", "test")})))}}
                 });
 
                 var result = validationContext.Validate(new User {Name = ""});
@@ -421,7 +420,7 @@ namespace CoreValidation.UnitTests
             [Fact]
             public void Validate_Should_Validate_And_UseDefinedSpecification()
             {
-                var addressSpecification = new Specification<Address>(c => c.Member(m => m.Street, m => m.Valid(n => false, "error 2 DEFINED {arg2|case=lower}", new IMessageArg[] {new TextArg("arg2", "TEST2")})));
+                var addressSpecification = new Specification<Address>(c => c.Member(m => m.Street, m => m.Valid(n => false, "error 2 DEFINED {arg2|case=lower}", new[] {Arg.Text("arg2", "TEST2")})));
 
                 var validationContext = new ValidationContext(new ValidationContextOptions
                 {
@@ -431,7 +430,7 @@ namespace CoreValidation.UnitTests
                             typeof(User), new Specification<User>(c => c
                                 .Member(m => m.Address, m => m.AsModel(addressSpecification)))
                         },
-                        {typeof(Address), new Specification<Address>(c => c.Member(m => m.Street, m => m.Valid(n => false, "error 2 FROM REPO {arg2|case=lower}", new IMessageArg[] {new TextArg("arg2", "TEST2")})))}
+                        {typeof(Address), new Specification<Address>(c => c.Member(m => m.Street, m => m.Valid(n => false, "error 2 FROM REPO {arg2|case=lower}", new[] {Arg.Text("arg2", "TEST2")})))}
                     }
                 });
 
@@ -460,7 +459,7 @@ namespace CoreValidation.UnitTests
                             typeof(User), new Specification<User>(c => c
                                 .Member(m => m.Address, m => m.AsModel()))
                         },
-                        {typeof(Address), new Specification<Address>(c => c.Member(m => m.Street, m => m.Valid(n => false, "error 2 FROM REPO {arg2|case=lower}", new IMessageArg[] {new TextArg("arg2", "TEST2")})))}
+                        {typeof(Address), new Specification<Address>(c => c.Member(m => m.Street, m => m.Valid(n => false, "error 2 FROM REPO {arg2|case=lower}", new[] {Arg.Text("arg2", "TEST2")})))}
                     }
                 });
 
@@ -550,7 +549,7 @@ namespace CoreValidation.UnitTests
                 });
 
                 ((ValidationOptions)validationContext.ValidationOptions).NullRootStrategy = NullRootStrategy.NoErrors;
-                ((ValidationOptions)validationContext.ValidationOptions).RequiredError = new Error("This is required stuff {arg}", new IMessageArg[] {new TextArg("arg", "!")});
+                ((ValidationOptions)validationContext.ValidationOptions).RequiredError = new Error("This is required stuff {arg}", new[] {Arg.Text("arg", "!")});
 
                 var result = validationContext.Validate<User>(null);
                 Assert.True(result.ErrorsCollection.IsEmpty);
@@ -565,7 +564,7 @@ namespace CoreValidation.UnitTests
                 });
 
                 ((ValidationOptions)validationContext.ValidationOptions).NullRootStrategy = NullRootStrategy.ArgumentNullException;
-                ((ValidationOptions)validationContext.ValidationOptions).RequiredError = new Error("This is required stuff {arg}", new IMessageArg[] {new TextArg("arg", "!")});
+                ((ValidationOptions)validationContext.ValidationOptions).RequiredError = new Error("This is required stuff {arg}", new[] {Arg.Text("arg", "!")});
 
                 var result = validationContext.Validate<User>(null, o => o.SetNullRootStrategy(NullRootStrategy.NoErrors));
                 Assert.True(result.ErrorsCollection.IsEmpty);

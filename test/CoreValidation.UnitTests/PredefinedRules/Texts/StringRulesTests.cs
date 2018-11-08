@@ -1,6 +1,5 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using CoreValidation.Errors.Args;
 using CoreValidation.Tests;
 using Xunit;
 
@@ -27,10 +26,10 @@ namespace CoreValidation.UnitTests.PredefinedRules.Texts
                 memberValue,
                 expectedIsValid,
                 Phrases.Keys.Texts.EqualTo,
-                new IMessageArg[]
+                new[]
                 {
-                    new TextArg("value", argValue),
-                    new EnumArg<StringComparison>("stringComparison", StringComparison.Ordinal)
+                    Arg.Text("value", argValue),
+                    Arg.Enum("stringComparison", StringComparison.Ordinal)
                 });
         }
 
@@ -53,10 +52,10 @@ namespace CoreValidation.UnitTests.PredefinedRules.Texts
                 memberValue,
                 expectedIsValid,
                 Phrases.Keys.Texts.NotEqualTo,
-                new IMessageArg[]
+                new[]
                 {
-                    new TextArg("value", argValue),
-                    new EnumArg<StringComparison>("stringComparison", StringComparison.Ordinal)
+                    Arg.Text("value", argValue),
+                    Arg.Enum("stringComparison", StringComparison.Ordinal)
                 });
         }
 
@@ -81,10 +80,10 @@ namespace CoreValidation.UnitTests.PredefinedRules.Texts
                 memberValue,
                 expectedIsValid,
                 Phrases.Keys.Texts.EqualTo,
-                new IMessageArg[]
+                new[]
                 {
-                    new TextArg("value", argValue),
-                    new EnumArg<StringComparison>("stringComparison", StringComparison.OrdinalIgnoreCase)
+                    Arg.Text("value", argValue),
+                    Arg.Enum("stringComparison", StringComparison.OrdinalIgnoreCase)
                 });
         }
 
@@ -109,10 +108,10 @@ namespace CoreValidation.UnitTests.PredefinedRules.Texts
                 memberValue,
                 expectedIsValid,
                 Phrases.Keys.Texts.NotEqualTo,
-                new IMessageArg[]
+                new[]
                 {
-                    new TextArg("value", argValue),
-                    new EnumArg<StringComparison>("stringComparison", StringComparison.OrdinalIgnoreCase)
+                    Arg.Text("value", argValue),
+                    Arg.Enum("stringComparison", StringComparison.OrdinalIgnoreCase)
                 });
         }
 
@@ -146,10 +145,10 @@ namespace CoreValidation.UnitTests.PredefinedRules.Texts
                 memberValue,
                 expectedIsValid,
                 Phrases.Keys.Texts.Contains,
-                new IMessageArg[]
+                new[]
                 {
-                    new TextArg("value", argValue),
-                    new EnumArg<StringComparison>("stringComparison", stringComparison)
+                    Arg.Text("value", argValue),
+                    Arg.Enum("stringComparison", stringComparison)
                 });
         }
 
@@ -183,10 +182,10 @@ namespace CoreValidation.UnitTests.PredefinedRules.Texts
                 memberValue,
                 expectedIsValid,
                 Phrases.Keys.Texts.NotContains,
-                new IMessageArg[]
+                new[]
                 {
-                    new TextArg("value", argValue),
-                    new EnumArg<StringComparison>("stringComparison", stringComparison)
+                    Arg.Text("value", argValue),
+                    Arg.Enum("stringComparison", stringComparison)
                 });
         }
 
@@ -285,9 +284,9 @@ namespace CoreValidation.UnitTests.PredefinedRules.Texts
                 memberValue,
                 expectedIsValid,
                 Phrases.Keys.Texts.ExactLength,
-                new IMessageArg[]
+                new[]
                 {
-                    NumberArg.Create("length", argValue)
+                    Arg.Number("length", argValue)
                 });
         }
 
@@ -326,9 +325,9 @@ namespace CoreValidation.UnitTests.PredefinedRules.Texts
                 memberValue,
                 expectedIsValid,
                 Phrases.Keys.Texts.MaxLength,
-                new IMessageArg[]
+                new[]
                 {
-                    NumberArg.Create("max", argValue)
+                    Arg.Number("max", argValue)
                 });
         }
 
@@ -367,9 +366,9 @@ namespace CoreValidation.UnitTests.PredefinedRules.Texts
                 memberValue,
                 expectedIsValid,
                 Phrases.Keys.Texts.MinLength,
-                new IMessageArg[]
+                new[]
                 {
-                    NumberArg.Create("min", argValue)
+                    Arg.Number("min", argValue)
                 });
         }
 
@@ -416,10 +415,10 @@ namespace CoreValidation.UnitTests.PredefinedRules.Texts
                 memberValue,
                 expectedIsValid,
                 Phrases.Keys.Texts.LengthBetween,
-                new IMessageArg[]
+                new[]
                 {
-                    NumberArg.Create("min", min),
-                    NumberArg.Create("max", max)
+                    Arg.Number("min", min),
+                    Arg.Number("max", max)
                 });
         }
 

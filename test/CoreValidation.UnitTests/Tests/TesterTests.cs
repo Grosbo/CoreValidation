@@ -1,6 +1,4 @@
 using System;
-using CoreValidation.Errors.Args;
-using CoreValidation.Exceptions;
 using CoreValidation.Tests;
 using Xunit;
 
@@ -23,11 +21,11 @@ namespace CoreValidation.UnitTests.Tests
             public void Should_Test_When_Invalid_WithArgs()
             {
                 Tester.TestSingleMemberRule(
-                    m => m.Valid(v => false, "error", new IMessageArg[] {new TextArg("n1", "v1"), NumberArg.Create("n2", 1)}),
+                    m => m.Valid(v => false, "error", new[] {Arg.Text("n1", "v1"), Arg.Number("n2", 1)}),
                     true,
                     false,
                     "error",
-                    new IMessageArg[] {new TextArg("n1", "v1"), NumberArg.Create("n2", 1)});
+                    new[] {Arg.Text("n1", "v1"), Arg.Number("n2", 1)});
             }
 
             [Fact]
@@ -98,11 +96,11 @@ namespace CoreValidation.UnitTests.Tests
                 Assert.Throws<TesterException>(() =>
                 {
                     Tester.TestSingleMemberRule(
-                        m => m.Valid(v => false, "error", new IMessageArg[] {new TextArg("n1", "v1"), NumberArg.Create("n2", 1)}),
+                        m => m.Valid(v => false, "error", new[] {Arg.Text("n1", "v1"), Arg.Number("n2", 1)}),
                         true,
                         false,
                         "error",
-                        new IMessageArg[] {new TextArg("n1", "v1")});
+                        new[] {Arg.Text("n1", "v1")});
                 });
             }
 
@@ -112,11 +110,11 @@ namespace CoreValidation.UnitTests.Tests
                 Assert.Throws<TesterException>(() =>
                 {
                     Tester.TestSingleMemberRule(
-                        m => m.Valid(v => false, "error", new IMessageArg[] {new TextArg("n1", "v1"), NumberArg.Create("n2", 0.000001)}),
+                        m => m.Valid(v => false, "error", new[] {Arg.Text("n1", "v1"), Arg.Number("n2", 0.000001)}),
                         true,
                         false,
                         "error",
-                        new IMessageArg[] {new TextArg("n1", "v1"), NumberArg.Create("n2", 0.000002)});
+                        new[] {Arg.Text("n1", "v1"), Arg.Number("n2", 0.000002)});
                 });
             }
 
@@ -126,11 +124,11 @@ namespace CoreValidation.UnitTests.Tests
                 Assert.Throws<TesterException>(() =>
                 {
                     Tester.TestSingleMemberRule(
-                        m => m.Valid(v => false, "error", new IMessageArg[] {new TextArg("n1", "v1"), NumberArg.Create("n2", 1)}),
+                        m => m.Valid(v => false, "error", new[] {Arg.Text("n1", "v1"), Arg.Number("n2", 1)}),
                         true,
                         false,
                         "error",
-                        new IMessageArg[] {new TextArg("n1", "v1"), NumberArg.Create("xxx", 1)});
+                        new[] {Arg.Text("n1", "v1"), Arg.Number("xxx", 1)});
                 });
             }
 
@@ -140,11 +138,11 @@ namespace CoreValidation.UnitTests.Tests
                 Assert.Throws<TesterException>(() =>
                 {
                     Tester.TestSingleMemberRule(
-                        m => m.Valid(v => false, "error", new IMessageArg[] {new TextArg("n1", "v1"), NumberArg.Create("n2", 1)}),
+                        m => m.Valid(v => false, "error", new[] {Arg.Text("n1", "v1"), Arg.Number("n2", 1)}),
                         true,
                         false,
                         "error",
-                        new IMessageArg[] {new TextArg("n1", "v1"), NumberArg.Create("n2", 1d)});
+                        new[] {Arg.Text("n1", "v1"), Arg.Number("n2", 1d)});
                 });
             }
 
@@ -154,11 +152,11 @@ namespace CoreValidation.UnitTests.Tests
                 Assert.Throws<TesterException>(() =>
                 {
                     Tester.TestSingleMemberRule(
-                        m => m.Valid(v => false, "error", new IMessageArg[] {new TextArg("n1", "v1"), NumberArg.Create("n2", 1)}),
+                        m => m.Valid(v => false, "error", new[] {Arg.Text("n1", "v1"), Arg.Number("n2", 1)}),
                         true,
                         false,
                         "error",
-                        new IMessageArg[] {new TextArg("n1", "v1"), NumberArg.Create("n2", 2)});
+                        new[] {Arg.Text("n1", "v1"), Arg.Number("n2", 2)});
                 });
             }
 
@@ -211,7 +209,7 @@ namespace CoreValidation.UnitTests.Tests
                         true,
                         false,
                         "error",
-                        new[] {new TextArg("name", "value")});
+                        new[] {Arg.Text("name", "value")});
                 });
             }
 
@@ -234,7 +232,7 @@ namespace CoreValidation.UnitTests.Tests
                 Assert.Throws<TesterException>(() =>
                 {
                     Tester.TestSingleMemberRule(
-                        m => m.Valid(v => false, "error", new IMessageArg[] {new TextArg("n1", "v1"), NumberArg.Create("n2", 1)}),
+                        m => m.Valid(v => false, "error", new[] {Arg.Text("n1", "v1"), Arg.Number("n2", 1)}),
                         true,
                         false,
                         "error");

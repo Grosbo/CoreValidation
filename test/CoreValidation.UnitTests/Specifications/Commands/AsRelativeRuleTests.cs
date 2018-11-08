@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using CoreValidation.Errors;
-using CoreValidation.Errors.Args;
 using CoreValidation.Specifications.Commands;
 using Xunit;
 
@@ -60,7 +59,7 @@ namespace CoreValidation.UnitTests.Specifications.Commands
             {
                 Predicate<object> isValid = m => false;
 
-                var error = new Error("default error {arg}", new[] {new MessageArg("key", "value")});
+                var error = new Error("default error {arg}", new[] {Arg.Text("key", "value")});
 
                 var rule = new AsRelativeRule<object>(isValid);
 
@@ -254,7 +253,7 @@ namespace CoreValidation.UnitTests.Specifications.Commands
             {
                 Predicate<object> isValid = m => false;
 
-                var error = new Error("default error {arg}", new[] {new MessageArg("key", "value")});
+                var error = new Error("default error {arg}", new[] {Arg.Text("key", "value")});
 
                 var rule = new AsRelativeRule<object>(isValid);
 

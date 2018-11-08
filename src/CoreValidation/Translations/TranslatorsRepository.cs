@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using CoreValidation.Errors;
-using CoreValidation.Exceptions;
 
 namespace CoreValidation.Translations
 {

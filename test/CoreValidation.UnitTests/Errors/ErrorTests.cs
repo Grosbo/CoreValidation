@@ -33,8 +33,8 @@ namespace CoreValidation.UnitTests.Errors
         [Fact]
         public void Should_SetMessages_When_SingleArg()
         {
-            var arg = new MessageArg("arg", "value");
-            var args = new IMessageArg[] {arg};
+            var arg = Arg.Text("arg", "value");
+            var args = new[] {arg};
 
             var error = new Error("test123 {arg}", args);
 

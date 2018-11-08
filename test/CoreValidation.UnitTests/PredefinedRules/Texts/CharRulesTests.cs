@@ -1,4 +1,3 @@
-﻿using CoreValidation.Errors.Args;
 using CoreValidation.Tests;
 using Xunit;
 
@@ -25,9 +24,9 @@ namespace CoreValidation.UnitTests.PredefinedRules.Texts
                 memberValue,
                 expectedIsValid,
                 Phrases.Keys.Char.EqualIgnoreCase,
-                new IMessageArg[]
+                new[]
                 {
-                    new TextArg("value", argValue)
+                    Arg.Text("value", argValue)
                 });
         }
 
@@ -50,9 +49,9 @@ namespace CoreValidation.UnitTests.PredefinedRules.Texts
                 memberValue,
                 expectedIsValid,
                 Phrases.Keys.Char.NotEqualIgnoreCase,
-                new IMessageArg[]
+                new[]
                 {
-                    new TextArg("value", argValue)
+                    Arg.Text("value", argValue)
                 });
         }
     }

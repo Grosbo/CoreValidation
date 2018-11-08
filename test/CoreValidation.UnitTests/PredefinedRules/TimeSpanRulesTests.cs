@@ -1,6 +1,5 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using CoreValidation.Errors.Args;
 using CoreValidation.Tests;
 using Xunit;
 
@@ -28,9 +27,9 @@ namespace CoreValidation.UnitTests.PredefinedRules
                 memberValue,
                 expectedIsValid,
                 Phrases.Keys.TimeSpan.EqualTo,
-                new IMessageArg[]
+                new[]
                 {
-                    TimeArg.Create("value", argValue)
+                    Arg.Time("value", argValue)
                 });
         }
 
@@ -52,9 +51,9 @@ namespace CoreValidation.UnitTests.PredefinedRules
                 memberValue,
                 expectedIsValid,
                 Phrases.Keys.TimeSpan.NotEqualTo,
-                new IMessageArg[]
+                new[]
                 {
-                    TimeArg.Create("value", argValue)
+                    Arg.Time("value", argValue)
                 });
         }
 
@@ -76,9 +75,9 @@ namespace CoreValidation.UnitTests.PredefinedRules
                 memberValue,
                 expectedIsValid,
                 Phrases.Keys.TimeSpan.GreaterThan,
-                new IMessageArg[]
+                new[]
                 {
-                    TimeArg.Create("min", min)
+                    Arg.Time("min", min)
                 });
         }
 
@@ -100,9 +99,9 @@ namespace CoreValidation.UnitTests.PredefinedRules
                 memberValue,
                 expectedIsValid,
                 Phrases.Keys.TimeSpan.GreaterOrEqualTo,
-                new IMessageArg[]
+                new[]
                 {
-                    TimeArg.Create("min", min)
+                    Arg.Time("min", min)
                 });
         }
 
@@ -124,9 +123,9 @@ namespace CoreValidation.UnitTests.PredefinedRules
                 memberValue,
                 expectedIsValid,
                 Phrases.Keys.TimeSpan.LessThan,
-                new IMessageArg[]
+                new[]
                 {
-                    TimeArg.Create("max", max)
+                    Arg.Time("max", max)
                 });
         }
 
@@ -148,9 +147,9 @@ namespace CoreValidation.UnitTests.PredefinedRules
                 memberValue,
                 expectedIsValid,
                 Phrases.Keys.TimeSpan.LessOrEqualTo,
-                new IMessageArg[]
+                new[]
                 {
-                    TimeArg.Create("max", max)
+                    Arg.Time("max", max)
                 });
         }
 
@@ -172,10 +171,10 @@ namespace CoreValidation.UnitTests.PredefinedRules
                 memberValue,
                 expectedIsValid,
                 Phrases.Keys.TimeSpan.Between,
-                new IMessageArg[]
+                new[]
                 {
-                    TimeArg.Create("min", min),
-                    TimeArg.Create("max", max)
+                    Arg.Time("min", min),
+                    Arg.Time("max", max)
                 });
         }
 
@@ -197,10 +196,10 @@ namespace CoreValidation.UnitTests.PredefinedRules
                 memberValue,
                 expectedIsValid,
                 Phrases.Keys.TimeSpan.BetweenOrEqualTo,
-                new IMessageArg[]
+                new[]
                 {
-                    TimeArg.Create("min", min),
-                    TimeArg.Create("max", max)
+                    Arg.Time("min", min),
+                    Arg.Time("max", max)
                 });
         }
     }

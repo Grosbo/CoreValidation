@@ -10,7 +10,7 @@ namespace CoreValidation
     public static class ValidationOptionsExtensions
     {
         /// <summary>
-        /// Sets the behavior for the null reference passed to be validated.
+        ///     Sets the behavior for the null reference passed to be validated.
         /// </summary>
         /// <param name="options"></param>
         /// <param name="nullRootStrategy">Behavior for the null reference passed to be validated.</param>
@@ -20,7 +20,8 @@ namespace CoreValidation
         }
 
         /// <summary>
-        /// Default translation name. Used to create <see cref="ITranslationProxy.DefaultTranslator"/> in the <see cref="IValidationResult{T}"/>.
+        ///     Default translation name. Used to create <see cref="ITranslationProxy.DefaultTranslator" /> in the
+        ///     <see cref="IValidationResult{T}" />.
         /// </summary>
         /// <param name="options"></param>
         /// <param name="translationName">Translation name.</param>
@@ -30,7 +31,8 @@ namespace CoreValidation
         }
 
         /// <summary>
-        /// Disables the default translation. <see cref="ITranslationProxy.DefaultTranslator"/> in the <see cref="IValidationResult{T}"/> will be using original phrases.
+        ///     Disables the default translation. <see cref="ITranslationProxy.DefaultTranslator" /> in the
+        ///     <see cref="IValidationResult{T}" /> will be using original phrases.
         /// </summary>
         /// <param name="options"></param>
         public static IValidationOptions SetTranslationDisabled(this IValidationOptions options)
@@ -39,7 +41,7 @@ namespace CoreValidation
         }
 
         /// <summary>
-        /// Sets the default strategy of the validation process.
+        ///     Sets the default strategy of the validation process.
         /// </summary>
         /// <param name="options"></param>
         /// <param name="validationStrategy">Strategy of the validation process.</param>
@@ -49,11 +51,11 @@ namespace CoreValidation
         }
 
         /// <summary>
-        /// Sets the default error added to the null member if the it's required.
+        ///     Sets the default error added to the null member if the it's required.
         /// </summary>
         /// <param name="options"></param>
         /// <param name="errorMessage">Error message.</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="errorMessage"/> is null.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="errorMessage" /> is null.</exception>
         public static IValidationOptions SetRequiredError(this IValidationOptions options, string errorMessage)
         {
             var requiredError = new Error(errorMessage);
@@ -62,11 +64,11 @@ namespace CoreValidation
         }
 
         /// <summary>
-        /// Sets the default error added to the member if it's invalid but no error message is assigned.
+        ///     Sets the default error added to the member if it's invalid but no error message is assigned.
         /// </summary>
         /// <param name="options"></param>
         /// <param name="errorMessage">Error message</param>
-        /// <exception cref="ArgumentNullException">Thrown if <see cref="errorMessage"/> is null.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <see cref="errorMessage" /> is null.</exception>
         public static IValidationOptions SetDefaultError(this IValidationOptions options, string errorMessage)
         {
             var requiredError = new Error(errorMessage);
@@ -75,11 +77,11 @@ namespace CoreValidation
         }
 
         /// <summary>
-        /// Sets the maximum allowed level of depth within the validated model. The default value is 10.
+        ///     Sets the maximum allowed level of depth within the validated model. The default value is 10.
         /// </summary>
         /// <param name="options"></param>
         /// <param name="maxDepth">Max depth.</param>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="maxDepth"/> is less than zero.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="maxDepth" /> is less than zero.</exception>
         public static IValidationOptions SetMaxDepth(this IValidationOptions options, int maxDepth)
         {
             if (maxDepth < 0)
@@ -91,11 +93,15 @@ namespace CoreValidation
         }
 
         /// <summary>
-        /// Sets the key (a member name) for the collection's members errors if validating using <see cref="ValidationStrategy.Force"/> strategy.
+        ///     Sets the key (a member name) for the collection's members errors if validating using
+        ///     <see cref="ValidationStrategy.Force" /> strategy.
         /// </summary>
         /// <param name="options"></param>
-        /// <param name="collectionForceKey">Key (a member name) for the collection's members errors if validating using <see cref="ValidationStrategy.Force"/> strategy.</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="collectionForceKey"/> is null.</exception>
+        /// <param name="collectionForceKey">
+        ///     Key (a member name) for the collection's members errors if validating using
+        ///     <see cref="ValidationStrategy.Force" /> strategy.
+        /// </param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="collectionForceKey" /> is null.</exception>
         public static IValidationOptions SetCollectionForceKey(this IValidationOptions options, string collectionForceKey)
         {
             if (collectionForceKey == null)

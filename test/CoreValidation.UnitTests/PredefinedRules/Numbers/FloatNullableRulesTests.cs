@@ -1,6 +1,5 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using CoreValidation.Errors.Args;
 using CoreValidation.Tests;
 using Xunit;
 
@@ -31,10 +30,10 @@ namespace CoreValidation.UnitTests.PredefinedRules.Numbers
                 memberValue,
                 expectedIsValid,
                 Phrases.Keys.Numbers.CloseTo,
-                new IMessageArg[]
+                new[]
                 {
-                    NumberArg.Create("value", argValue),
-                    NumberArg.Create("tolerance", 0.0000001f)
+                    Arg.Number("value", argValue),
+                    Arg.Number("tolerance", 0.0000001f)
                 });
         }
 
@@ -61,10 +60,10 @@ namespace CoreValidation.UnitTests.PredefinedRules.Numbers
                 memberValue,
                 expectedIsValid,
                 Phrases.Keys.Numbers.CloseTo,
-                new IMessageArg[]
+                new[]
                 {
-                    NumberArg.Create("value", argValue),
-                    NumberArg.Create("tolerance", tolerance)
+                    Arg.Number("value", argValue),
+                    Arg.Number("tolerance", tolerance)
                 });
         }
 
@@ -89,10 +88,10 @@ namespace CoreValidation.UnitTests.PredefinedRules.Numbers
                 memberValue,
                 expectedIsValid,
                 Phrases.Keys.Numbers.NotCloseTo,
-                new IMessageArg[]
+                new[]
                 {
-                    NumberArg.Create("value", argValue),
-                    NumberArg.Create("tolerance", 0.0000001f)
+                    Arg.Number("value", argValue),
+                    Arg.Number("tolerance", 0.0000001f)
                 });
         }
 
@@ -119,10 +118,10 @@ namespace CoreValidation.UnitTests.PredefinedRules.Numbers
                 memberValue,
                 expectedIsValid,
                 Phrases.Keys.Numbers.NotCloseTo,
-                new IMessageArg[]
+                new[]
                 {
-                    NumberArg.Create("value", argValue),
-                    NumberArg.Create("tolerance", tolerance)
+                    Arg.Number("value", argValue),
+                    Arg.Number("tolerance", tolerance)
                 });
         }
 
@@ -149,9 +148,9 @@ namespace CoreValidation.UnitTests.PredefinedRules.Numbers
                 memberValue,
                 expectedIsValid,
                 Phrases.Keys.Numbers.GreaterThan,
-                new IMessageArg[]
+                new[]
                 {
-                    NumberArg.Create("min", min)
+                    Arg.Number("min", min)
                 });
         }
 
@@ -178,9 +177,9 @@ namespace CoreValidation.UnitTests.PredefinedRules.Numbers
                 memberValue,
                 expectedIsValid,
                 Phrases.Keys.Numbers.LessThan,
-                new IMessageArg[]
+                new[]
                 {
-                    NumberArg.Create("max", max)
+                    Arg.Number("max", max)
                 });
         }
 
@@ -205,10 +204,10 @@ namespace CoreValidation.UnitTests.PredefinedRules.Numbers
                 memberValue,
                 expectedIsValid,
                 Phrases.Keys.Numbers.Between,
-                new IMessageArg[]
+                new[]
                 {
-                    NumberArg.Create("min", min),
-                    NumberArg.Create("max", max)
+                    Arg.Number("min", min),
+                    Arg.Number("max", max)
                 });
         }
     }

@@ -1,5 +1,4 @@
 using System;
-using CoreValidation.Errors.Args;
 using CoreValidation.Specifications;
 
 // ReSharper disable once CheckNamespace
@@ -15,7 +14,7 @@ namespace CoreValidation
                 throw new ArgumentNullException(nameof(value));
             }
 
-            return @this.Valid(m => string.Equals(m, value, stringComparison), Phrases.Keys.Texts.EqualTo, new IMessageArg[] {new TextArg(nameof(value), value), new EnumArg<StringComparison>(nameof(stringComparison), stringComparison)});
+            return @this.Valid(m => string.Equals(m, value, stringComparison), Phrases.Keys.Texts.EqualTo, new[] {Arg.Text(nameof(value), value), Arg.Enum(nameof(stringComparison), stringComparison)});
         }
 
         public static IMemberSpecificationBuilder<TModel, string> NotEqualTo<TModel>(this IMemberSpecificationBuilder<TModel, string> @this, string value, StringComparison stringComparison = StringComparison.Ordinal)
@@ -26,7 +25,7 @@ namespace CoreValidation
                 throw new ArgumentNullException(nameof(value));
             }
 
-            return @this.Valid(m => !string.Equals(m, value, stringComparison), Phrases.Keys.Texts.NotEqualTo, new IMessageArg[] {new TextArg(nameof(value), value), new EnumArg<StringComparison>(nameof(stringComparison), stringComparison)});
+            return @this.Valid(m => !string.Equals(m, value, stringComparison), Phrases.Keys.Texts.NotEqualTo, new[] {Arg.Text(nameof(value), value), Arg.Enum(nameof(stringComparison), stringComparison)});
         }
 
         public static IMemberSpecificationBuilder<TModel, string> Contains<TModel>(this IMemberSpecificationBuilder<TModel, string> @this, string value, StringComparison stringComparison = StringComparison.Ordinal)
@@ -37,7 +36,7 @@ namespace CoreValidation
                 throw new ArgumentNullException(nameof(value));
             }
 
-            return @this.Valid(m => m.IndexOf(value, stringComparison) >= 0, Phrases.Keys.Texts.Contains, new IMessageArg[] {new TextArg(nameof(value), value), new EnumArg<StringComparison>(nameof(stringComparison), stringComparison)});
+            return @this.Valid(m => m.IndexOf(value, stringComparison) >= 0, Phrases.Keys.Texts.Contains, new[] {Arg.Text(nameof(value), value), Arg.Enum(nameof(stringComparison), stringComparison)});
         }
 
         public static IMemberSpecificationBuilder<TModel, string> NotContains<TModel>(this IMemberSpecificationBuilder<TModel, string> @this, string value, StringComparison stringComparison = StringComparison.Ordinal)
@@ -48,7 +47,7 @@ namespace CoreValidation
                 throw new ArgumentNullException(nameof(value));
             }
 
-            return @this.Valid(m => m.IndexOf(value, stringComparison) < 0, Phrases.Keys.Texts.NotContains, new IMessageArg[] {new TextArg(nameof(value), value), new EnumArg<StringComparison>(nameof(stringComparison), stringComparison)});
+            return @this.Valid(m => m.IndexOf(value, stringComparison) < 0, Phrases.Keys.Texts.NotContains, new[] {Arg.Text(nameof(value), value), Arg.Enum(nameof(stringComparison), stringComparison)});
         }
 
         public static IMemberSpecificationBuilder<TModel, string> NotEmpty<TModel>(this IMemberSpecificationBuilder<TModel, string> @this)
@@ -77,7 +76,7 @@ namespace CoreValidation
                 throw new ArgumentOutOfRangeException(nameof(length), length, "Exact length cannot be less than zero");
             }
 
-            return @this.Valid(m => m.Replace(Environment.NewLine, " ").Length == length, Phrases.Keys.Texts.ExactLength, new[] {NumberArg.Create(nameof(length), length)});
+            return @this.Valid(m => m.Replace(Environment.NewLine, " ").Length == length, Phrases.Keys.Texts.ExactLength, new[] {Arg.Number(nameof(length), length)});
         }
 
         public static IMemberSpecificationBuilder<TModel, string> MaxLength<TModel>(this IMemberSpecificationBuilder<TModel, string> @this, int max)
@@ -88,7 +87,7 @@ namespace CoreValidation
                 throw new ArgumentOutOfRangeException(nameof(max), max, "Max length cannot be less than zero");
             }
 
-            return @this.Valid(m => m.Replace(Environment.NewLine, " ").Length <= max, Phrases.Keys.Texts.MaxLength, new[] {NumberArg.Create(nameof(max), max)});
+            return @this.Valid(m => m.Replace(Environment.NewLine, " ").Length <= max, Phrases.Keys.Texts.MaxLength, new[] {Arg.Number(nameof(max), max)});
         }
 
         public static IMemberSpecificationBuilder<TModel, string> MinLength<TModel>(this IMemberSpecificationBuilder<TModel, string> @this, int min)
@@ -99,7 +98,7 @@ namespace CoreValidation
                 throw new ArgumentOutOfRangeException(nameof(min), min, "Max length cannot be less than zero");
             }
 
-            return @this.Valid(m => m.Replace(Environment.NewLine, " ").Length >= min, Phrases.Keys.Texts.MinLength, new[] {NumberArg.Create(nameof(min), min)});
+            return @this.Valid(m => m.Replace(Environment.NewLine, " ").Length >= min, Phrases.Keys.Texts.MinLength, new[] {Arg.Number(nameof(min), min)});
         }
 
         public static IMemberSpecificationBuilder<TModel, string> LengthBetween<TModel>(this IMemberSpecificationBuilder<TModel, string> @this, int min, int max)
@@ -126,7 +125,7 @@ namespace CoreValidation
 
                     return (squashedLength >= min) && (squashedLength <= max);
                 }, Phrases.Keys.Texts.LengthBetween,
-                new[] {NumberArg.Create(nameof(min), min), NumberArg.Create(nameof(max), max)});
+                new[] {Arg.Number(nameof(min), min), Arg.Number(nameof(max), max)});
         }
     }
 }

@@ -13,7 +13,7 @@ namespace CoreValidation.UnitTests.Validators
     {
         public static IEnumerable<object[]> ValidErrorAndArgsCombinations_Data()
         {
-            var args = new IMessageArg[] {NumberArg.Create("test1", 1), new TextArg("test2", "two")};
+            var args = new[] {Arg.Number("test1", 1), Arg.Text("test2", "two")};
 
             yield return new object[] {"message", args};
             yield return new object[] {"message", null};
@@ -184,7 +184,7 @@ namespace CoreValidation.UnitTests.Validators
                 Assert.Throws<ArgumentNullException>(() =>
                 {
                     MemberValidatorCreator.Create<object, object>(b => b
-                        .Valid(c => true, null, new IMessageArg[] {NumberArg.Create("test", 1)})
+                        .Valid(c => true, null, new[] {Arg.Number("test", 1)})
                     );
                 });
             }

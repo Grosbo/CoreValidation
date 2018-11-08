@@ -4,6 +4,7 @@ using CoreValidation.Specifications;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Xunit;
+
 // ReSharper disable UnusedAutoPropertyAccessor.Local
 // ReSharper disable ArgumentsStyleLiteral
 
@@ -23,23 +24,18 @@ namespace CoreValidation.FunctionalTests.QuickStart
         public void Should_PassScenario_SignUp()
         {
             Specification<SignUpModel> signUpModelSpecification = s => s
-
                 .Member(m => m.Email, m => m
                     .Email()
                     .MaxLength(40))
-
                 .Member(m => m.Password, m => m
                     .NotWhiteSpace()
                     .MinLength(min: 10).WithMessage("Password should contain at least {min} characters")
                     .Valid(p => p.Any(char.IsDigit)).WithMessage("Password should contain at least one digit")
                 )
-
                 .Member(m => m.PasswordConfirmation, m => m
                     .AsRelative(n => n.Password == n.PasswordConfirmation).WithMessage("Confirmation doesn't match the password")
                 )
-
                 .Member(m => m.TermsAndConditionsConsent)
-
                 .Valid(m => m.TermsAndConditionsConsent == true).WithMessage("Without the consent, sign up is invalid");
 
             var validationContext = ValidationContext.Factory.Create(options => options
@@ -60,10 +56,7 @@ namespace CoreValidation.FunctionalTests.QuickStart
 
             Assert.False(isLogInModelValid);
 
-            var exception = Assert.Throws<ValidationResultException<SignUpModel>>(() =>
-            {
-                validationResult.ThrowResultIfInvalid();
-            });
+            var exception = Assert.Throws<ValidationResultException<SignUpModel>>(() => { validationResult.ThrowResultIfInvalid(); });
 
             Assert.Same(validationResult, exception.ValidationResult);
 

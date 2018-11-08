@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using CoreValidation.Errors.Args;
 using CoreValidation.Tests;
 using Xunit;
 
@@ -25,9 +24,9 @@ namespace CoreValidation.UnitTests.PredefinedRules.Collections
                 member,
                 expectedIsValid,
                 Phrases.Keys.Collections.ExactCollectionSize,
-                new IMessageArg[]
+                new[]
                 {
-                    NumberArg.Create("size", size)
+                    Arg.Number("size", size)
                 });
         }
 
@@ -40,9 +39,9 @@ namespace CoreValidation.UnitTests.PredefinedRules.Collections
                 member,
                 expectedIsValid,
                 Phrases.Keys.Collections.ExactCollectionSize,
-                new IMessageArg[]
+                new[]
                 {
-                    NumberArg.Create("size", size)
+                    Arg.Number("size", size)
                 });
         }
 
@@ -112,9 +111,9 @@ namespace CoreValidation.UnitTests.PredefinedRules.Collections
                 member,
                 expectedIsValid,
                 Phrases.Keys.Collections.MaxCollectionSize,
-                new IMessageArg[]
+                new[]
                 {
-                    NumberArg.Create("max", max)
+                    Arg.Number("max", max)
                 });
         }
 
@@ -133,9 +132,9 @@ namespace CoreValidation.UnitTests.PredefinedRules.Collections
                 member,
                 expectedIsValid,
                 Phrases.Keys.Collections.MaxCollectionSize,
-                new IMessageArg[]
+                new[]
                 {
-                    NumberArg.Create("max", max)
+                    Arg.Number("max", max)
                 });
         }
 
@@ -153,9 +152,9 @@ namespace CoreValidation.UnitTests.PredefinedRules.Collections
                 member,
                 expectedIsValid,
                 Phrases.Keys.Collections.MinCollectionSize,
-                new IMessageArg[]
+                new[]
                 {
-                    NumberArg.Create("min", min)
+                    Arg.Number("min", min)
                 });
         }
 
@@ -174,9 +173,9 @@ namespace CoreValidation.UnitTests.PredefinedRules.Collections
                 member,
                 expectedIsValid,
                 Phrases.Keys.Collections.MinCollectionSize,
-                new IMessageArg[]
+                new[]
                 {
-                    NumberArg.Create("min", min)
+                    Arg.Number("min", min)
                 });
         }
 
@@ -234,10 +233,10 @@ namespace CoreValidation.UnitTests.PredefinedRules.Collections
                 member,
                 expectedIsValid,
                 Phrases.Keys.Collections.CollectionSizeBetween,
-                new IMessageArg[]
+                new[]
                 {
-                    NumberArg.Create("min", min),
-                    NumberArg.Create("max", max)
+                    Arg.Number("min", min),
+                    Arg.Number("max", max)
                 });
         }
 
@@ -256,10 +255,10 @@ namespace CoreValidation.UnitTests.PredefinedRules.Collections
                 member,
                 expectedIsValid,
                 Phrases.Keys.Collections.CollectionSizeBetween,
-                new IMessageArg[]
+                new[]
                 {
-                    NumberArg.Create("min", min),
-                    NumberArg.Create("max", max)
+                    Arg.Number("min", min),
+                    Arg.Number("max", max)
                 });
         }
 
