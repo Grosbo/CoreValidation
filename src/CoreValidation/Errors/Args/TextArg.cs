@@ -45,11 +45,6 @@ namespace CoreValidation.Errors.Args
 
         private static string Stringify(string value, string caseParameter)
         {
-            if (caseParameter == null)
-            {
-                return value;
-            }
-
             if (caseParameter == _upperCaseParameterValue)
             {
                 return value.ToUpper();

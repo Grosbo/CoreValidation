@@ -46,7 +46,9 @@ namespace CoreValidation.UnitTests.Errors.Args
         public static IEnumerable<object[]> Should_Stringify_WithFormat_Data()
         {
             yield return new object[] {Arg.Time("name", new DateTime(2000, 01, 15, 16, 04, 05, 06)), "s", "2000-01-15T16:04:05"};
+            yield return new object[] {Arg.Time("name", new DateTime(2000, 01, 15, 16, 04, 05, 06)), "yyyyMMdd", "20000115"};
             yield return new object[] {Arg.Time("name", new DateTimeOffset(2000, 01, 15, 16, 04, 05, 06, TimeSpan.Zero)), "s", "2000-01-15T16:04:05"};
+            yield return new object[] {Arg.Time("name", new DateTimeOffset(2000, 01, 15, 16, 04, 05, 06, TimeSpan.Zero)), "yyyyMMdd", "20000115"};
             yield return new object[] {Arg.Time("name", new TimeSpan(1, 2, 3)), "g", "1:02:03"};
         }
 

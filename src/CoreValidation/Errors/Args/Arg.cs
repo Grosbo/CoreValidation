@@ -4,7 +4,7 @@
 namespace CoreValidation
 {
     /// <summary>
-    ///     Factory for error message arguments.
+    ///     Factory of error message arguments.
     /// </summary>
     public static partial class Arg
     {
