@@ -8,7 +8,7 @@ using Xunit;
 // ReSharper disable UnusedAutoPropertyAccessor.Local
 // ReSharper disable ArgumentsStyleLiteral
 
-namespace CoreValidation.FunctionalTests.QuickStart
+namespace CoreValidation.FunctionalTests.Readme
 {
     public class SignUp
     {

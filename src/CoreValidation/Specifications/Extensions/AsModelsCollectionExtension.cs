@@ -10,13 +10,15 @@ namespace CoreValidation
     public static class AsModelsCollectionExtension
     {
         /// <summary>
-        ///     Sets the validation logic for the member as a collection of nested models.
+        /// Sets the validation logic for the member as a collection of models.
+        /// Is a shortcut, wrapper around `AsCollection`.
+        /// By default, all collection items are required to be non-null.
         /// </summary>
         /// <typeparam name="TModel">Type of the parent model.</typeparam>
         /// <typeparam name="TMember">Type of the collection.</typeparam>
         /// <typeparam name="TItem">Type of the nested models in the collection.</typeparam>
         /// <param name="this"></param>
-        /// <param name="specification">The specification for the single nested model in the collection.</param>
+        /// <param name="specification">The specification for the single model in the collection.</param>
         public static IMemberSpecificationBuilder<TModel, TMember> AsModelsCollection<TModel, TMember, TItem>(this IMemberSpecificationBuilder<TModel, TMember> @this, Specification<TItem> specification = null)
             where TModel : class
             where TMember : class, IEnumerable<TItem>

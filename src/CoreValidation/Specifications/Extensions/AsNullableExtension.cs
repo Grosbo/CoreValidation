@@ -9,8 +9,9 @@ namespace CoreValidation
     public static class AsNullableExtension
     {
         /// <summary>
-        ///     Sets the validation logic for the nullable member's underlying value type.
-        ///     If the nullable member as no value, the validation logic is not triggered and no error is added.
+        /// Sets the validation logic for the nullable member's underlying value type.
+        /// Unwraps the value from T? and validates it using provided member specification for T.
+        /// If the nullable member has no value, the validation logic is not triggered and no error is added.
         /// </summary>
         /// <typeparam name="TModel">Type of the parent model.</typeparam>
         /// <typeparam name="TMember">The underlying value type.</typeparam>

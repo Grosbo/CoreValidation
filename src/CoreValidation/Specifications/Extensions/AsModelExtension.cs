@@ -7,15 +7,15 @@ namespace CoreValidation
     public static class AsModelExtension
     {
         /// <summary>
-        ///     Sets the validation logic for the member as a nested model.
-        ///     If the member is null, the validation logic is not triggered and no error is added.
+        /// Sets the validation logic for the member as a model.
         /// </summary>
         /// <typeparam name="TModel">Type of the parent model.</typeparam>
         /// <typeparam name="TMember">Type of the nested model.</typeparam>
         /// <param name="this"></param>
         /// <param name="modelSpecification">
-        ///     The specification for the nested model's type <typeparamref name="TMember" />. If
-        ///     null, using specification registered in the related ValidationContext.
+        /// Specification for the member's type.
+        /// If not provided, specification is acquired from validation context.
+        /// If also not registered there, <see cref="SpecificationNotFoundException"/> exception is thrown.
         /// </param>
         public static IMemberSpecificationBuilder<TModel, TMember> AsModel<TModel, TMember>(this IMemberSpecificationBuilder<TModel, TMember> @this, Specification<TMember> modelSpecification = null)
             where TModel : class
