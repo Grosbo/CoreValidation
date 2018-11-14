@@ -7,7 +7,7 @@ namespace CoreValidation
     public static class SetRequiredErrorExtension
     {
         /// <summary>
-        ///     Sets the RequiredError for the member (added in case of null).
+        /// Sets the error message for the member if its value is null. Overrides the default from the validation context settings.
         /// </summary>
         /// <typeparam name="TModel">Type of the parent model.</typeparam>
         /// <typeparam name="TMember">Type of the member's nullable underlying model.</typeparam>
@@ -22,7 +22,7 @@ namespace CoreValidation
         }
 
         /// <summary>
-        ///     Sets the RequiredError for the member (added in case of null).
+        /// Sets the error message for the member if its value is null. Overrides the default from the validation context settings.
         /// </summary>
         /// <typeparam name="TModel">Type of the parent model.</typeparam>
         /// <typeparam name="TMember">Type of the member's nullable underlying model.</typeparam>

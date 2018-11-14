@@ -240,7 +240,7 @@ var modelReport = validationResult.ToModelReport();
 
 Each example (here and in [documentation](https://github.com/bartoszlenar/CoreValidation/wiki)) lives as a functional test. To navigate to it, look for the green check mark next to the filename:
 
-[:heavy_check_mark: SignUp.cs](test/CoreValidation.FunctionalTests/QuickStart/SignUp.cs)
+[:heavy_check_mark: SignUp.cs](test/CoreValidation.FunctionalTests/Readme/SignUp.cs)
 
 ## Documentation
 

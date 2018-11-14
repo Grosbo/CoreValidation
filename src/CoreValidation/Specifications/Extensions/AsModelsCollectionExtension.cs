@@ -10,7 +10,7 @@ namespace CoreValidation
     public static class AsModelsCollectionExtension
     {
         /// <summary>
-        ///     Sets the validation logic for the member as a collection of nested models.
+        /// Sets the validation logic for the member as a collection of nested models.
         /// </summary>
         /// <typeparam name="TModel">Type of the parent model.</typeparam>
         /// <typeparam name="TMember">Type of the collection.</typeparam>
