@@ -36,6 +36,11 @@ namespace CoreValidation.Specifications.Commands
 
         public bool TryGetErrors(TModel model, IEnumerable<TItem> memberValue, IExecutionContext executionContext, ValidationStrategy validationStrategy, int depth, out IErrorsCollection errorsCollection)
         {
+            if ((validationStrategy == ValidationStrategy.Complete) && (RuleSingleError != null))
+            {
+                validationStrategy = ValidationStrategy.FailFast;
+            }
+
             errorsCollection = ValidatorExecutor.ExecuteCollectionMember(MemberValidator, model, memberValue, executionContext, validationStrategy, depth);
 
             if (!errorsCollection.IsEmpty && (RuleSingleError != null))

@@ -1,4 +1,4 @@
-﻿using CoreValidation.Errors;
+using CoreValidation.Errors;
 using CoreValidation.Validators;
 
 namespace CoreValidation.Specifications.Commands
@@ -34,6 +34,11 @@ namespace CoreValidation.Specifications.Commands
         public bool TryGetErrors(TMember memberValue, IExecutionContext executionContext, ValidationStrategy validationStrategy, int depth, out IErrorsCollection errorsCollection)
         {
             var validator = executionContext.ValidatorsFactory.GetOrInit(Specification, SpecificationId);
+
+            if ((validationStrategy == ValidationStrategy.Complete) && (RuleSingleError != null))
+            {
+                validationStrategy = ValidationStrategy.FailFast;
+            }
 
             errorsCollection = ValidatorExecutor.Execute(validator, memberValue, executionContext, validationStrategy, depth + 1);
 
