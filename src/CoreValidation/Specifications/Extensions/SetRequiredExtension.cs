@@ -4,10 +4,11 @@ using CoreValidation.Specifications;
 // ReSharper disable once CheckNamespace
 namespace CoreValidation
 {
-    public static class SetRequiredErrorExtension
+    public static class SetRequiredExtension
     {
         /// <summary>
-        ///     Sets the RequiredError for the member (added in case of null).
+        /// Sets the error message for the required member if its value is null.
+        /// Overrides the default value from the validation context settings.
         /// </summary>
         /// <typeparam name="TModel">Type of the parent model.</typeparam>
         /// <typeparam name="TMember">Type of the member's nullable underlying model.</typeparam>
@@ -22,7 +23,7 @@ namespace CoreValidation
         }
 
         /// <summary>
-        ///     Sets the RequiredError for the member (added in case of null).
+        /// Sets the error message for the required member if its value is null. Overrides the default value from the validation context settings.
         /// </summary>
         /// <typeparam name="TModel">Type of the parent model.</typeparam>
         /// <typeparam name="TMember">Type of the member's nullable underlying model.</typeparam>

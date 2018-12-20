@@ -12,7 +12,7 @@ namespace CoreValidation
         public static IDictionary<string, string> English { get; } = TranslationTemplateService.CreateDictionary(new EnglishTranslation());
     }
 
-    public static class AddPolishEnglishTranslationExtension
+    public static class IncludeInEnglishTranslationExtension
     {
         public static IValidationContextOptions IncludeInEnglishTranslation(this IValidationContextOptions @this, IDictionary<string, string> include)
         {

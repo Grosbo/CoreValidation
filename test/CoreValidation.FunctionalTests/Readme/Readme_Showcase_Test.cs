@@ -8,12 +8,13 @@ using Xunit;
 // ReSharper disable UnusedAutoPropertyAccessor.Local
 // ReSharper disable ArgumentsStyleLiteral
 
-namespace CoreValidation.FunctionalTests.QuickStart
+namespace CoreValidation.FunctionalTests.Readme
 {
-    public class SignUp
+    public class Readme_Showcase_Test
     {
         private class SignUpModel
         {
+            public string Name { get; set; }
             public string Email { get; set; }
             public string Password { get; set; }
             public string PasswordConfirmation { get; set; }
@@ -21,12 +22,18 @@ namespace CoreValidation.FunctionalTests.QuickStart
         }
 
         [Fact]
-        public void Should_PassScenario_SignUp()
+        public void Readme_Showcase()
         {
-            Specification<SignUpModel> signUpModelSpecification = s => s
+            Specification<SignUpModel> signUpSpecification = s => s
+                .Member(m => m.Name, m => m
+                    .SetOptional()
+                    .MaxLength(40)
+                )
                 .Member(m => m.Email, m => m
+                    .SetOptional()
                     .Email()
-                    .MaxLength(40))
+                    .MaxLength(40)
+                )
                 .Member(m => m.Password, m => m
                     .NotWhiteSpace()
                     .MinLength(min: 10).WithMessage("Password should contain at least {min} characters")
@@ -36,14 +43,13 @@ namespace CoreValidation.FunctionalTests.QuickStart
                     .AsRelative(n => n.Password == n.PasswordConfirmation).WithMessage("Confirmation doesn't match the password")
                 )
                 .Member(m => m.TermsAndConditionsConsent)
-                .Valid(m => m.TermsAndConditionsConsent == true).WithMessage("Without the consent, sign up is invalid");
+                .Valid(m => (m.Name != null) || (m.Email != null)).WithMessage("At least one value is required - Name or Email");
 
             var validationContext = ValidationContext.Factory.Create(options => options
-                .AddSpecification(signUpModelSpecification)
+                .AddSpecification(signUpSpecification)
             );
 
             var incomingJson = @"{
-                'Email': 'homer.jay.simpson@emailaccount.tempuri.org',
                 'Password': 'homerBEST',
                 'PasswordConfirmation': 'homerbest'
             }";
@@ -63,8 +69,7 @@ namespace CoreValidation.FunctionalTests.QuickStart
             var listReport = validationResult.ToListReport();
 
             var expectedListReport =
-                @"Without the consent, sign up is invalid
-Email: Text value should have maximum 40 characters
+                @"At least one value is required - Name or Email
 Password: Password should contain at least 10 characters
 Password: Password should contain at least one digit
 PasswordConfirmation: Confirmation doesn't match the password
@@ -77,9 +82,6 @@ TermsAndConditionsConsent: Required
 
             var expectedReportJson = @"
 {
-  'Email': [
-    'Text value should have maximum 40 characters'
-  ],
   'Password': [
     'Password should contain at least 10 characters',
     'Password should contain at least one digit',
@@ -91,7 +93,7 @@ TermsAndConditionsConsent: Required
     'Required'
   ],
   '': [
-    'Without the consent, sign up is invalid'
+    'At least one value is required - Name or Email'
   ]
 }
 ";

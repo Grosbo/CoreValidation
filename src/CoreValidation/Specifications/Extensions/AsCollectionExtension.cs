@@ -10,7 +10,7 @@ namespace CoreValidation
     public static class AsCollectionExtension
     {
         /// <summary>
-        ///     Sets the validation logic for the member as a collection.
+        /// Sets the validation logic for the member as a collection.
         /// </summary>
         /// <typeparam name="TModel">Type of the parent model.</typeparam>
         /// <typeparam name="TMember">Type of the collection.</typeparam>
@@ -29,7 +29,7 @@ namespace CoreValidation
         }
 
         /// <summary>
-        ///     Sets the validation logic for the member as a collection.
+        /// Sets the validation logic for the member as a collection.
         /// </summary>
         /// <typeparam name="TModel">Type of the parent model.</typeparam>
         /// <typeparam name="TItem">Type of the items in the collection.</typeparam>
@@ -46,7 +46,7 @@ namespace CoreValidation
         }
 
         /// <summary>
-        ///     Sets the validation logic for the member as a collection.
+        /// Sets the validation logic for the member as a collection.
         /// </summary>
         /// <typeparam name="TModel">Type of the parent model.</typeparam>
         /// <typeparam name="TItem">Type of the items in the collection.</typeparam>
@@ -63,7 +63,7 @@ namespace CoreValidation
         }
 
         /// <summary>
-        ///     Sets the validation logic for the member as a collection.
+        /// Sets the validation logic for the member as a collection.
         /// </summary>
         /// <typeparam name="TModel">Type of the parent model.</typeparam>
         /// <typeparam name="TItem">Type of the items in the collection.</typeparam>
@@ -80,7 +80,7 @@ namespace CoreValidation
         }
 
         /// <summary>
-        ///     Sets the validation logic for the member as a collection.
+        /// Sets the validation logic for the member as a collection.
         /// </summary>
         /// <typeparam name="TModel">Type of the parent model.</typeparam>
         /// <typeparam name="TItem">Type of the items in the collection.</typeparam>
@@ -97,7 +97,7 @@ namespace CoreValidation
         }
 
         /// <summary>
-        ///     Sets the validation logic for the member as a collection.
+        /// Sets the validation logic for the member as a collection.
         /// </summary>
         /// <typeparam name="TModel">Type of the parent model.</typeparam>
         /// <typeparam name="TItem">Type of the items in the collection.</typeparam>
@@ -114,7 +114,7 @@ namespace CoreValidation
         }
 
         /// <summary>
-        ///     Sets the validation logic for the member as a collection.
+        /// Sets the validation logic for the member as a collection.
         /// </summary>
         /// <typeparam name="TModel">Type of the parent model.</typeparam>
         /// <typeparam name="TItem">Type of the items in the collection.</typeparam>
@@ -131,7 +131,7 @@ namespace CoreValidation
         }
 
         /// <summary>
-        ///     Sets the validation logic for the member as a collection.
+        /// Sets the validation logic for the member as a collection.
         /// </summary>
         /// <typeparam name="TModel">Type of the parent model.</typeparam>
         /// <typeparam name="TItem">Type of the items in the collection.</typeparam>
@@ -148,7 +148,7 @@ namespace CoreValidation
         }
 
         /// <summary>
-        ///     Sets the validation logic for the member as a collection.
+        /// Sets the validation logic for the member as a collection.
         /// </summary>
         /// <typeparam name="TModel">Type of the parent model.</typeparam>
         /// <typeparam name="TItem">Type of the items in the collection.</typeparam>

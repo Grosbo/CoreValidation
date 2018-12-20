@@ -14,7 +14,7 @@ namespace CoreValidation.Specifications
         where TModel : class
     {
         /// <summary>
-        ///     Sets the validation logic for the member as a relative to other members of the same model.
+        ///     Sets the validation logic for the member as a relative to other members of the parent model.
         /// </summary>
         /// <param name="isValid">
         ///     Predicate determining if the current member is valid as a relative. The parent model is provided
@@ -31,7 +31,7 @@ namespace CoreValidation.Specifications
         IMemberSpecificationBuilder<TModel, TMember> Valid(Predicate<TMember> isValid);
 
         /// <summary>
-        ///     Sets the custom validation logic for the member in its scope.
+        /// Sets the custom validation logic for the member in its scope.
         /// </summary>
         /// <param name="isValid">Predicate determining if the current member is valid.</param>
         /// <param name="message">Error message.</param>
@@ -43,17 +43,17 @@ namespace CoreValidation.Specifications
 
 
         /// <summary>
-        ///     Sets the error message that overrides all errors from the current member scope.
+        /// Sets the error message that replaces all errors from the current scope.
         /// </summary>
         /// <param name="message">Error message.</param>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="message" /> is null</exception>
         IMemberSpecificationBuilder<TModel, TMember> SetSingleError(string message);
 
         /// <summary>
-        ///     Sets (and overrides) the error messages returned from the preceding command.
-        ///     If placed after 'Valid' (or any predefined rule using it), replaces the original error message.
-        ///     If placed after command that can return multiple error messages (like 'AsModel', 'AsCollection', etc.), replaces
-        ///     them all as a single error message.
+        /// Sets (and overrides) the error messages returned from the preceding command.
+        /// If placed after 'Valid' (or any predefined rule using it), replaces the original error message.
+        /// If placed after command that can return multiple error messages (like 'AsModel', 'AsCollection', etc.), replaces
+        /// them all as a single error message (effectively works as putting SetSingleError within their scope).
         /// </summary>
         /// <param name="message">Error message</param>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="message" /> is null</exception>
